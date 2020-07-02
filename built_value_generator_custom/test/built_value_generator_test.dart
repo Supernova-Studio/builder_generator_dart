@@ -16,17 +16,16 @@ void main() {
     test('basic test', () async {
       expect(
         await generate('''library value;
-import 'package:built_value/built_value.dart' show Built, Builder;
+import 'package:built_value/built_value.dart';
 import 'package:built_value/data_class.dart';
 part 'value.g.dart';
-@DataClass()
-class Value {
+class Value implements DataClass<Value> {
   final String name;
   
   Value({this.name});
 
   @override
-  Value rebuild(Function(ValueBuilder) updates) => _rebuild(updates);
+  Value rebuild(Function(DataClassBuilder<Value>) updates) => _rebuild(updates);
 
   @override
   bool operator ==(other) => _equals(other);
@@ -800,7 +799,6 @@ final Builder builder = PartBuilder([BuiltValueGenerator()], '.g.dart');
 
 Future<String> generate(String source) async {
   var srcs = <String, String>{
-    //todo remove?
     'built_value|lib/built_value.dart': builtValueSource,
     'built_value|lib/data_class.dart': dataClassSource,
     '$pkgName|lib/value.dart': source,
@@ -827,9 +825,9 @@ Future<String> generate(String source) async {
 const String builtValueSource = r'''
 library built_value;
 
-abstract class Builder<V, B extends Builder<V, B>> {
+abstract class DataClassBuilder<V> {
   void replace(V value);
-  void update(updates(B builder));
+  void update(updates(DataClassBuilder<V> builder));
   V build();
 }
 ''';
@@ -837,7 +835,7 @@ abstract class Builder<V, B extends Builder<V, B>> {
 const String dataClassSource = r'''
 library built_value;
 
-class DataClass {
-  const DataClass();
+abstract class DataClass<T> {
+  T rebuild(Function(DataClassBuilder<T> builder) updates);
 }
 ''';

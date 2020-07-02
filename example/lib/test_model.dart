@@ -4,13 +4,13 @@ import 'package:built_value_custom/data_class.dart';
 part 'test_model.g.dart';
 
 //@JsonSerializable()
-@DataClass()
-class TestModel {
+class TestModel implements DataClass<TestModel> {
   final String name;
 
   TestModel({this.name});
 
-  TestModel rebuild(Function(TestModelBuilder) updates) => _rebuild(updates);
+  @override
+  TestModel rebuild(Function(DataClassBuilder<TestModel>) updates) => _rebuild(updates);
 
   @override
   bool operator ==(other) => _equals(other);

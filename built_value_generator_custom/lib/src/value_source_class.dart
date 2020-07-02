@@ -311,14 +311,14 @@ abstract class ValueSourceClass
       element.library.definingCompilationUnit;
 
   static bool needsBuiltValue(ClassElement classElement) {
-    // TODO(davidmorgan): more exact type check.
     return !classElement.displayName.startsWith('_\$') &&
-        classElement.metadata
-            .map((annotation) => annotation.computeConstantValue())
-            .any((value) => DartTypes.getName(value?.type) == 'DataClass');
+        classElement.allSupertypes
+            .any((interfaceType) => interfaceType.element.name == 'DataClass');
   }
 
   Iterable<GeneratorError> computeErrors() {
+    //todo remove extra checks
+    //todo check if T of DataClass is the same class
     return concat([
       _checkPart(),
       _checkSettings(),
@@ -370,9 +370,9 @@ abstract class ValueSourceClass
   Iterable<GeneratorError> _checkValueClass() {
     var result = <GeneratorError>[];
 
-    if (!valueClassIsAbstract) {
+    if (valueClassIsAbstract) {
       result.add(GeneratorError((b) => b
-        ..message = 'Make class abstract.'
+        ..message = 'Class is abstract. Make it instantiable.'
         ..offset = classDeclaration.offset
         ..length = 0
         ..fix = 'abstract '));
@@ -392,56 +392,56 @@ abstract class ValueSourceClass
             'code from finding helper methods.'));
     }
 
-    var implementsClause = classDeclaration.implementsClause;
-    var expectedInterface = 'Built<$name$_generics, ${name}Builder$_generics>';
+//    var implementsClause = classDeclaration.implementsClause;
+//    var expectedInterface = 'Built<$name$_generics, ${name}Builder$_generics>';
+//
+//    var implementsClauseIsCorrect = implementsClause != null &&
+//        implementsClause.interfaces
+//            .any((type) => type.toSource() == expectedInterface);
+//
+//    // Built parameters need fixing if they are not as expected, unless 1) the
+//    // class is marked `@BuiltValue(instantiable: false)` and 2) there is no
+//    // case of the `Built` interface being implemented. This is to allow
+//    // omitting the `Built` interface to work around having to implement the
+//    // same interface twice with different type parameters.
+//    var implementsClauseIsAllowedToBeIncorrect = !settings.instantiable &&
+//        (implementsClause == null ||
+//            !implementsClause.interfaces.any((type) =>
+//                type.toSource() == 'Built' ||
+//                type.toSource().startsWith('Built<')));
+//
+//    if (!implementsClauseIsCorrect && !implementsClauseIsAllowedToBeIncorrect) {
+//      if (implementsClause == null) {
+//        result.add(GeneratorError((b) => b
+//          ..message = 'Make class implement $expectedInterface.'
+//          ..offset = classDeclaration.leftBracket.offset - 1
+//          ..length = 0
+//          ..fix = 'implements $expectedInterface'));
+//      } else {
+//        var found = false;
+//        final interfaces = implementsClause.interfaces.map((type) {
+//          if (type.name.name == 'Built') {
+//            found = true;
+//            return expectedInterface;
+//          } else {
+//            return type.toSource();
+//          }
+//        }).toList();
+//        if (!found) interfaces.add(expectedInterface);
+//
+//        result.add(GeneratorError((b) => b
+//          ..message = 'Make class implement $expectedInterface.'
+//          ..offset = implementsClause.offset
+//          ..length = implementsClause.length
+//          ..fix = 'implements ${interfaces.join(", ")}'));
+//      }
+//    }
 
-    var implementsClauseIsCorrect = implementsClause != null &&
-        implementsClause.interfaces
-            .any((type) => type.toSource() == expectedInterface);
-
-    // Built parameters need fixing if they are not as expected, unless 1) the
-    // class is marked `@BuiltValue(instantiable: false)` and 2) there is no
-    // case of the `Built` interface being implemented. This is to allow
-    // omitting the `Built` interface to work around having to implement the
-    // same interface twice with different type parameters.
-    var implementsClauseIsAllowedToBeIncorrect = !settings.instantiable &&
-        (implementsClause == null ||
-            !implementsClause.interfaces.any((type) =>
-                type.toSource() == 'Built' ||
-                type.toSource().startsWith('Built<')));
-
-    if (!implementsClauseIsCorrect && !implementsClauseIsAllowedToBeIncorrect) {
-      if (implementsClause == null) {
-        result.add(GeneratorError((b) => b
-          ..message = 'Make class implement $expectedInterface.'
-          ..offset = classDeclaration.leftBracket.offset - 1
-          ..length = 0
-          ..fix = 'implements $expectedInterface'));
-      } else {
-        var found = false;
-        final interfaces = implementsClause.interfaces.map((type) {
-          if (type.name.name == 'Built') {
-            found = true;
-            return expectedInterface;
-          } else {
-            return type.toSource();
-          }
-        }).toList();
-        if (!found) interfaces.add(expectedInterface);
-
-        result.add(GeneratorError((b) => b
-          ..message = 'Make class implement $expectedInterface.'
-          ..offset = implementsClause.offset
-          ..length = implementsClause.length
-          ..fix = 'implements ${interfaces.join(", ")}'));
-      }
-    }
-
-    if (!extendsIsAllowed) {
-      result.add(GeneratorError((b) => b
-        ..message = 'Stop class extending other classes. '
-            'Only "implements" and "extends Object with" are allowed.'));
-    }
+//    if (!extendsIsAllowed) {
+//      result.add(GeneratorError((b) => b
+//        ..message = 'Stop class extending other classes. '
+//            'Only "implements" and "extends Object with" are allowed.'));
+//    }
 
     if (settings.instantiable) {
       if (hasBuilderInitializer) {
@@ -481,85 +481,85 @@ abstract class ValueSourceClass
         }
       }
 
-      final expectedConstructor = '$name._()';
-      if (valueClassConstructors.isEmpty) {
-        result.add(GeneratorError((b) => b
-          ..message =
-              'Make class have exactly one constructor: $expectedConstructor;'
-          ..offset = classDeclaration.rightBracket.offset
-          ..length = 0
-          ..fix = '  $expectedConstructor;\n'));
-      } else if (valueClassConstructors.length > 1) {
-        var found = false;
-        for (var constructor in valueClassConstructors) {
-          if (constructor.toSource().startsWith(expectedConstructor)) {
-            found = true;
-          } else {
-            result.add(GeneratorError((b) => b
-              ..message = 'Remove invalid constructor.'
-              ..offset = constructor.offset
-              ..length = constructor.length
-              ..fix = ''));
-          }
-        }
-        if (!found) {
-          result.add(GeneratorError((b) => b
-            ..message =
-                'Make class have exactly one constructor: $expectedConstructor;'
-            ..offset = classDeclaration.rightBracket.offset
-            ..length = 0
-            ..fix = '  $expectedConstructor;\n'));
-        }
-      } else if (!(valueClassConstructors.single
-          .toSource()
-          .startsWith(expectedConstructor))) {
-        result.add(GeneratorError((b) => b
-          ..message =
-              'Make class have exactly one constructor: $expectedConstructor;'
-          ..offset = valueClassConstructors.single.offset
-          ..length = valueClassConstructors.single.length
-          ..fix = expectedConstructor + ';'));
-      }
-    } else {
-      if (valueClassConstructors.isNotEmpty) {
-        result.add(GeneratorError((b) => b
-          ..message =
-              'Remove all constructors or remove "instantiable: false".'));
-      }
+//      final expectedConstructor = '$name._()';
+//      if (valueClassConstructors.isEmpty) {
+//        result.add(GeneratorError((b) => b
+//          ..message =
+//              'Make class have exactly one constructor: $expectedConstructor;'
+//          ..offset = classDeclaration.rightBracket.offset
+//          ..length = 0
+//          ..fix = '  $expectedConstructor;\n'));
+//      } else if (valueClassConstructors.length > 1) {
+//        var found = false;
+//        for (var constructor in valueClassConstructors) {
+//          if (constructor.toSource().startsWith(expectedConstructor)) {
+//            found = true;
+//          } else {
+//            result.add(GeneratorError((b) => b
+//              ..message = 'Remove invalid constructor.'
+//              ..offset = constructor.offset
+//              ..length = constructor.length
+//              ..fix = ''));
+//          }
+//        }
+//        if (!found) {
+//          result.add(GeneratorError((b) => b
+//            ..message =
+//                'Make class have exactly one constructor: $expectedConstructor;'
+//            ..offset = classDeclaration.rightBracket.offset
+//            ..length = 0
+//            ..fix = '  $expectedConstructor;\n'));
+//        }
+//      } else if (!(valueClassConstructors.single
+//          .toSource()
+//          .startsWith(expectedConstructor))) {
+//        result.add(GeneratorError((b) => b
+//          ..message =
+//              'Make class have exactly one constructor: $expectedConstructor;'
+//          ..offset = valueClassConstructors.single.offset
+//          ..length = valueClassConstructors.single.length
+//          ..fix = expectedConstructor + ';'));
+//      }
+//    } else {
+//      if (valueClassConstructors.isNotEmpty) {
+//        result.add(GeneratorError((b) => b
+//          ..message =
+//              'Remove all constructors or remove "instantiable: false".'));
+//      }
     }
 
     if (settings.instantiable) {
-      if (!valueClassFactories.any(
-          (factory) => factory.toSource().contains('$implName$_generics'))) {
-        final exampleFactory =
-            'factory $name([void Function(${name}Builder$_generics) updates]) = '
-            '$implName$_generics;';
-        result.add(GeneratorError((b) => b
-          ..message =
-              'Add a factory so your class can be instantiated. Example:\n\n'
-                  '$exampleFactory'
-          ..offset = classDeclaration.rightBracket.offset
-          ..length = 0
-          ..fix = '  $exampleFactory\n'));
-      }
-    } else {
-      if (valueClassFactories.isNotEmpty) {
-        result.add(GeneratorError((b) => b
-          ..message = 'Remove all factories or remove "instantiable: false".'));
-      }
+//      if (!valueClassFactories.any(
+//          (factory) => factory.toSource().contains('$implName$_generics'))) {
+//        final exampleFactory =
+//            'factory $name([void Function(${name}Builder$_generics) updates]) = '
+//            '$implName$_generics;';
+//        result.add(GeneratorError((b) => b
+//          ..message =
+//              'Add a factory so your class can be instantiated. Example:\n\n'
+//                  '$exampleFactory'
+//          ..offset = classDeclaration.rightBracket.offset
+//          ..length = 0
+//          ..fix = '  $exampleFactory\n'));
+//      }
+//    } else {
+//      if (valueClassFactories.isNotEmpty) {
+//        result.add(GeneratorError((b) => b
+//          ..message = 'Remove all factories or remove "instantiable: false".'));
+//      }
     }
 
-    if (implementsHashCode) {
-      result.add(GeneratorError((b) => b
-        ..message =
-            'Stop implementing hashCode; it will be generated for you.'));
-    }
+//    if (implementsHashCode) {
+//      result.add(GeneratorError((b) => b
+//        ..message =
+//            'Stop implementing hashCode; it will be generated for you.'));
+//    }
 
-    if (implementsOperatorEquals) {
-      result.add(GeneratorError((b) => b
-        ..message =
-            'Stop implementing operator==; it will be generated for you.'));
-    }
+//    if (implementsOperatorEquals) {
+//      result.add(GeneratorError((b) => b
+//        ..message =
+//            'Stop implementing operator==; it will be generated for you.'));
+//    }
 
     return result;
   }

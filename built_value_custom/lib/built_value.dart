@@ -8,24 +8,24 @@
 /// provide the rest of the implementation.
 ///
 /// See https://github.com/google/built_value.dart/tree/master/example
-abstract class Built<V extends Built<V, B>, B extends Builder<V, B>> {
-  /// Rebuilds the instance.
-  ///
-  /// The result is the same as this instance but with [updates] applied.
-  /// [updates] is a function that takes a builder [B].
-  ///
-  /// The implementation of this method will be generated for you by the
-  /// built_value generator.
-  V rebuild(Function(B) updates);
-}
+//abstract class Built<V extends Built<V, B>, B extends Builder<V, B>> {
+//  /// Rebuilds the instance.
+//  ///
+//  /// The result is the same as this instance but with [updates] applied.
+//  /// [updates] is a function that takes a builder [B].
+//  ///
+//  /// The implementation of this method will be generated for you by the
+//  /// built_value generator.
+//  V rebuild(Function(B) updates);
+//}
 
-/// Every [Built] class has a corresponding [Builder] class.
+/// Every [Built] class has a corresponding [DataClassBuilder] class.
 ///
 /// Usually you don't need to create one by hand; it will be generated
 /// for you.
 ///
 /// See <https://github.com/google/built_value.dart/tree/master/example>
-abstract class Builder<V, B extends Builder<V, B>> {
+abstract class DataClassBuilder<V> {
   /// Replaces the value in the builder with a new one.
   ///
   /// The implementation of this method will be generated for you by the
@@ -35,7 +35,7 @@ abstract class Builder<V, B extends Builder<V, B>> {
   /// Applies updates.
   ///
   /// [updates] is a function that takes a builder [B].
-  void update(Function(B) updates);
+  void update(Function(DataClassBuilder<V>) updates);
 
   /// Builds.
   ///

@@ -6,7 +6,7 @@ part of 'test_model.dart';
 // **************************************************************************
 
 extension BuiltTestModelExtension on TestModel {
-  TestModel _rebuild(void Function(TestModelBuilder) updates) =>
+  TestModel _rebuild(void Function(DataClassBuilder<TestModel>) updates) =>
       (_toBuilder()..update(updates)).build();
 
   TestModelBuilder _toBuilder() => new TestModelBuilder()..replace(this);
@@ -29,7 +29,7 @@ extension BuiltTestModelExtension on TestModel {
 //TestModel _$TestModelFromBuilder([void Function(TestModelBuilder) updates]) =>
 //    (TestModelBuilder()..update(updates)).build();
 
-class TestModelBuilder implements Builder<TestModel, TestModelBuilder> {
+class TestModelBuilder implements DataClassBuilder<TestModel> {
   TestModel _$v;
 
   String _name;
@@ -51,19 +51,19 @@ class TestModelBuilder implements Builder<TestModel, TestModelBuilder> {
   @override
   void replace(TestModel other) {
     if (other == null) {
-      throw new ArgumentError.notNull('other');
+      throw ArgumentError.notNull('other');
     }
     _$v = other;
   }
 
   @override
-  void update(void Function(TestModelBuilder) updates) {
+  void update(void Function(DataClassBuilder<TestModel>) updates) {
     if (updates != null) updates(this);
   }
 
   @override
   TestModel build() {
-    final _$result = _$v ?? new TestModel(name: name);
+    final _$result = _$v ?? TestModel(name: name);
     replace(_$result);
     return _$result;
   }
