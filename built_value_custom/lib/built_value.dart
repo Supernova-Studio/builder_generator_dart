@@ -25,7 +25,7 @@ abstract class Built<V extends Built<V, B>, B extends Builder<V, B>> {
 /// for you.
 ///
 /// See <https://github.com/google/built_value.dart/tree/master/example>
-abstract class Builder<V extends Built<V, B>, B extends Builder<V, B>> {
+abstract class Builder<V, B extends Builder<V, B>> {
   /// Replaces the value in the builder with a new one.
   ///
   /// The implementation of this method will be generated for you by the

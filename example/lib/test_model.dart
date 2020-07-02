@@ -1,24 +1,25 @@
 import 'package:built_value_custom/built_value.dart';
+import 'package:built_value_custom/data_class.dart';
 
 part 'test_model.g.dart';
 
 //@JsonSerializable()
-class TestModel implements Built<TestModel, TestModelBuilder> {
+@DataClass()
+class TestModel {
   final String name;
 
   TestModel({this.name});
 
-  @override
   TestModel rebuild(Function(TestModelBuilder) updates) => _rebuild(updates);
 
   @override
-  bool operator ==(other) => this._equals(other);
+  bool operator ==(other) => _equals(other);
 
   @override
-  String toString() => this._string;
+  String toString() => _string;
 
   @override
-  int get hashCode => this._hashCode;
+  int get hashCode => _hashCode;
 
 //  Map<String, dynamic> toJson() => _$TestModelToJson(this);
 //

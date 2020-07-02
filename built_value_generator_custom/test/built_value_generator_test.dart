@@ -12,18 +12,15 @@ import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('test',(){
-    print('123');
-  });
-
-
   group('generator', () {
     test('basic test', () async {
       expect(
         await generate('''library value;
 import 'package:built_value/built_value.dart' show Built, Builder;
+import 'package:built_value/data_class.dart';
 part 'value.g.dart';
-class Value implements Built<Value, ValueBuilder> {
+@DataClass()
+class Value {
   final String name;
   
   Value({this.name});
@@ -803,7 +800,9 @@ final Builder builder = PartBuilder([BuiltValueGenerator()], '.g.dart');
 
 Future<String> generate(String source) async {
   var srcs = <String, String>{
+    //todo remove?
     'built_value|lib/built_value.dart': builtValueSource,
+    'built_value|lib/data_class.dart': dataClassSource,
     '$pkgName|lib/value.dart': source,
   };
 
@@ -828,27 +827,17 @@ Future<String> generate(String source) async {
 const String builtValueSource = r'''
 library built_value;
 
-abstract class Built<V extends Built<V, B>, B extends Builder<V, B>> {
-  V rebuild(updates(B builder));
-  B toBuilder();
-}
-
-abstract class Builder<V extends Built<V, B>, B extends Builder<V, B>> {
+abstract class Builder<V, B extends Builder<V, B>> {
   void replace(V value);
   void update(updates(B builder));
   V build();
 }
+''';
 
-class BuiltValue {
-  final bool comparableBuilders;
-  final bool instantiable;
-  final bool nestedBuilders;
-  final String wireName;
+const String dataClassSource = r'''
+library built_value;
 
-  const BuiltValue({
-      this.comparableBuilders: false,
-      this.instantiable: true,
-      this.nestedBuilders: true,
-      this.wireName});
+class DataClass {
+  const DataClass();
 }
 ''';

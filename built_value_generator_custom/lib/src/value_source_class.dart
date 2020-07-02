@@ -32,6 +32,7 @@ abstract class ValueSourceClass
 
   factory ValueSourceClass(ClassElement element) =>
       _$ValueSourceClass._(element: element);
+
   ValueSourceClass._();
 
   @memoized
@@ -312,12 +313,9 @@ abstract class ValueSourceClass
   static bool needsBuiltValue(ClassElement classElement) {
     // TODO(davidmorgan): more exact type check.
     return !classElement.displayName.startsWith('_\$') &&
-        (classElement.allSupertypes.any(
-                (interfaceType) => interfaceType.element.name == 'Built') ||
-            classElement.metadata
-                .map((annotation) => annotation.computeConstantValue())
-                .any(
-                    (value) => DartTypes.getName(value?.type) == 'BuiltValue'));
+        classElement.metadata
+            .map((annotation) => annotation.computeConstantValue())
+            .any((value) => DartTypes.getName(value?.type) == 'DataClass');
   }
 
   Iterable<GeneratorError> computeErrors() {
