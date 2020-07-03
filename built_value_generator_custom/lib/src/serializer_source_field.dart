@@ -82,7 +82,7 @@ abstract class SerializerSourceField
   String get typeWithPrefix {
     var declaration = parsedLibrary.getElementDeclaration(element.getter);
     var typeFromAst =
-        (declaration.node as MethodDeclaration)?.returnType?.toString() ??
+        (declaration.node)?.thisOrAncestorOfType()?.toString() ??
             'dynamic';
     var typeFromElement = type;
 

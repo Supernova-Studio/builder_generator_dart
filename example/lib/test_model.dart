@@ -6,8 +6,9 @@ part 'test_model.g.dart';
 //@JsonSerializable()
 class TestModel implements DataClass<TestModel> {
   final String name;
+  final int age;
 
-  TestModel({this.name});
+  TestModel({this.name, this.age});
 
   @override
   TestModel rebuild(Function(DataClassBuilder<TestModel>) updates) => _rebuild(updates);

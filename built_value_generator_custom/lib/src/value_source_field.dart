@@ -49,6 +49,7 @@ abstract class ValueSourceField
   @memoized
   String get name => element.displayName;
 
+  //todo getter ->declaration?
   @memoized
   String get type => DartTypes.getName(element.getter.returnType);
 
@@ -58,9 +59,9 @@ abstract class ValueSourceField
   /// The [type] plus any import prefix.
   @memoized
   String get typeWithPrefix {
-    var typeFromAst = (parsedLibrary.getElementDeclaration(element.getter).node
-                as MethodDeclaration)
-            ?.returnType
+    var typeFromAst = (parsedLibrary.getElementDeclaration(element.declaration).node
+                )
+            ?.thisOrAncestorOfType()
             ?.toSource() ??
         'dynamic';
     var typeFromElement = type;
@@ -217,10 +218,10 @@ abstract class ValueSourceField
   Iterable<GeneratorError> computeErrors() {
     var result = <GeneratorError>[];
 
-    if (!isGetter) {
-      result.add(
-          GeneratorError((b) => b..message = 'Make field $name a getter.'));
-    }
+//    if (!isGetter) {
+//      result.add(
+//          GeneratorError((b) => b..message = 'Make field $name a getter.'));
+//    }
 
     if (type == 'dynamic') {
       result.add(GeneratorError((b) => b
@@ -234,12 +235,14 @@ abstract class ValueSourceField
           b..message = 'Make field $name public; remove the underscore.'));
     }
 
+    //todo keep?
     if (_suggestedTypes.keys.contains(type)) {
       result.add(GeneratorError((b) => b
         ..message = 'Make field "$name" have type "${_suggestedTypes[type]}". '
             'The current type, "$type", is not allowed because it is mutable.'));
     }
 
+    //todo test
     if (builderFieldExists) {
       if (buildElementType != type &&
           buildElementType != _toBuilderType(element.type, type)) {

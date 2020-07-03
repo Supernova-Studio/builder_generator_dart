@@ -42,6 +42,7 @@ abstract class ValueSourceClass
   @memoized
   String get name => element.displayName;
 
+  //todo remove
   /// Returns the class name for the generated implementation. If the manually
   /// maintained class is private then we ignore the underscore here, to avoid
   /// returning a class name starting `_$_`.
@@ -267,7 +268,7 @@ abstract class ValueSourceClass
   /// builder implements the corresponding builders.
   @memoized
   BuiltList<String> get builderImplements => BuiltList<String>.build((b) => b
-    ..add('Builder<$name$_generics, ${name}Builder$_generics>')
+    ..add('DataClassBuilder<$name$_generics>')
     ..addAll(element.interfaces
         .where((interface) => needsBuiltValue(interface.element))
         .map((interface) {
@@ -370,13 +371,13 @@ abstract class ValueSourceClass
   Iterable<GeneratorError> _checkValueClass() {
     var result = <GeneratorError>[];
 
-    if (valueClassIsAbstract) {
-      result.add(GeneratorError((b) => b
-        ..message = 'Class is abstract. Make it instantiable.'
-        ..offset = classDeclaration.offset
-        ..length = 0
-        ..fix = 'abstract '));
-    }
+//    if (valueClassIsAbstract) {
+//      result.add(GeneratorError((b) => b
+//        ..message = 'Class is abstract. Make it instantiable.'
+//        ..offset = classDeclaration.offset
+//        ..length = 0
+//        ..fix = 'abstract '));
+//    }
 
     if (hasBuiltValueImportWithShow) {
       result.add(GeneratorError((b) => b
@@ -648,6 +649,7 @@ abstract class ValueSourceClass
     var errors = computeErrors();
     if (errors.isNotEmpty) throw _makeError(errors);
 
+    //todo abstract, inherited
     var result = StringBuffer();
     if (settings.instantiable) result.write(_generateImpl());
     if (settings.instantiable) {
@@ -661,90 +663,97 @@ abstract class ValueSourceClass
   /// Generates the value class implementation.
   String _generateImpl() {
     var result = StringBuffer();
-    result.writeln('class $implName$_boundedGenerics '
-        'extends $name$_generics {');
-    for (var field in fields) {
-      final type = field.typeInCompilationUnit(compilationUnit);
-      result.writeln('@override');
-      result.writeln('final $type ${field.name};');
-    }
+    result.writeln('extension $implName${_boundedGenerics}DataClassExtension '
+        'on $name {');
+//    for (var field in fields) {
+//      final type = field.typeInCompilationUnit(compilationUnit);
+//      result.writeln('@override');
+//      result.writeln('final $type ${field.name};');
+//    }
     for (var memoizedGetter in memoizedGetters) {
       result.writeln('${memoizedGetter.returnType} __${memoizedGetter.name};');
     }
     result.writeln();
 
-    // If there is a manually maintained builder we have to cast the "build()"
-    // result to the generated value class. If the builder is generated, that
-    // can return the right type directly and needs no cast.
-    var cast = hasBuilder ? 'as $implName$_generics' : '';
-    result.writeln('factory $implName(['
-        'void Function(${name}Builder$_generics) updates]) '
-        '=> (new ${name}Builder$_generics()..update(updates)).build() $cast;');
-    result.writeln();
-
-    if (fields.isEmpty) {
-      result.write('$implName._() : super._()');
-    } else {
-      result.write('$implName._({');
-      result.write(fields.map((field) => 'this.${field.name}').join(', '));
-      result.write('}) : super._()');
-    }
-    var requiredFields = fields.where((field) => !field.isNullable);
-    if (requiredFields.isEmpty && genericParameters.isEmpty) {
-      result.writeln(';');
-    } else {
-      result.writeln('{');
-      for (var field in requiredFields) {
-        result.writeln('if (${field.name} == null) {');
-        result.writeln(
-            "throw new BuiltValueNullFieldError('$name', '${escapeString(field.name)}');");
-        result.writeln('}');
-      }
-      // If there are generic parameters, check they are not "dynamic".
-      if (genericParameters.isNotEmpty) {
-        for (var genericParameter in genericParameters) {
-          result.writeln('if ($genericParameter == dynamic) {');
-          result.writeln('throw new BuiltValueMissingGenericsError('
-              "'$name', '$genericParameter');");
-          result.writeln('}');
-        }
-      }
-      result.writeln();
-      result.writeln('}');
-    }
-    result.writeln();
-
-    for (var memoizedGetter in memoizedGetters) {
-      result.writeln('@override');
-      result.writeln(
-          '${memoizedGetter.returnType} get ${memoizedGetter.name} =>');
-      result.writeln(
-          '__${memoizedGetter.name} ??= super.${memoizedGetter.name};');
-      result.writeln();
-    }
-
-    result.writeln('@override');
+    //todo extract builder class name
+    //todo generic?
     result.writeln(
-        '$name$_generics rebuild(void Function(${name}Builder$_generics) updates) '
-        '=> (toBuilder()..update(updates)).build();');
+        '$name$_generics _rebuild(void Function(DataClassBuilder<$name>) updates) '
+            '=> (_toBuilder()..update(updates)).build();');
+//    result.writeln('$name '
+//        'void Function(${name}Builder$_generics) updates]) '
+//        '=> (new ${name}Builder$_generics()..update(updates)).build() $cast;');
     result.writeln();
 
-    result.writeln('@override');
-    if (hasBuilder) {
-      result.writeln('${implName}Builder$_generics toBuilder() '
-          '=> new ${implName}Builder$_generics()..replace(this);');
-    } else {
-      result.writeln('${name}Builder$_generics toBuilder() '
-          '=> new ${name}Builder$_generics()..replace(this);');
-    }
+    result.writeln('${name}Builder$_generics _toBuilder() '
+        '=> ${name}Builder$_generics()..replace(this);');
     result.writeln();
 
     result.write(_generateEqualsAndHashcode());
 
+//    if (fields.isEmpty) {
+//      result.write('$implName._() : super._()');
+//    } else {
+//      result.write('$implName._({');
+//      result.write(fields.map((field) => 'this.${field.name}').join(', '));
+//      result.write('}) : super._()');
+//    }
+//    var requiredFields = fields.where((field) => !field.isNullable);
+//    if (requiredFields.isEmpty && genericParameters.isEmpty) {
+//      result.writeln(';');
+//    } else {
+//      result.writeln('{');
+//      for (var field in requiredFields) {
+//        result.writeln('if (${field.name} == null) {');
+//        result.writeln(
+//            "throw new BuiltValueNullFieldError('$name', '${escapeString(field.name)}');");
+//        result.writeln('}');
+//      }
+//      // If there are generic parameters, check they are not "dynamic".
+//      if (genericParameters.isNotEmpty) {
+//        for (var genericParameter in genericParameters) {
+//          result.writeln('if ($genericParameter == dynamic) {');
+//          result.writeln('throw new BuiltValueMissingGenericsError('
+//              "'$name', '$genericParameter');");
+//          result.writeln('}');
+//        }
+//      }
+//      result.writeln();
+//      result.writeln('}');
+//    }
+//    result.writeln();
+
+//    for (var memoizedGetter in memoizedGetters) {
+//      result.writeln('@override');
+//      result.writeln(
+//          '${memoizedGetter.returnType} get ${memoizedGetter.name} =>');
+//      result.writeln(
+//          '__${memoizedGetter.name} ??= super.${memoizedGetter.name};');
+//      result.writeln();
+//    }
+//
+//    result.writeln('@override');
+//    result.writeln(
+//        '$name$_generics rebuild(void Function(${name}Builder$_generics) updates) '
+//        '=> (toBuilder()..update(updates)).build();');
+//    result.writeln();
+//
+//    result.writeln('@override');
+//    if (hasBuilder) {
+//      result.writeln('${implName}Builder$_generics toBuilder() '
+//          '=> new ${implName}Builder$_generics()..replace(this);');
+//    } else {
+//      result.writeln('${name}Builder$_generics toBuilder() '
+//          '=> new ${name}Builder$_generics()..replace(this);');
+//    }
+//    result.writeln();
+//
+//    result.write(_generateEqualsAndHashcode());
+
+    //todo check inherited
     // Only generate toString() if there wasn't one already.
-    if (!implementsToString) {
-      result.writeln('@override');
-      result.writeln('String toString() {');
+//    if (!implementsToString) {
+      result.writeln('String get _string {');
       if (fields.isEmpty) {
         result
             .writeln("return newBuiltValueToStringHelper('$name').toString();");
@@ -758,7 +767,7 @@ abstract class ValueSourceClass
       }
       result.writeln('}');
       result.writeln();
-    }
+//    }
 
     result.writeln('}');
     return result.toString();
@@ -767,16 +776,16 @@ abstract class ValueSourceClass
   /// Generates the builder implementation.
   String _generateBuilder() {
     var result = StringBuffer();
-    if (hasBuilder) {
-      result.writeln('class ${implName}Builder$_boundedGenerics '
-          'extends ${name}Builder$_generics {');
-    } else {
+//    if (hasBuilder) {
+//      result.writeln('class ${implName}Builder$_boundedGenerics '
+//          'extends ${name}Builder$_generics {');
+//    } else {
       result.writeln('class ${name}Builder$_boundedGenerics '
           'implements ${builderImplements.join(", ")} {');
-    }
+//    }
 
     // Builder holds a reference to a value, copies from it lazily.
-    result.writeln('$implName$_generics _\$v;');
+    result.writeln('$name$_generics _\$v;');
     result.writeln('');
 
     if (hasBuilder) {
@@ -905,7 +914,7 @@ abstract class ValueSourceClass
     result.writeln('if (other == null) {');
     result.writeln("throw new ArgumentError.notNull('other');");
     result.writeln('}');
-    result.writeln('_\$v = other as $implName$_generics;');
+    result.writeln('_\$v = other;');
     result.writeln('}');
 
     result.writeln('@override');
@@ -915,7 +924,7 @@ abstract class ValueSourceClass
     result.writeln();
 
     result.writeln('@override');
-    result.writeln('$implName$_generics build() {');
+    result.writeln('$name$_generics build() {');
 
     if (hasBuilderFinalizer) {
       result.writeln('$name._finalizeBuilder(this);');
@@ -955,7 +964,7 @@ abstract class ValueSourceClass
       result.write('final ');
     }
     result.writeln('_\$result = _\$v ?? ');
-    result.writeln('new $implName$_generics._(');
+    result.writeln('$name$_generics(');
     result.write(fieldBuilders.keys
         .map((field) => '$field: ${fieldBuilders[field]}')
         .join(','));
@@ -999,14 +1008,14 @@ abstract class ValueSourceClass
   String _generateEqualsAndHashcode({bool forBuilder = false}) {
     var result = StringBuffer();
 
+    //todo check inherited fields
     var comparedFields = fields
         .where(
             (field) => field.builtValueField.compare ?? settings.defaultCompare)
         .toList();
     var comparedFunctionFields =
         comparedFields.where((field) => field.isFunctionType).toList();
-    result.writeln('@override');
-    result.writeln('bool operator==(Object other) {');
+    result.writeln('bool _equals(Object other) {');
     result.writeln('  if (identical(other, this)) return true;');
 
     if (comparedFunctionFields.isNotEmpty) {
@@ -1033,8 +1042,7 @@ abstract class ValueSourceClass
       result.writeln('int __hashCode;');
     }
 
-    result.writeln('@override');
-    result.writeln('int get hashCode {');
+    result.writeln('int get _hashCode {');
 
     if (comparedFields.isEmpty) {
       result.writeln('return ${name.hashCode};');

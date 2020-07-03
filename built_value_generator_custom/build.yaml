@@ -7,7 +7,7 @@ targets:
 builders:
   built_value:
     target: ":built_value_generator"
-    import: "package:built_value_generator/builder.dart"
+    import: "package:built_value_generator_custom/builder.dart"
     builder_factories: ["builtValue"]
     build_extensions: {".dart": [".built_value.g.part"]}
     auto_apply: dependents
