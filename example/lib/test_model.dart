@@ -1,9 +1,10 @@
 import 'package:built_value_custom/built_value.dart';
 import 'package:built_value_custom/data_class.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'test_model.g.dart';
 
-//@JsonSerializable()
+@JsonSerializable()
 class TestModel implements DataClass<TestModel> {
   final String name;
   final int age;
@@ -22,8 +23,8 @@ class TestModel implements DataClass<TestModel> {
   @override
   int get hashCode => _hashCode;
 
-//  Map<String, dynamic> toJson() => _$TestModelToJson(this);
-//
-//  factory TestModel.fromJson(Map<String, dynamic> json) =>
-//      _$TestModelFromJson(json);
+  Map<String, dynamic> toJson() => _$TestModelToJson(this);
+
+  factory TestModel.fromJson(Map<String, dynamic> json) =>
+      _$TestModelFromJson(json);
 }
