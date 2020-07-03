@@ -1,5 +1,7 @@
 Generate default operations for models.
 
+## Utilites
+
 IDE Live template:
 ```
 @JsonSerializable()
