@@ -8,7 +8,6 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
-import 'src/serializer_source_library.dart';
 import 'src/value_source_class.dart';
 
 /// Generator for Enum Class and Built Values.
