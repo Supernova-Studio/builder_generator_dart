@@ -1,7 +1,7 @@
 // ignore_for_file: directives_ordering
 
 import 'package:build_runner_core/build_runner_core.dart' as _i1;
-import 'package:built_value_generator_custom/builder.dart' as _i2;
+import 'package:data_class_generator/builder.dart' as _i2;
 import 'package:json_serializable/builder.dart' as _i3;
 import 'package:source_gen/builder.dart' as _i4;
 import 'package:build_config/build_config.dart' as _i5;
@@ -10,8 +10,8 @@ import 'package:build_runner/build_runner.dart' as _i7;
 import 'dart:io' as _i8;
 
 final _builders = <_i1.BuilderApplication>[
-  _i1.apply('built_value_generator_custom:built_value', [_i2.builtValue],
-      _i1.toDependentsOf('built_value_generator_custom'),
+  _i1.apply('data_class_generator:built_value', [_i2.builtValue],
+      _i1.toDependentsOf('data_class_generator'),
       hideOutput: true, appliesBuilders: ['source_gen:combining_builder']),
   _i1.apply('json_serializable:json_serializable', [_i3.jsonSerializable],
       _i1.toDependentsOf('json_serializable'),

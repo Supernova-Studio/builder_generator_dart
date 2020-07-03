@@ -1,5 +1,4 @@
-import 'package:built_value_custom/built_value.dart';
-import 'package:built_value_custom/data_class.dart';
+import 'package:data_class/data_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'test_model.g.dart';
