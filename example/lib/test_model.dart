@@ -4,7 +4,8 @@ import 'package:json_annotation/json_annotation.dart';
 part 'test_model.g.dart';
 
 @JsonSerializable()
-class InnerTestModel implements DataClass<InnerTestModel, InnerTestModelBuilder> {
+class InnerTestModel
+    implements DataClass<InnerTestModel, InnerTestModelBuilder> {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -21,7 +22,8 @@ class InnerTestModel implements DataClass<InnerTestModel, InnerTestModelBuilder>
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  InnerTestModel rebuild(Function(InnerTestModelBuilder) updates) => _rebuild(updates);
+  InnerTestModel rebuild(Function(InnerTestModelBuilder) updates) =>
+      _rebuild(updates);
 
   @override
   bool operator ==(other) => this._equals(other);
@@ -51,6 +53,7 @@ class TestModel implements DataClass<TestModel, TestModelBuilder> {
   final int age;
   final List<String> list;
   final InnerTestModel innerTestModel;
+
 //  final BuiltList <String> builtList;
 
   //
@@ -85,14 +88,15 @@ class TestModel implements DataClass<TestModel, TestModelBuilder> {
       _$TestModelFromJson(json);
 }
 
-abstract class BaseModel{
+abstract class BaseModel {
   final String baseString;
 
   BaseModel(this.baseString);
 }
 
 @JsonSerializable()
-class ChildModel<T> extends BaseModel implements DataClass<ChildModel, ChildModelBuilder> {
+class ChildModel<T> extends BaseModel
+    implements DataClass<ChildModel<T>, ChildModelBuilder<T>> {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -103,14 +107,15 @@ class ChildModel<T> extends BaseModel implements DataClass<ChildModel, ChildMode
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  ChildModel({String baseString, this.genericProp}) :super(baseString);
+  ChildModel({String baseString, this.genericProp}) : super(baseString);
 
   //
   /// Data class members
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  ChildModel rebuild(Function(ChildModelBuilder) updates) => _rebuild(updates);
+  ChildModel<T> rebuild(void Function(ChildModelBuilder<T>) updates) =>
+      this._rebuild(updates);
 
   @override
   bool operator ==(other) => this._equals(other);
@@ -131,51 +136,20 @@ class ChildModel<T> extends BaseModel implements DataClass<ChildModel, ChildMode
       _$ChildModelFromJson(json);
 }
 
+void main() {
+//  var model = TestModel();
+//
+//  var newModel = model.rebuild((TestModelBuilder builder) {
+//    builder.name = '212323';
+//  });
+//
+//  print(newModel.name);
 
+  var model = ChildModel<String>();
 
-@JsonSerializable()
-class NewModel implements DataClass<NewModel, NewModelBuilder> {
-  //
-  /// Properties
-  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-  //
-  /// Constructor
-  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-  NewModel();
-
-  //
-  /// Data class members
-  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-  @override
-  NewModel rebuild(Function(NewModelBuilder) updates) => _rebuild(updates);
-
-  @override
-  bool operator ==(other) => this._equals(other);
-
-  @override
-  String toString() => this._string;
-
-  @override
-  int get hashCode => this._hashCode;
-
-  //
-  /// Mapping
-  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-  Map<String, dynamic> toJson() => _$NewModelToJson(this);
-
-  factory NewModel.fromJson(Map<String, dynamic> json) =>
-      _$NewModelFromJson(json);
-}
-
-void main(){
-  var model = TestModel();
-
-  model.rebuild((TestModelBuilder builder) {
-    return builder.name = null;
+  var newModel = model.rebuild((ChildModelBuilder<String> builder) {
+    builder.genericProp = '123';
   });
+
+  print(newModel.genericProp);
 }

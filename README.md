@@ -22,7 +22,7 @@ class $CLASS_NAME$ implements DataClass<$CLASS_NAME$, $CLASS_NAME$Builder> {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     
   @override
-  $CLASS_NAME$ rebuild(Function($CLASS_NAME$Builder) updates) => _rebuild(updates);
+  $CLASS_NAME$ rebuild(Function($CLASS_NAME$Builder) updates) => this._rebuild(updates);
 
   @override
   bool operator ==(other) => this._equals(other);

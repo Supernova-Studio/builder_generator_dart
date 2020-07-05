@@ -154,7 +154,7 @@ class TestModelBuilder
   }
 }
 
-extension _$ChildModelDataClassExtension on ChildModel {
+extension _$ChildModelDataClassExtension<T> on ChildModel<T> {
   ChildModel<T> _rebuild(void Function(ChildModelBuilder<T>) updates) =>
       (_toBuilder()..update(updates)).build();
 
@@ -224,52 +224,6 @@ class ChildModelBuilder<T>
   }
 }
 
-extension _$NewModelDataClassExtension on NewModel {
-  NewModel _rebuild(void Function(NewModelBuilder) updates) =>
-      (_toBuilder()..update(updates)).build();
-
-  NewModelBuilder _toBuilder() => NewModelBuilder()..replace(this);
-
-  bool _equals(Object other) {
-    if (identical(other, this)) return true;
-    return other is NewModel;
-  }
-
-  int get _hashCode {
-    return 496864622;
-  }
-
-  String get _string {
-    return newBuiltValueToStringHelper('NewModel').toString();
-  }
-}
-
-class NewModelBuilder implements DataClassBuilder<NewModel, NewModelBuilder> {
-  NewModel _$v;
-
-  NewModelBuilder();
-
-  @override
-  void replace(NewModel other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other;
-  }
-
-  @override
-  void update(void Function(NewModelBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  NewModel build() {
-    final _$result = _$v ?? NewModel();
-    replace(_$result);
-    return _$result;
-  }
-}
-
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
 
 // **************************************************************************
@@ -316,9 +270,3 @@ Map<String, dynamic> _$ChildModelToJson<T>(ChildModel<T> instance) =>
     <String, dynamic>{
       'baseString': instance.baseString,
     };
-
-NewModel _$NewModelFromJson(Map<String, dynamic> json) {
-  return NewModel();
-}
-
-Map<String, dynamic> _$NewModelToJson(NewModel instance) => <String, dynamic>{};

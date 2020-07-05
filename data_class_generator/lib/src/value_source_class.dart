@@ -662,8 +662,8 @@ abstract class ValueSourceClass
   /// Generates the value class implementation.
   String _generateImpl() {
     var result = StringBuffer();
-    result.writeln('extension ${extPartName}DataClassExtension '
-        'on $name {');
+    result.writeln('extension ${extPartName}DataClassExtension$_generics '
+        'on $name$_generics {');
 //    for (var field in fields) {
 //      final type = field.typeInCompilationUnit(compilationUnit);
 //      result.writeln('@override');
@@ -675,7 +675,6 @@ abstract class ValueSourceClass
     result.writeln();
 
     //todo extract builder class name
-    //todo generic?
     result.writeln(
         '$name$_generics _rebuild(void Function(${name}Builder$_generics) updates) '
             '=> (_toBuilder()..update(updates)).build();');
