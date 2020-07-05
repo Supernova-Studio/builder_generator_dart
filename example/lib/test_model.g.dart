@@ -153,6 +153,75 @@ class TestModelBuilder implements DataClassBuilder<TestModel> {
   }
 }
 
+extension _$ChildModelDataClassExtension on ChildModel {
+  ChildModel _rebuild(void Function(DataClassBuilder<ChildModel>) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  ChildModelBuilder _toBuilder() => ChildModelBuilder()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is ChildModel &&
+        childString == other.childString &&
+        baseString == other.baseString;
+  }
+
+  int get _hashCode {
+    return $jf($jc($jc(0, childString.hashCode), baseString.hashCode));
+  }
+
+  String get _string {
+    return (newBuiltValueToStringHelper('ChildModel')
+          ..add('childString', childString)
+          ..add('baseString', baseString))
+        .toString();
+  }
+}
+
+class ChildModelBuilder implements DataClassBuilder<ChildModel> {
+  ChildModel _$v;
+
+  String _childString;
+  String get childString => _$this._childString;
+  set childString(String childString) => _$this._childString = childString;
+
+  String _baseString;
+  String get baseString => _$this._baseString;
+  set baseString(String baseString) => _$this._baseString = baseString;
+
+  ChildModelBuilder();
+
+  ChildModelBuilder get _$this {
+    if (_$v != null) {
+      _childString = _$v.childString;
+      _baseString = _$v.baseString;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(ChildModel other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other;
+  }
+
+  @override
+  void update(void Function(ChildModelBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  ChildModel build() {
+    final _$result =
+        _$v ?? ChildModel(childString: childString, baseString: baseString);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
 
 // **************************************************************************
@@ -187,4 +256,17 @@ Map<String, dynamic> _$TestModelToJson(TestModel instance) => <String, dynamic>{
       'age': instance.age,
       'list': instance.list,
       'innerTestModel': instance.innerTestModel,
+    };
+
+ChildModel _$ChildModelFromJson(Map<String, dynamic> json) {
+  return ChildModel(
+    baseString: json['baseString'] as String,
+    childString: json['childString'] as String,
+  );
+}
+
+Map<String, dynamic> _$ChildModelToJson(ChildModel instance) =>
+    <String, dynamic>{
+      'baseString': instance.baseString,
+      'childString': instance.childString,
     };

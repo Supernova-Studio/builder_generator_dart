@@ -85,47 +85,47 @@ class TestModel implements DataClass<TestModel> {
       _$TestModelFromJson(json);
 }
 
-//abstract class BaseModel{
-//  final String baseString;
-//
-//  BaseModel(this.baseString);
-//}
-//
-//@JsonSerializable()
-//class ChildModel extends BaseModel implements DataClass<ChildModel> {
-//  //
-//  /// Properties
-//  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-//  final String childString;
-//
-//  //
-//  /// Constructor
-//  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-//
-//  ChildModel({String baseString, this.childString}) :super(baseString);
-//
-//  //
-//  /// Data class members
-//  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-//
-//  @override
-//  ChildModel rebuild(Function(DataClassBuilder<ChildModel>) updates) => _rebuild(updates);
-//
-//  @override
-//  bool operator ==(other) => this._equals(other);
-//
-//  @override
-//  String toString() => this._string;
-//
-//  @override
-//  int get hashCode => this._hashCode;
-//
-//  //
-//  /// Mapping
-//  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-//
-//  Map<String, dynamic> toJson() => _$ChildModelToJson(this);
-//
-//  factory ChildModel.fromJson(Map<String, dynamic> json) =>
-//      _$ChildModelFromJson(json);
-//}
+abstract class BaseModel{
+  final String baseString;
+
+  BaseModel(this.baseString);
+}
+
+@JsonSerializable()
+class ChildModel extends BaseModel implements DataClass<ChildModel> {
+  //
+  /// Properties
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+  final String childString;
+
+  //
+  /// Constructor
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  ChildModel({String baseString, this.childString}) :super(baseString);
+
+  //
+  /// Data class members
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  @override
+  ChildModel rebuild(Function(DataClassBuilder<ChildModel>) updates) => _rebuild(updates);
+
+  @override
+  bool operator ==(other) => this._equals(other);
+
+  @override
+  String toString() => this._string;
+
+  @override
+  int get hashCode => this._hashCode;
+
+  //
+  /// Mapping
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  Map<String, dynamic> toJson() => _$ChildModelToJson(this);
+
+  factory ChildModel.fromJson(Map<String, dynamic> json) =>
+      _$ChildModelFromJson(json);
+}
