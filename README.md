@@ -5,7 +5,7 @@ Generate default operations for models.
 IDE Live template:
 ```
 @JsonSerializable()
-class $CLASS_NAME$ implements DataClass<$CLASS_NAME$> {
+class $CLASS_NAME$ implements DataClass<$CLASS_NAME$, $CLASS_NAME$Builder> {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -15,14 +15,14 @@ class $CLASS_NAME$ implements DataClass<$CLASS_NAME$> {
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  $CLASS_NAME$({});
+  $CLASS_NAME$();
 
   //
   /// Data class members 
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     
   @override
-  $CLASS_NAME$ rebuild(Function(DataClassBuilder<$CLASS_NAME$>) updates) => _rebuild(updates);
+  $CLASS_NAME$ rebuild(Function($CLASS_NAME$Builder) updates) => _rebuild(updates);
 
   @override
   bool operator ==(other) => this._equals(other);

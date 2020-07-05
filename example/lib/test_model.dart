@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'test_model.g.dart';
 
 @JsonSerializable()
-class InnerTestModel implements DataClass<InnerTestModel> {
+class InnerTestModel implements DataClass<InnerTestModel, InnerTestModelBuilder> {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -21,7 +21,7 @@ class InnerTestModel implements DataClass<InnerTestModel> {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  InnerTestModel rebuild(Function(DataClassBuilder<InnerTestModel>) updates) => _rebuild(updates);
+  InnerTestModel rebuild(Function(InnerTestModelBuilder) updates) => _rebuild(updates);
 
   @override
   bool operator ==(other) => this._equals(other);
@@ -43,7 +43,7 @@ class InnerTestModel implements DataClass<InnerTestModel> {
 }
 
 @JsonSerializable()
-class TestModel implements DataClass<TestModel> {
+class TestModel implements DataClass<TestModel, TestModelBuilder> {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -64,7 +64,7 @@ class TestModel implements DataClass<TestModel> {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  TestModel rebuild(Function(DataClassBuilder<TestModel>) updates) => _rebuild(updates);
+  TestModel rebuild(Function(TestModelBuilder) updates) => _rebuild(updates);
 
   @override
   bool operator ==(other) => this._equals(other);
@@ -92,24 +92,25 @@ abstract class BaseModel{
 }
 
 @JsonSerializable()
-class ChildModel extends BaseModel implements DataClass<ChildModel> {
+class ChildModel<T> extends BaseModel implements DataClass<ChildModel, ChildModelBuilder> {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-  final String childString;
+  @JsonKey(ignore: true)
+  final T genericProp;
 
   //
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  ChildModel({String baseString, this.childString}) :super(baseString);
+  ChildModel({String baseString, this.genericProp}) :super(baseString);
 
   //
   /// Data class members
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  ChildModel rebuild(Function(DataClassBuilder<ChildModel>) updates) => _rebuild(updates);
+  ChildModel rebuild(Function(ChildModelBuilder) updates) => _rebuild(updates);
 
   @override
   bool operator ==(other) => this._equals(other);
@@ -128,4 +129,53 @@ class ChildModel extends BaseModel implements DataClass<ChildModel> {
 
   factory ChildModel.fromJson(Map<String, dynamic> json) =>
       _$ChildModelFromJson(json);
+}
+
+
+
+@JsonSerializable()
+class NewModel implements DataClass<NewModel, NewModelBuilder> {
+  //
+  /// Properties
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+  //
+  /// Constructor
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  NewModel();
+
+  //
+  /// Data class members
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  @override
+  NewModel rebuild(Function(NewModelBuilder) updates) => _rebuild(updates);
+
+  @override
+  bool operator ==(other) => this._equals(other);
+
+  @override
+  String toString() => this._string;
+
+  @override
+  int get hashCode => this._hashCode;
+
+  //
+  /// Mapping
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  Map<String, dynamic> toJson() => _$NewModelToJson(this);
+
+  factory NewModel.fromJson(Map<String, dynamic> json) =>
+      _$NewModelFromJson(json);
+}
+
+void main(){
+  var model = TestModel();
+
+  model.rebuild((TestModelBuilder builder) {
+    return builder.name = null;
+  });
 }

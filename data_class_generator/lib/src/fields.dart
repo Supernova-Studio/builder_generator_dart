@@ -28,6 +28,7 @@ BuiltList<FieldElement> collectFieldsForType(InterfaceType type) {
   fields.addAll(_fieldElementsForType(type));
 
   if (type.superclass != null) {
+    //todo allSupertypes?
     fields.addAll(_fieldElementsForType(type.superclass));
   }
 //  Set<InterfaceType>.from(type.superclass)

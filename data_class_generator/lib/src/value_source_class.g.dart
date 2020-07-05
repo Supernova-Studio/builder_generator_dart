@@ -63,7 +63,7 @@ class _$ValueSourceClass extends ValueSourceClass {
   String get name => __name ??= super.name;
 
   @override
-  String get implName => __implName ??= super.implName;
+  String get extPartName => __implName ??= super.extPartName;
 
   @override
   ClassElement get builderElement => __builderElement ??= super.builderElement;

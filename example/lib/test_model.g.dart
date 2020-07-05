@@ -7,8 +7,7 @@ part of 'test_model.dart';
 // **************************************************************************
 
 extension _$InnerTestModelDataClassExtension on InnerTestModel {
-  InnerTestModel _rebuild(
-          void Function(DataClassBuilder<InnerTestModel>) updates) =>
+  InnerTestModel _rebuild(void Function(InnerTestModelBuilder) updates) =>
       (_toBuilder()..update(updates)).build();
 
   InnerTestModelBuilder _toBuilder() => InnerTestModelBuilder()..replace(this);
@@ -29,7 +28,8 @@ extension _$InnerTestModelDataClassExtension on InnerTestModel {
   }
 }
 
-class InnerTestModelBuilder implements DataClassBuilder<InnerTestModel> {
+class InnerTestModelBuilder
+    implements DataClassBuilder<InnerTestModel, InnerTestModelBuilder> {
   InnerTestModel _$v;
 
   String _someProperty;
@@ -68,7 +68,7 @@ class InnerTestModelBuilder implements DataClassBuilder<InnerTestModel> {
 }
 
 extension _$TestModelDataClassExtension on TestModel {
-  TestModel _rebuild(void Function(DataClassBuilder<TestModel>) updates) =>
+  TestModel _rebuild(void Function(TestModelBuilder) updates) =>
       (_toBuilder()..update(updates)).build();
 
   TestModelBuilder _toBuilder() => TestModelBuilder()..replace(this);
@@ -97,7 +97,8 @@ extension _$TestModelDataClassExtension on TestModel {
   }
 }
 
-class TestModelBuilder implements DataClassBuilder<TestModel> {
+class TestModelBuilder
+    implements DataClassBuilder<TestModel, TestModelBuilder> {
   TestModel _$v;
 
   String _name;
@@ -154,36 +155,37 @@ class TestModelBuilder implements DataClassBuilder<TestModel> {
 }
 
 extension _$ChildModelDataClassExtension on ChildModel {
-  ChildModel _rebuild(void Function(DataClassBuilder<ChildModel>) updates) =>
+  ChildModel<T> _rebuild(void Function(ChildModelBuilder<T>) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ChildModelBuilder _toBuilder() => ChildModelBuilder()..replace(this);
+  ChildModelBuilder<T> _toBuilder() => ChildModelBuilder<T>()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
     return other is ChildModel &&
-        childString == other.childString &&
+        genericProp == other.genericProp &&
         baseString == other.baseString;
   }
 
   int get _hashCode {
-    return $jf($jc($jc(0, childString.hashCode), baseString.hashCode));
+    return $jf($jc($jc(0, genericProp.hashCode), baseString.hashCode));
   }
 
   String get _string {
     return (newBuiltValueToStringHelper('ChildModel')
-          ..add('childString', childString)
+          ..add('genericProp', genericProp)
           ..add('baseString', baseString))
         .toString();
   }
 }
 
-class ChildModelBuilder implements DataClassBuilder<ChildModel> {
-  ChildModel _$v;
+class ChildModelBuilder<T>
+    implements DataClassBuilder<ChildModel<T>, ChildModelBuilder<T>> {
+  ChildModel<T> _$v;
 
-  String _childString;
-  String get childString => _$this._childString;
-  set childString(String childString) => _$this._childString = childString;
+  T _genericProp;
+  T get genericProp => _$this._genericProp;
+  set genericProp(T genericProp) => _$this._genericProp = genericProp;
 
   String _baseString;
   String get baseString => _$this._baseString;
@@ -191,9 +193,9 @@ class ChildModelBuilder implements DataClassBuilder<ChildModel> {
 
   ChildModelBuilder();
 
-  ChildModelBuilder get _$this {
+  ChildModelBuilder<T> get _$this {
     if (_$v != null) {
-      _childString = _$v.childString;
+      _genericProp = _$v.genericProp;
       _baseString = _$v.baseString;
       _$v = null;
     }
@@ -201,7 +203,7 @@ class ChildModelBuilder implements DataClassBuilder<ChildModel> {
   }
 
   @override
-  void replace(ChildModel other) {
+  void replace(ChildModel<T> other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -209,14 +211,60 @@ class ChildModelBuilder implements DataClassBuilder<ChildModel> {
   }
 
   @override
-  void update(void Function(ChildModelBuilder) updates) {
+  void update(void Function(ChildModelBuilder<T>) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  ChildModel build() {
+  ChildModel<T> build() {
     final _$result =
-        _$v ?? ChildModel(childString: childString, baseString: baseString);
+        _$v ?? ChildModel<T>(genericProp: genericProp, baseString: baseString);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+extension _$NewModelDataClassExtension on NewModel {
+  NewModel _rebuild(void Function(NewModelBuilder) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  NewModelBuilder _toBuilder() => NewModelBuilder()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is NewModel;
+  }
+
+  int get _hashCode {
+    return 496864622;
+  }
+
+  String get _string {
+    return newBuiltValueToStringHelper('NewModel').toString();
+  }
+}
+
+class NewModelBuilder implements DataClassBuilder<NewModel, NewModelBuilder> {
+  NewModel _$v;
+
+  NewModelBuilder();
+
+  @override
+  void replace(NewModel other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other;
+  }
+
+  @override
+  void update(void Function(NewModelBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  NewModel build() {
+    final _$result = _$v ?? NewModel();
     replace(_$result);
     return _$result;
   }
@@ -258,15 +306,19 @@ Map<String, dynamic> _$TestModelToJson(TestModel instance) => <String, dynamic>{
       'innerTestModel': instance.innerTestModel,
     };
 
-ChildModel _$ChildModelFromJson(Map<String, dynamic> json) {
-  return ChildModel(
+ChildModel<T> _$ChildModelFromJson<T>(Map<String, dynamic> json) {
+  return ChildModel<T>(
     baseString: json['baseString'] as String,
-    childString: json['childString'] as String,
   );
 }
 
-Map<String, dynamic> _$ChildModelToJson(ChildModel instance) =>
+Map<String, dynamic> _$ChildModelToJson<T>(ChildModel<T> instance) =>
     <String, dynamic>{
       'baseString': instance.baseString,
-      'childString': instance.childString,
     };
+
+NewModel _$NewModelFromJson(Map<String, dynamic> json) {
+  return NewModel();
+}
+
+Map<String, dynamic> _$NewModelToJson(NewModel instance) => <String, dynamic>{};

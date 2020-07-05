@@ -41,13 +41,12 @@ abstract class ValueSourceClass
 
   @memoized
   String get name => element.displayName;
-
-  //todo remove
-  /// Returns the class name for the generated implementation. If the manually
+  
+  /// Returns the generated extension name part. If the manually
   /// maintained class is private then we ignore the underscore here, to avoid
   /// returning a class name starting `_$_`.
   @memoized
-  String get implName =>
+  String get extPartName =>
       name.startsWith('_') ? '_\$${name.substring(1)}' : '_\$$name';
 
   @memoized
@@ -268,7 +267,7 @@ abstract class ValueSourceClass
   /// builder implements the corresponding builders.
   @memoized
   BuiltList<String> get builderImplements => BuiltList<String>.build((b) => b
-    ..add('DataClassBuilder<$name$_generics>')
+    ..add('DataClassBuilder<$name$_generics, ${name}Builder$_generics>')
     ..addAll(element.interfaces
         .where((interface) => needsBuiltValue(interface.element))
         .map((interface) {
@@ -601,22 +600,22 @@ abstract class ValueSourceClass
       }
     }
 
-    if (settings.instantiable) {
-      final expectedFactory =
-          'factory ${name}Builder() = ${implName}Builder$_generics;';
-      if (builderClassFactories.length != 1 ||
-          builderClassFactories.single != expectedFactory) {
-        result.add(GeneratorError((b) => b
-          ..message =
-              'Make builder class have exactly one factory: $expectedFactory'));
-      }
-    } else {
+//    if (settings.instantiable) {
+//      final expectedFactory =
+//          'factory ${name}Builder() = ${extPartName}Builder$_generics;';
+//      if (builderClassFactories.length != 1 ||
+//          builderClassFactories.single != expectedFactory) {
+//        result.add(GeneratorError((b) => b
+//          ..message =
+//              'Make builder class have exactly one factory: $expectedFactory'));
+//      }
+//    } else {
       if (builderClassFactories.isNotEmpty) {
         result.add(GeneratorError((b) => b
           ..message =
               'Remove all builder factories or remove "instantiable: false".'));
       }
-    }
+//    }
 
     return result;
   }
@@ -649,7 +648,7 @@ abstract class ValueSourceClass
     var errors = computeErrors();
     if (errors.isNotEmpty) throw _makeError(errors);
 
-    //todo abstract, inherited
+    //todo test abstract
     var result = StringBuffer();
     if (settings.instantiable) result.write(_generateImpl());
     if (settings.instantiable) {
@@ -663,7 +662,7 @@ abstract class ValueSourceClass
   /// Generates the value class implementation.
   String _generateImpl() {
     var result = StringBuffer();
-    result.writeln('extension $implName${_boundedGenerics}DataClassExtension '
+    result.writeln('extension ${extPartName}DataClassExtension '
         'on $name {');
 //    for (var field in fields) {
 //      final type = field.typeInCompilationUnit(compilationUnit);
@@ -678,7 +677,7 @@ abstract class ValueSourceClass
     //todo extract builder class name
     //todo generic?
     result.writeln(
-        '$name$_generics _rebuild(void Function(DataClassBuilder<$name>) updates) '
+        '$name$_generics _rebuild(void Function(${name}Builder$_generics) updates) '
             '=> (_toBuilder()..update(updates)).build();');
 //    result.writeln('$name '
 //        'void Function(${name}Builder$_generics) updates]) '
@@ -750,7 +749,6 @@ abstract class ValueSourceClass
 //
 //    result.write(_generateEqualsAndHashcode());
 
-    //todo check inherited
     // Only generate toString() if there wasn't one already.
 //    if (!implementsToString) {
       result.writeln('String get _string {');
@@ -862,11 +860,11 @@ abstract class ValueSourceClass
     }
     result.writeln();
 
-    if (hasBuilder) {
-      result.writeln('${implName}Builder() : super._()');
-    } else {
+//    if (hasBuilder) {
+//      result.writeln('${extPartName}Builder() : super._()');
+//    } else {
       result.writeln('${name}Builder()');
-    }
+//    }
     if (hasBuilderInitializer) {
       result.writeln('{');
       result.writeln('$name._initializeBuilder(this);');
@@ -958,7 +956,7 @@ abstract class ValueSourceClass
         fieldBuilders.keys.any((field) => fieldBuilders[field] != field);
 
     if (needsTryCatchOnBuild) {
-      result.writeln('$implName$_generics _\$result;');
+      result.writeln('$extPartName$_generics _\$result;');
       result.writeln('try {');
     } else {
       result.write('final ');
@@ -1008,7 +1006,6 @@ abstract class ValueSourceClass
   String _generateEqualsAndHashcode({bool forBuilder = false}) {
     var result = StringBuffer();
 
-    //todo check inherited fields
     var comparedFields = fields
         .where(
             (field) => field.builtValueField.compare ?? settings.defaultCompare)

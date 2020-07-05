@@ -1,5 +1,5 @@
-abstract class DataClass<T> {
-  T rebuild(Function(DataClassBuilder<T> builder) updates);
+abstract class DataClass<V extends DataClass<V, B>, B extends DataClassBuilder<V, B>> {
+  V rebuild(Function(B builder) updates);
 }
 
 /// Every [Built] class has a corresponding [DataClassBuilder] class.
@@ -8,7 +8,7 @@ abstract class DataClass<T> {
 /// for you.
 ///
 /// See <https://github.com/google/built_value.dart/tree/master/example>
-abstract class DataClassBuilder<V> {
+abstract class DataClassBuilder<V extends DataClass<V, B>, B extends DataClassBuilder<V, B>> {
   /// Replaces the value in the builder with a new one.
   ///
   /// The implementation of this method will be generated for you by the
@@ -18,7 +18,7 @@ abstract class DataClassBuilder<V> {
   /// Applies updates.
   ///
   /// [updates] is a function that takes a builder [B].
-  void update(Function(DataClassBuilder<V>) updates);
+  void update(Function(B) updates);
 
   /// Builds.
   ///
