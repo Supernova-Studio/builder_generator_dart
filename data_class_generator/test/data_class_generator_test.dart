@@ -7,9 +7,9 @@ import 'dart:async';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:data_class_generator/data_class_generator.dart';
+import 'package:test/test.dart';
 import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:test/test.dart';
 
 void main() {
   group('generator', () {

@@ -1,0 +1,30 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+*lcov.info
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/*
+!.idea/codeStyles
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+.packages
+.dart_tool
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Generated.xcconfig*.flutter-plugins-dependencies
+
+build
