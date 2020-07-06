@@ -108,6 +108,9 @@ class CModel<T> extends BModel
   @JsonKey(ignore: true)
   final T genericProp;
 
+  bool get someGetter => false;
+  static String staticMember = 'value';
+
   //
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---

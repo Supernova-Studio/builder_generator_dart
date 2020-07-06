@@ -19,9 +19,10 @@ BuiltList<FieldElement> collectFieldsForType(InterfaceType type) {
 
     superclass = superclass.superclass;
   }
-//  Set<InterfaceType>.from(element.allSupertypes)
-//    ..addAll(element.type.mixins)
-//    ..forEach((interface) => fields.addAll(collectFieldsForType(interface)));
+
+  for (var mixin in type.mixins) {
+    fields.addAll(collectFieldsForType(mixin));
+  }
 
   // Overridden fields have multiple declarations, so deduplicate by adding
   // to a set that compares on field name.
@@ -30,7 +31,6 @@ BuiltList<FieldElement> collectFieldsForType(InterfaceType type) {
       hashCode: (a) => a.displayName.hashCode);
   fieldSet.addAll(fields);
 
-  // Filter to fields that are not implemented by a mixin.
   return BuiltList<FieldElement>.build((b) => b
     ..addAll(fieldSet)
     ..where((field) => (field.name) != 'hashCode'));

@@ -635,12 +635,13 @@ abstract class ValueSourceClass
     return result;
   }
 
+  //todo cover with tests, mixins
   Iterable<GeneratorError> _checkFieldList() {
     var nonFinalFields = fields.where((field) => !field.element.isFinal);
     return nonFinalFields.isNotEmpty
         ? [
             GeneratorError((b) => b
-              ..message = 'Make these fields final: ' +
+              ..message = 'Data class fields must be final. However, these fields are not final: ' +
                   nonFinalFields.map((field) => field.name).join(', '))
           ]
         : [];
