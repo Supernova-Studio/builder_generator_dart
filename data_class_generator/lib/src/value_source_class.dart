@@ -2,7 +2,7 @@
 // All rights reserved. Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-library built_value_generator.source_class;
+library data_class_generator.source_class;
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
@@ -22,9 +22,9 @@ import 'value_source_field.dart';
 part 'value_source_class.g.dart';
 
 const String _importWithSingleQuotes =
-    "import 'package:built_value/built_value.dart'";
+    "import 'package:data_class/data_class.dart'";
 const String _importWithDoubleQuotes =
-    'import "package:built_value/built_value.dart"';
+    'import "package:data_class/data_class.dart"';
 
 abstract class ValueSourceClass
     implements Built<ValueSourceClass, ValueSourceClassBuilder> {
@@ -401,14 +401,14 @@ abstract class ValueSourceClass
     if (hasBuiltValueImportWithShow) {
       result.add(GeneratorError((b) => b
         ..message = 'Stop using "show" when importing '
-            '"package:built_value/built_value.dart". It prevents the '
+            '"package:data_class/data_class.dart". It prevents the '
             'generated code from finding helper methods.'));
     }
 
     if (hasBuiltValueImportWithAs) {
       result.add(GeneratorError((b) => b
         ..message = 'Stop using "as" when importing '
-            '"package:built_value/built_value.dart". It prevents the generated '
+            '"package:data_class/data_class.dart". It prevents the generated '
             'code from finding helper methods.'));
     }
 

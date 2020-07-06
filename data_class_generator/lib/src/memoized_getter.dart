@@ -1,4 +1,4 @@
-library built_value_generator.memoized_getter;
+library data_class_generator.memoized_getter;
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:built_value/built_value.dart';

@@ -187,18 +187,19 @@ abstract class CModel {
       );
     });
 
-//    test('Rejects import with "show"', () async {
-//      expect(
-//          await generate('''library data_class;
-//import 'package:data_class/data_class.dart' show Built, Builder;
-//part 'value.g.dart';
-//
-//class Value implements DataClass<Value, ValueBuilder> {
-//  Value();
-//}'''),
-//          contains('1. Stop using "show" when importing '
-//              '"package:data_class/data_class.dart".'));
-//    });
+    test('Rejects import with show', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart' show DataClass, DataClassBuilder;
+part 'value.g.dart';
+
+@DataClass()
+class Value {
+  Value();
+}'''),
+          contains('1. Stop using "show" when importing '
+              '"package:data_class/data_class.dart".'));
+    });
   });
 
 //  group('generator', () {

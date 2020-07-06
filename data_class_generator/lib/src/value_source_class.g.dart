@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of built_value_generator.source_class;
+part of data_class_generator.source_class;
 
 // **************************************************************************
 // BuiltValueGenerator
