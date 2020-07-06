@@ -635,7 +635,6 @@ abstract class ValueSourceClass
     return result;
   }
 
-  //todo cover with tests, mixins
   Iterable<GeneratorError> _checkFieldList() {
     var nonFinalFields = fields.where((field) => !field.element.isFinal);
     return nonFinalFields.isNotEmpty
@@ -647,7 +646,6 @@ abstract class ValueSourceClass
         : [];
   }
 
-  //todo cover with tests
   Iterable<GeneratorError> _checkConstructor() {
     if (constructor != null) return <GeneratorError>[];
     return [
