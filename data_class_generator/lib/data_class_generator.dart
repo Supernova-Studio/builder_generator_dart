@@ -52,7 +52,7 @@ class DataClassGenerator extends Generator {
           result.writeln(ValueSourceClass(element).generateCode() ?? '');
         } catch (e, st) {
           result.writeln(_error(e));
-          log.severe('Error in BuiltValueGenerator for $element.', e, st);
+          log.severe('Error in DataClassGenerator for ${element.name}.', e, st);
         }
       }
     }

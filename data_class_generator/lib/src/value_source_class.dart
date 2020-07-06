@@ -636,12 +636,12 @@ abstract class ValueSourceClass
   }
 
   Iterable<GeneratorError> _checkFieldList() {
-    if (!hasBuilder || !settings.instantiable) return <GeneratorError>[];
-    return fields.any((field) => !field.builderFieldExists)
+    var nonFinalFields = fields.where((field) => !field.element.isFinal);
+    return nonFinalFields.isNotEmpty
         ? [
             GeneratorError((b) => b
-              ..message = 'Make builder have exactly these fields: ' +
-                  fields.map((field) => field.name).join(', '))
+              ..message = 'Make these fields final: ' +
+                  nonFinalFields.map((field) => field.name).join(', '))
           ]
         : [];
   }
@@ -1121,7 +1121,7 @@ abstract class ValueSourceClass
 
 InvalidGenerationSourceError _makeError(Iterable<GeneratorError> todos) {
   var message =
-      StringBuffer('Please make the following changes to use BuiltValue:\n');
+      StringBuffer('Please make the following changes to use DataClass:\n');
   for (var i = 0; i != todos.length; ++i) {
     message.write('\n${i + 1}. ${todos.elementAt(i).message}');
   }
