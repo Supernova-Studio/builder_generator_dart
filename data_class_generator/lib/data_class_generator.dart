@@ -47,7 +47,7 @@ class DataClassGenerator extends Generator {
 
     for (var element in library.allElements) {
       if (element is ClassElement &&
-          ValueSourceClass.needsBuiltValue(element)) {
+          ValueSourceClass.needDataClass(element)) {
         try {
           result.writeln(ValueSourceClass(element).generateCode() ?? '');
         } catch (e, st) {

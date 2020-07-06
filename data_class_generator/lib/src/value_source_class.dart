@@ -283,7 +283,7 @@ abstract class ValueSourceClass
   BuiltList<String> get builderImplements => BuiltList<String>.build((b) => b
     ..add('DataClassBuilder<$name$_generics, ${name}Builder$_generics>')
     ..addAll(element.interfaces
-        .where((interface) => needsBuiltValue(interface.element))
+        .where((interface) => needDataClass(interface.element))
         .map((interface) {
       final displayName = DartTypes.getName(interface);
       if (!displayName.contains('<')) return displayName + 'Builder';
@@ -324,15 +324,20 @@ abstract class ValueSourceClass
   CompilationUnitElement get compilationUnit =>
       element.library.definingCompilationUnit;
 
-  static bool needsBuiltValue(ClassElement classElement) {
-    return !classElement.displayName.startsWith('_\$') &&
-        classElement.allSupertypes
-            .any((interfaceType) => interfaceType.element.name == 'DataClass');
+  static bool needDataClass(ClassElement classElement) {
+
+    return classElement.metadata
+        .map((annotation) => annotation.computeConstantValue())
+        .any((value) => DartTypes.getName(value?.type) == 'DataClass');
+
+//    return !classElement.displayName.startsWith('_\$') &&
+//        classElement.allSupertypes
+//            .any((interfaceType) => interfaceType.element.name == 'DataClass');
   }
 
   Iterable<GeneratorError> computeErrors() {
     //todo remove extra checks
-    //todo check if T of DataClass is the same class
+    //todo check if rebuild implementation is correct
     return concat([
       _checkPart(),
       _checkSettings(),
@@ -385,13 +390,13 @@ abstract class ValueSourceClass
   Iterable<GeneratorError> _checkValueClass() {
     var result = <GeneratorError>[];
 
-//    if (valueClassIsAbstract) {
-//      result.add(GeneratorError((b) => b
-//        ..message = 'Class is abstract. Make it instantiable.'
-//        ..offset = classDeclaration.offset
-//        ..length = 0
-//        ..fix = 'abstract '));
-//    }
+    if (valueClassIsAbstract) {
+      result.add(GeneratorError((b) => b
+        ..message = 'Class is abstract. Make it instantiable.'
+        ..offset = classDeclaration.offset
+        ..length = 0
+        ..fix = 'abstract '));
+    }
 
     if (hasBuiltValueImportWithShow) {
       result.add(GeneratorError((b) => b
@@ -672,12 +677,12 @@ abstract class ValueSourceClass
     var errors = computeErrors();
     if (errors.isNotEmpty) throw _makeError(errors);
 
-    //todo test abstract
     var result = StringBuffer();
-    if (settings.instantiable) result.write(_generateImpl());
-    if (settings.instantiable) {
+//    if (settings.instantiable)
+      result.write(_generateImpl());
+//    if (settings.instantiable) {
       result.write(_generateBuilder());
-    }
+//    }
 //    else if (!hasBuilder) {
 //      result.write(_generateAbstractBuilder());
 //    }

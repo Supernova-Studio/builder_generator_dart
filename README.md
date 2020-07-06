@@ -5,7 +5,8 @@ Generate default operations for models.
 IDE Live template:
 ```
 @JsonSerializable()
-class $CLASS_NAME$ implements DataClass<$CLASS_NAME$, $CLASS_NAME$Builder> {
+@DataClass()
+class $CLASS_NAME$ {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---

@@ -1,11 +1,12 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:data_class/data_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'test_model.g.dart';
 
 @JsonSerializable()
-class InnerTestModel
-    implements DataClass<InnerTestModel, InnerTestModelBuilder> {
+@DataClass()
+class InnerTestModel {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -45,7 +46,8 @@ class InnerTestModel
 }
 
 @JsonSerializable()
-class TestModel implements DataClass<TestModel, TestModelBuilder> {
+@DataClass()
+class TestModel {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -86,43 +88,53 @@ class TestModel implements DataClass<TestModel, TestModelBuilder> {
       _$TestModelFromJson(json);
 }
 
-class AModel {
+abstract class AModel {
   final String propA;
+
+  String get getterA;
 
   AModel({this.propA});
 }
 
-abstract class BModel extends AModel {
+@DataClass()
+class BModel extends AModel {
   final String propB1;
   final String propB2;
+
+  @override
+  String get getterA => 'getterA in BModel';
 
   BModel({this.propB1, this.propB2, String propA}) : super(propA: propA);
 }
 
+@DataClass()
 @JsonSerializable()
-class CModel<T> extends BModel
-    implements DataClass<CModel<T>, CModelBuilder<T>> {
+class CModel<T> extends BModel {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
   @JsonKey(ignore: true)
   final T genericProp;
 
+  final List<String> listProp;
+
   bool get someGetter => false;
+
+  @override
+  String get getterA => 'value';
   static String staticMember = 'value';
 
   //
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  CModel({String propA, String propB1, this.genericProp})
+  CModel({String propA, String propB1, this.genericProp, this.listProp})
       : super(propA: propA, propB1: propB1, propB2: 'fixedValue');
 
   //
   /// Data class members
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  @override
   CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
       this._rebuild(updates);
 

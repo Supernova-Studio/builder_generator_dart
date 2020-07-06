@@ -1,14 +1,13 @@
-abstract class DataClass<V extends DataClass<V, B>, B extends DataClassBuilder<V, B>> {
-  V rebuild(Function(B builder) updates);
+class DataClass {
+  const DataClass();
 }
+//todo type checks
 
-/// Every [Built] class has a corresponding [DataClassBuilder] class.
+/// Every [DataClass] class has a corresponding [DataClassBuilder] class.
 ///
 /// Usually you don't need to create one by hand; it will be generated
 /// for you.
-///
-/// See <https://github.com/google/built_value.dart/tree/master/example>
-abstract class DataClassBuilder<V extends DataClass<V, B>, B extends DataClassBuilder<V, B>> {
+abstract class DataClassBuilder<V, B extends DataClassBuilder<V, B>> {
   /// Replaces the value in the builder with a new one.
   ///
   /// The implementation of this method will be generated for you by the

@@ -154,6 +154,83 @@ class TestModelBuilder
   }
 }
 
+extension _$BModelDataClassExtension on BModel {
+  BModel _rebuild(void Function(BModelBuilder) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  BModelBuilder _toBuilder() => BModelBuilder()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is BModel &&
+        propB1 == other.propB1 &&
+        propB2 == other.propB2 &&
+        propA == other.propA;
+  }
+
+  int get _hashCode {
+    return $jf(
+        $jc($jc($jc(0, propB1.hashCode), propB2.hashCode), propA.hashCode));
+  }
+
+  String get _string {
+    return (newBuiltValueToStringHelper('BModel')
+          ..add('propB1', propB1)
+          ..add('propB2', propB2)
+          ..add('propA', propA))
+        .toString();
+  }
+}
+
+class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
+  BModel _$v;
+
+  String _propB1;
+  String get propB1 => _$this._propB1;
+  set propB1(String propB1) => _$this._propB1 = propB1;
+
+  String _propB2;
+  String get propB2 => _$this._propB2;
+  set propB2(String propB2) => _$this._propB2 = propB2;
+
+  String _propA;
+  String get propA => _$this._propA;
+  set propA(String propA) => _$this._propA = propA;
+
+  BModelBuilder();
+
+  BModelBuilder get _$this {
+    if (_$v != null) {
+      _propB1 = _$v.propB1;
+      _propB2 = _$v.propB2;
+      _propA = _$v.propA;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(BModel other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other;
+  }
+
+  @override
+  void update(void Function(BModelBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  BModel build() {
+    final _$result =
+        _$v ?? BModel(propB1: propB1, propB2: propB2, propA: propA);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 extension _$CModelDataClassExtension<T> on CModel<T> {
   CModel<T> _rebuild(void Function(CModelBuilder<T>) updates) =>
       (_toBuilder()..update(updates)).build();
@@ -164,6 +241,7 @@ extension _$CModelDataClassExtension<T> on CModel<T> {
     if (identical(other, this)) return true;
     return other is CModel &&
         genericProp == other.genericProp &&
+        listProp == other.listProp &&
         propB1 == other.propB1 &&
         propB2 == other.propB2 &&
         propA == other.propA;
@@ -171,7 +249,9 @@ extension _$CModelDataClassExtension<T> on CModel<T> {
 
   int get _hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, genericProp.hashCode), propB1.hashCode),
+        $jc(
+            $jc($jc($jc(0, genericProp.hashCode), listProp.hashCode),
+                propB1.hashCode),
             propB2.hashCode),
         propA.hashCode));
   }
@@ -179,6 +259,7 @@ extension _$CModelDataClassExtension<T> on CModel<T> {
   String get _string {
     return (newBuiltValueToStringHelper('CModel')
           ..add('genericProp', genericProp)
+          ..add('listProp', listProp)
           ..add('propB1', propB1)
           ..add('propB2', propB2)
           ..add('propA', propA))
@@ -194,6 +275,10 @@ class CModelBuilder<T>
   T get genericProp => _$this._genericProp;
   set genericProp(T genericProp) => _$this._genericProp = genericProp;
 
+  List<String> _listProp;
+  List<String> get listProp => _$this._listProp;
+  set listProp(List<String> listProp) => _$this._listProp = listProp;
+
   String _propB1;
   String get propB1 => _$this._propB1;
   set propB1(String propB1) => _$this._propB1 = propB1;
@@ -207,6 +292,7 @@ class CModelBuilder<T>
   CModelBuilder<T> get _$this {
     if (_$v != null) {
       _genericProp = _$v.genericProp;
+      _listProp = _$v.listProp;
       _propB1 = _$v.propB1;
       _propA = _$v.propA;
       _$v = null;
@@ -230,7 +316,11 @@ class CModelBuilder<T>
   @override
   CModel<T> build() {
     final _$result = _$v ??
-        CModel<T>(genericProp: genericProp, propB1: propB1, propA: propA);
+        CModel<T>(
+            genericProp: genericProp,
+            listProp: listProp,
+            propB1: propB1,
+            propA: propA);
     replace(_$result);
     return _$result;
   }
@@ -276,10 +366,12 @@ CModel<T> _$CModelFromJson<T>(Map<String, dynamic> json) {
   return CModel<T>(
     propA: json['propA'] as String,
     propB1: json['propB1'] as String,
+    listProp: (json['listProp'] as List)?.map((e) => e as String)?.toList(),
   );
 }
 
 Map<String, dynamic> _$CModelToJson<T>(CModel<T> instance) => <String, dynamic>{
       'propA': instance.propA,
       'propB1': instance.propB1,
+      'listProp': instance.listProp,
     };
