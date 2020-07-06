@@ -54,8 +54,6 @@ class TestModel implements DataClass<TestModel, TestModelBuilder> {
   final List<String> list;
   final InnerTestModel innerTestModel;
 
-//  final BuiltList <String> builtList;
-
   //
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -88,15 +86,22 @@ class TestModel implements DataClass<TestModel, TestModelBuilder> {
       _$TestModelFromJson(json);
 }
 
-abstract class BaseModel {
-  final String baseString;
+class AModel {
+  final String propA;
 
-  BaseModel(this.baseString);
+  AModel({this.propA});
+}
+
+abstract class BModel extends AModel {
+  final String propB1;
+  final String propB2;
+
+  BModel({this.propB1, this.propB2, String propA}) : super(propA: propA);
 }
 
 @JsonSerializable()
-class ChildModel<T> extends BaseModel
-    implements DataClass<ChildModel<T>, ChildModelBuilder<T>> {
+class CModel<T> extends BModel
+    implements DataClass<CModel<T>, CModelBuilder<T>> {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -107,14 +112,15 @@ class ChildModel<T> extends BaseModel
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  ChildModel({String baseString, this.genericProp}) : super(baseString);
+  CModel({String propA, String propB1, this.genericProp})
+      : super(propA: propA, propB1: propB1, propB2: 'fixedValue');
 
   //
   /// Data class members
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  ChildModel<T> rebuild(void Function(ChildModelBuilder<T>) updates) =>
+  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
       this._rebuild(updates);
 
   @override
@@ -130,10 +136,9 @@ class ChildModel<T> extends BaseModel
   /// Mapping
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  Map<String, dynamic> toJson() => _$ChildModelToJson(this);
+  Map<String, dynamic> toJson() => _$CModelToJson(this);
 
-  factory ChildModel.fromJson(Map<String, dynamic> json) =>
-      _$ChildModelFromJson(json);
+  factory CModel.fromJson(Map<String, dynamic> json) => _$CModelFromJson(json);
 }
 
 void main() {
@@ -145,9 +150,9 @@ void main() {
 //
 //  print(newModel.name);
 
-  var model = ChildModel<String>();
+  var model = CModel<String>();
 
-  var newModel = model.rebuild((ChildModelBuilder<String> builder) {
+  var newModel = model.rebuild((CModelBuilder<String> builder) {
     builder.genericProp = '123';
   });
 

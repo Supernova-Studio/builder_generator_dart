@@ -154,56 +154,68 @@ class TestModelBuilder
   }
 }
 
-extension _$ChildModelDataClassExtension<T> on ChildModel<T> {
-  ChildModel<T> _rebuild(void Function(ChildModelBuilder<T>) updates) =>
+extension _$CModelDataClassExtension<T> on CModel<T> {
+  CModel<T> _rebuild(void Function(CModelBuilder<T>) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ChildModelBuilder<T> _toBuilder() => ChildModelBuilder<T>()..replace(this);
+  CModelBuilder<T> _toBuilder() => CModelBuilder<T>()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
-    return other is ChildModel &&
+    return other is CModel &&
         genericProp == other.genericProp &&
-        baseString == other.baseString;
+        propB1 == other.propB1 &&
+        propB2 == other.propB2 &&
+        propA == other.propA;
   }
 
   int get _hashCode {
-    return $jf($jc($jc(0, genericProp.hashCode), baseString.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, genericProp.hashCode), propB1.hashCode),
+            propB2.hashCode),
+        propA.hashCode));
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('ChildModel')
+    return (newBuiltValueToStringHelper('CModel')
           ..add('genericProp', genericProp)
-          ..add('baseString', baseString))
+          ..add('propB1', propB1)
+          ..add('propB2', propB2)
+          ..add('propA', propA))
         .toString();
   }
 }
 
-class ChildModelBuilder<T>
-    implements DataClassBuilder<ChildModel<T>, ChildModelBuilder<T>> {
-  ChildModel<T> _$v;
+class CModelBuilder<T>
+    implements DataClassBuilder<CModel<T>, CModelBuilder<T>> {
+  CModel<T> _$v;
 
   T _genericProp;
   T get genericProp => _$this._genericProp;
   set genericProp(T genericProp) => _$this._genericProp = genericProp;
 
-  String _baseString;
-  String get baseString => _$this._baseString;
-  set baseString(String baseString) => _$this._baseString = baseString;
+  String _propB1;
+  String get propB1 => _$this._propB1;
+  set propB1(String propB1) => _$this._propB1 = propB1;
 
-  ChildModelBuilder();
+  String _propA;
+  String get propA => _$this._propA;
+  set propA(String propA) => _$this._propA = propA;
 
-  ChildModelBuilder<T> get _$this {
+  CModelBuilder();
+
+  CModelBuilder<T> get _$this {
     if (_$v != null) {
       _genericProp = _$v.genericProp;
-      _baseString = _$v.baseString;
+      _propB1 = _$v.propB1;
+      _propA = _$v.propA;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(ChildModel<T> other) {
+  void replace(CModel<T> other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -211,14 +223,14 @@ class ChildModelBuilder<T>
   }
 
   @override
-  void update(void Function(ChildModelBuilder<T>) updates) {
+  void update(void Function(CModelBuilder<T>) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  ChildModel<T> build() {
-    final _$result =
-        _$v ?? ChildModel<T>(genericProp: genericProp, baseString: baseString);
+  CModel<T> build() {
+    final _$result = _$v ??
+        CModel<T>(genericProp: genericProp, propB1: propB1, propA: propA);
     replace(_$result);
     return _$result;
   }
@@ -260,13 +272,14 @@ Map<String, dynamic> _$TestModelToJson(TestModel instance) => <String, dynamic>{
       'innerTestModel': instance.innerTestModel,
     };
 
-ChildModel<T> _$ChildModelFromJson<T>(Map<String, dynamic> json) {
-  return ChildModel<T>(
-    baseString: json['baseString'] as String,
+CModel<T> _$CModelFromJson<T>(Map<String, dynamic> json) {
+  return CModel<T>(
+    propA: json['propA'] as String,
+    propB1: json['propB1'] as String,
   );
 }
 
-Map<String, dynamic> _$ChildModelToJson<T>(ChildModel<T> instance) =>
-    <String, dynamic>{
-      'baseString': instance.baseString,
+Map<String, dynamic> _$CModelToJson<T>(CModel<T> instance) => <String, dynamic>{
+      'propA': instance.propA,
+      'propB1': instance.propB1,
     };
