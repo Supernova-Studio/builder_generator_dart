@@ -14,7 +14,6 @@ import 'package:source_gen/source_gen.dart';
 
 import 'dart_types.dart';
 import 'fixes.dart';
-import 'memoized_getter.dart';
 import 'metadata.dart';
 import 'strings.dart';
 import 'value_source_field.dart';
@@ -53,62 +52,8 @@ abstract class ValueSourceClass
       name.startsWith('_') ? '_\$${name.substring(1)}' : '_\$$name';
 
   @memoized
-  ClassElement get builderElement {
-    var result = element.library.getType(name + 'Builder');
-    if (result == null) return null;
-    // If the builder is in a generated file, then we're analyzing _after_ code
-    // generation. Ignore it. This happens when running as an analyzer plugin.
-    if (result.source.fullName.endsWith('.g.dart')) return null;
-    return result;
-  }
-
-  @memoized
   bool get implementsBuilt => element.allSupertypes
       .any((interfaceType) => interfaceType.element.name == 'Built');
-
-  @memoized
-  bool get extendsIsAllowed {
-    // Usually `extends` is not allowed. But, allow one special case:
-    //
-    // A `built_value` class may share code with a `const` class by extending
-    // a `const` base class. There's no other way to do this sharing because
-    // a `const` class is not allowed to use a mixin.
-    //
-    // To avoid causing problems for `built_value` the base class must be
-    // abstract, must have no fields, must have no abstract getters, and
-    // must not implement `operator==`, `hashCode` or `toString`.
-    // This means it _is_ allowed to have concrete getters as well as
-    // concrete and abstract methods.
-
-    for (var supertype in [
-      element.supertype,
-      ...element.supertype.element.allSupertypes
-    ]) {
-      if (DartTypes.getName(supertype) == 'Object') continue;
-
-      // Base class must be abstract.
-      if (!supertype.element.isAbstract) return false;
-
-      // Base class must have no fields.
-      if (supertype.element.fields
-          .any((field) => !field.isStatic && !field.isSynthetic)) {
-        return false;
-      }
-
-      // Base class must have no abstract getters.
-      if (supertype.accessors.any((accessor) =>
-          !accessor.isStatic && accessor.isGetter && accessor.isAbstract)) {
-        return false;
-      }
-
-      // Base class must not implement operator==, hashCode or toString.
-      if (supertype.element.getMethod('hashCode') != null) return false;
-      if (supertype.element.getMethod('==') != null) return false;
-      if (supertype.element.getMethod('toString') != null) return false;
-    }
-
-    return true;
-  }
 
   @memoized
   BuiltList<String> get genericParameters =>
@@ -128,10 +73,6 @@ abstract class ValueSourceClass
         as ClassDeclaration;
   }
 
-  //todo remove?
-  @memoized
-  bool get hasBuilder => builderElement != null;
-
   @memoized
   bool get hasBuilderInitializer => builderInitializer != null;
 
@@ -146,18 +87,8 @@ abstract class ValueSourceClass
   MethodElement get builderFinalizer => element.getMethod('_finalizeBuilder');
 
   @memoized
-  String get builderParameters {
-    return builderElement.allSupertypes
-        .where((interfaceType) => interfaceType.element.name == 'Builder')
-        .single
-        .typeArguments
-        .map((type) => DartTypes.getName(type))
-        .join(', ');
-  }
-
-  @memoized
   BuiltList<ValueSourceField> get fields => ValueSourceField.fromClassElements(
-      parsedLibrary, element, builderElement);
+      parsedLibrary, element);
 
   /// Default constructor to be used to rebuild the data class.
   ConstructorElement get constructor => element.constructors
@@ -207,44 +138,6 @@ abstract class ValueSourceClass
 
   @memoized
   bool get valueClassIsAbstract => element.isAbstract;
-
-  @memoized
-  BuiltList<ConstructorDeclaration> get valueClassConstructors =>
-      BuiltList<ConstructorDeclaration>(element.constructors
-          .where((constructor) =>
-              !constructor.isFactory && !constructor.isSynthetic)
-          .map((constructor) =>
-              parsedLibrary.getElementDeclaration(constructor).node));
-
-  @memoized
-  BuiltList<ConstructorDeclaration> get valueClassFactories =>
-      BuiltList<ConstructorDeclaration>(element.constructors
-          .where((constructor) => constructor.isFactory)
-          .map((factory) => parsedLibrary.getElementDeclaration(factory).node));
-
-  @memoized
-  bool get builderClassIsAbstract => builderElement.isAbstract;
-
-  @memoized
-  BuiltList<String> get builderClassConstructors =>
-      BuiltList<String>(builderElement.constructors
-          .where((constructor) =>
-              !constructor.isFactory && !constructor.isSynthetic)
-          .map((constructor) => parsedLibrary
-              .getElementDeclaration(constructor)
-              .node
-              .toSource()));
-
-  @memoized
-  BuiltList<String> get builderClassFactories =>
-      BuiltList<String>(builderElement.constructors
-          .where((constructor) => constructor.isFactory)
-          .map((factory) =>
-              parsedLibrary.getElementDeclaration(factory).node.toSource()));
-
-  @memoized
-  BuiltList<MemoizedGetter> get memoizedGetters =>
-      BuiltList<MemoizedGetter>(MemoizedGetter.fromClassElement(element));
 
   /// Returns the `implements` clause for the builder.
   ///
@@ -494,14 +387,6 @@ abstract class ValueSourceClass
     var result = StringBuffer();
     result.writeln('extension ${extPartName}DataClassExtension$_generics '
         'on $name$_generics {');
-//    for (var field in fields) {
-//      final type = field.typeInCompilationUnit(compilationUnit);
-//      result.writeln('@override');
-//      result.writeln('final $type ${field.name};');
-//    }
-    for (var memoizedGetter in memoizedGetters) {
-      result.writeln('${memoizedGetter.returnType} __${memoizedGetter.name};');
-    }
     result.writeln();
 
     result.writeln(
@@ -689,7 +574,7 @@ abstract class ValueSourceClass
       result.writeln('if (_\$v != null) {');
       for (var field in ctorFields) {
         final name = field.name;
-        final nameInBuilder = hasBuilder ? 'super.$name' : '_$name';
+        final nameInBuilder = '_$name';
         result.writeln('$nameInBuilder = _\$v.$name;');
       }
       result.writeln('_\$v = null;');

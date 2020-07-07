@@ -12,32 +12,23 @@ class _$ValueSourceClass extends ValueSourceClass {
   ParsedLibraryResult __parsedLibrary;
   String __name;
   String __builderName;
-  String __implName;
-  ClassElement __builderElement;
+  String __extPartName;
   bool __implementsBuilt;
-  bool __extendsIsAllowed;
   BuiltList<String> __genericParameters;
   BuiltList<String> __genericBounds;
   ClassDeclaration __classDeclaration;
-  bool __hasBuilder;
   bool __hasBuilderInitializer;
   MethodElement __builderInitializer;
   bool __hasBuilderFinalizer;
   MethodElement __builderFinalizer;
-  String __builderParameters;
   BuiltList<ValueSourceField> __fields;
+  BuiltList<ValueSourceField> __ctorFields;
   String __source;
   String __partStatement;
   bool __hasPartStatement;
   bool __hasBuiltValueImportWithShow;
   bool __hasBuiltValueImportWithAs;
   bool __valueClassIsAbstract;
-  BuiltList<ConstructorDeclaration> __valueClassConstructors;
-  BuiltList<ConstructorDeclaration> __valueClassFactories;
-  bool __builderClassIsAbstract;
-  BuiltList<String> __builderClassConstructors;
-  BuiltList<String> __builderClassFactories;
-  BuiltList<MemoizedGetter> __memoizedGetters;
   BuiltList<String> __builderImplements;
   bool __implementsHashCode;
   bool __declaresMemoizedHashCode;
@@ -62,20 +53,14 @@ class _$ValueSourceClass extends ValueSourceClass {
   @override
   String get name => __name ??= super.name;
 
-  @memoized
+  @override
   String get builderName => __builderName ??= super.builderName;
 
   @override
-  String get extPartName => __implName ??= super.extPartName;
-
-  @override
-  ClassElement get builderElement => __builderElement ??= super.builderElement;
+  String get extPartName => __extPartName ??= super.extPartName;
 
   @override
   bool get implementsBuilt => __implementsBuilt ??= super.implementsBuilt;
-
-  @override
-  bool get extendsIsAllowed => __extendsIsAllowed ??= super.extendsIsAllowed;
 
   @override
   BuiltList<String> get genericParameters =>
@@ -88,9 +73,6 @@ class _$ValueSourceClass extends ValueSourceClass {
   @override
   ClassDeclaration get classDeclaration =>
       __classDeclaration ??= super.classDeclaration;
-
-  @override
-  bool get hasBuilder => __hasBuilder ??= super.hasBuilder;
 
   @override
   bool get hasBuilderInitializer =>
@@ -109,11 +91,11 @@ class _$ValueSourceClass extends ValueSourceClass {
       __builderFinalizer ??= super.builderFinalizer;
 
   @override
-  String get builderParameters =>
-      __builderParameters ??= super.builderParameters;
+  BuiltList<ValueSourceField> get fields => __fields ??= super.fields;
 
   @override
-  BuiltList<ValueSourceField> get fields => __fields ??= super.fields;
+  BuiltList<ValueSourceField> get ctorFields =>
+      __ctorFields ??= super.ctorFields;
 
   @override
   String get source => __source ??= super.source;
@@ -135,30 +117,6 @@ class _$ValueSourceClass extends ValueSourceClass {
   @override
   bool get valueClassIsAbstract =>
       __valueClassIsAbstract ??= super.valueClassIsAbstract;
-
-  @override
-  BuiltList<ConstructorDeclaration> get valueClassConstructors =>
-      __valueClassConstructors ??= super.valueClassConstructors;
-
-  @override
-  BuiltList<ConstructorDeclaration> get valueClassFactories =>
-      __valueClassFactories ??= super.valueClassFactories;
-
-  @override
-  bool get builderClassIsAbstract =>
-      __builderClassIsAbstract ??= super.builderClassIsAbstract;
-
-  @override
-  BuiltList<String> get builderClassConstructors =>
-      __builderClassConstructors ??= super.builderClassConstructors;
-
-  @override
-  BuiltList<String> get builderClassFactories =>
-      __builderClassFactories ??= super.builderClassFactories;
-
-  @override
-  BuiltList<MemoizedGetter> get memoizedGetters =>
-      __memoizedGetters ??= super.memoizedGetters;
 
   @override
   BuiltList<String> get builderImplements =>

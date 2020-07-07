@@ -18,13 +18,13 @@ import 'metadata.dart';
 
 part 'value_source_field.g.dart';
 
-const _suggestedTypes = <String, String>{
-  'List': 'BuiltList',
-  'Map': 'BuiltMap',
-  'Set': 'BuiltSet',
-  'ListMultimap': 'BuiltListMultimap',
-  'SetMultimap': 'BuiltSetMultimap',
-};
+//const _suggestedTypes = <String, String>{
+//  'List': 'BuiltList',
+//  'Map': 'BuiltMap',
+//  'Set': 'BuiltSet',
+//  'ListMultimap': 'BuiltListMultimap',
+//  'SetMultimap': 'BuiltSetMultimap',
+//};
 
 abstract class ValueSourceField
     implements Built<ValueSourceField, ValueSourceFieldBuilder> {
@@ -36,11 +36,10 @@ abstract class ValueSourceField
   FieldElement get builderElement;
 
   factory ValueSourceField(ParsedLibraryResult parsedLibrary,
-          FieldElement element, FieldElement builderElement) =>
+          FieldElement element) =>
       _$ValueSourceField._(
           parsedLibrary: parsedLibrary,
-          element: element,
-          builderElement: builderElement);
+          element: element);
 
   ValueSourceField._();
 
@@ -92,16 +91,14 @@ abstract class ValueSourceField
 
   static BuiltList<ValueSourceField> fromClassElements(
       ParsedLibraryResult parsedLibrary,
-      ClassElement classElement,
-      ClassElement builderClassElement) {
+      ClassElement classElement) {
     var result = ListBuilder<ValueSourceField>();
 
     for (var field in collectFields(classElement)) {
       if (!field.isStatic &&
           field.getter != null &&
           (field.getter.isAbstract || field.getter.isSynthetic)) {
-        final builderField = builderClassElement?.getField(field.name);
-        result.add(ValueSourceField(parsedLibrary, field, builderField));
+        result.add(ValueSourceField(parsedLibrary, field));
       }
     }
 

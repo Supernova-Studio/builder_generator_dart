@@ -19,20 +19,12 @@ class _$ValueSourceField extends ValueSourceField {
   String __typeWithPrefix;
   bool __isGetter;
   bool __isNullable;
-  BuiltValueField __builtValueField;
-  bool __builderFieldExists;
-  bool __builderFieldIsNormalField;
-  bool __builderFieldIsGetterSetterPair;
-  String __buildElementType;
-  String __builderElementTypeWithPrefix;
-  bool __isNestedBuilder;
 
   factory _$ValueSourceField(
           [void Function(ValueSourceFieldBuilder) updates]) =>
       (new ValueSourceFieldBuilder()..update(updates)).build();
 
-  _$ValueSourceField._(
-      {this.parsedLibrary, this.element, this.builderElement})
+  _$ValueSourceField._({this.parsedLibrary, this.element, this.builderElement})
       : super._() {
     if (parsedLibrary == null) {
       throw new BuiltValueNullFieldError('ValueSourceField', 'parsedLibrary');
@@ -79,9 +71,7 @@ class _$ValueSourceField extends ValueSourceField {
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc(0, parsedLibrary.hashCode),
-            element.hashCode),
+    return $jf($jc($jc($jc(0, parsedLibrary.hashCode), element.hashCode),
         builderElement.hashCode));
   }
 
@@ -98,10 +88,6 @@ class _$ValueSourceField extends ValueSourceField {
 class ValueSourceFieldBuilder
     implements Builder<ValueSourceField, ValueSourceFieldBuilder> {
   _$ValueSourceField _$v;
-
-  BuiltValue _settings;
-  BuiltValue get settings => _$this._settings;
-  set settings(BuiltValue settings) => _$this._settings = settings;
 
   ParsedLibraryResult _parsedLibrary;
   ParsedLibraryResult get parsedLibrary => _$this._parsedLibrary;
