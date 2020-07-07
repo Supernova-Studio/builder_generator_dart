@@ -119,6 +119,7 @@ class CModel<T> extends BModel {
   final List<String> listProp;
 
   bool get someGetter => false;
+  set someSetter(String input) => null;
 
   @override
   String get getterA => 'value';
@@ -157,14 +158,6 @@ class CModel<T> extends BModel {
 }
 
 void main() {
-//  var model = TestModel();
-//
-//  var newModel = model.rebuild((TestModelBuilder builder) {
-//    builder.name = '212323';
-//  });
-//
-//  print(newModel.name);
-
   var model = CModel<String>();
 
   var newModel = model.rebuild((CModelBuilder<String> builder) {

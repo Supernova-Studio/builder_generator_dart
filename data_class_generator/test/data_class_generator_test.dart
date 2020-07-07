@@ -12,8 +12,403 @@ import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
 
 void main() {
+  group('Output tests', () {
+    test('Inner data classes has valid generated data', () async {
+      expect(
+        await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+part 'value.g.dart';
+
+@DataClass()
+class InnerTestModel {
+  final String someProperty;
+
+  InnerTestModel({this.someProperty});
+
+  @override
+  InnerTestModel rebuild(Function(InnerTestModelBuilder) updates) =>
+      _rebuild(updates);
+
+  @override
+  bool operator ==(other) => this._equals(other);
+
+  @override
+  String toString() => this._string;
+
+  @override
+  int get hashCode => this._hashCode;
+}
+
+@DataClass()
+class TestModel {
+  final String name;
+  final int age;
+  final InnerTestModel innerTestModel;
+
+  TestModel({this.name, this.age, this.innerTestModel});
+
+  @override
+  TestModel rebuild(Function(TestModelBuilder) updates) => _rebuild(updates);
+
+  @override
+  bool operator ==(other) => this._equals(other);
+
+  @override
+  String toString() => this._string;
+
+  @override
+  int get hashCode => this._hashCode;
+}'''),
+        contains('''
+extension _\$InnerTestModelDataClassExtension on InnerTestModel {
+  InnerTestModel _rebuild(void Function(InnerTestModelBuilder) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  InnerTestModelBuilder _toBuilder() => InnerTestModelBuilder()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is InnerTestModel && someProperty == other.someProperty;
+  }
+
+  int get _hashCode {
+    return \$jf(\$jc(0, someProperty.hashCode));
+  }
+
+  String get _string {
+    return (newBuiltValueToStringHelper('InnerTestModel')
+          ..add('someProperty', someProperty))
+        .toString();
+  }
+}
+
+class InnerTestModelBuilder
+    implements DataClassBuilder<InnerTestModel, InnerTestModelBuilder> {
+  InnerTestModel _\$v;
+
+  String _someProperty;
+  String get someProperty => _\$this._someProperty;
+  set someProperty(String someProperty) => _\$this._someProperty = someProperty;
+
+  InnerTestModelBuilder();
+
+  InnerTestModelBuilder get _\$this {
+    if (_\$v != null) {
+      _someProperty = _\$v.someProperty;
+      _\$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(InnerTestModel other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _\$v = other;
+  }
+
+  @override
+  void update(void Function(InnerTestModelBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  InnerTestModel build() {
+    final _\$result = _\$v ?? InnerTestModel(someProperty: someProperty);
+    replace(_\$result);
+    return _\$result;
+  }
+}
+
+extension _\$TestModelDataClassExtension on TestModel {
+  TestModel _rebuild(void Function(TestModelBuilder) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  TestModelBuilder _toBuilder() => TestModelBuilder()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is TestModel &&
+        name == other.name &&
+        age == other.age &&
+        innerTestModel == other.innerTestModel;
+  }
+
+  int get _hashCode {
+    return \$jf(
+        \$jc(\$jc(\$jc(0, name.hashCode), age.hashCode), innerTestModel.hashCode));
+  }
+
+  String get _string {
+    return (newBuiltValueToStringHelper('TestModel')
+          ..add('name', name)
+          ..add('age', age)
+          ..add('innerTestModel', innerTestModel))
+        .toString();
+  }
+}
+
+class TestModelBuilder
+    implements DataClassBuilder<TestModel, TestModelBuilder> {
+  TestModel _\$v;
+
+  String _name;
+  String get name => _\$this._name;
+  set name(String name) => _\$this._name = name;
+
+  int _age;
+  int get age => _\$this._age;
+  set age(int age) => _\$this._age = age;
+
+  InnerTestModel _innerTestModel;
+  InnerTestModel get innerTestModel => _\$this._innerTestModel;
+  set innerTestModel(InnerTestModel innerTestModel) =>
+      _\$this._innerTestModel = innerTestModel;
+
+  TestModelBuilder();
+
+  TestModelBuilder get _\$this {
+    if (_\$v != null) {
+      _name = _\$v.name;
+      _age = _\$v.age;
+      _innerTestModel = _\$v.innerTestModel;
+      _\$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(TestModel other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _\$v = other;
+  }
+
+  @override
+  void update(void Function(TestModelBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  TestModel build() {
+    final _\$result =
+        _\$v ?? TestModel(name: name, age: age, innerTestModel: innerTestModel);
+    replace(_\$result);
+    return _\$result;
+  }
+}'''
+
+        ),
+      );
+    });
+
+    test('Complex dynamic data classes with inheritance, getters and setters has valid generated data', () async {
+      expect(
+        await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+part 'value.g.dart';
+
+abstract class AModel {
+  final String propA;
+
+  String get getterA;
+
+  AModel({this.propA});
+}
+
+@DataClass()
+class BModel extends AModel {
+  final String propB1;
+  final String propB2;
+
+  @override
+  String get getterA => 'getterA in BModel';
+
+  BModel({this.propB1, this.propB2, String propA}) : super(propA: propA);
+}
+
+@DataClass()
+class CModel<T> extends BModel {
+  final T genericProp;
+
+  final List<String> listProp;
+
+  bool get someGetter => false;
+  set someSetter(String input) => null;
+
+  @override
+  String get getterA => 'value';
+  static String staticMember = 'value';
+
+  CModel({String propA, String propB1, this.genericProp, this.listProp})
+      : super(propA: propA, propB1: propB1, propB2: 'fixedValue');
+
+  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
+      this._rebuild(updates);
+
+  @override
+  bool operator ==(other) => this._equals(other);
+
+  @override
+  String toString() => this._string;
+
+  @override
+  int get hashCode => this._hashCode;
+}'''),
+        contains('''
+class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
+  BModel _\$v;
+
+  String _propB1;
+  String get propB1 => _\$this._propB1;
+  set propB1(String propB1) => _\$this._propB1 = propB1;
+
+  String _propB2;
+  String get propB2 => _\$this._propB2;
+  set propB2(String propB2) => _\$this._propB2 = propB2;
+
+  String _propA;
+  String get propA => _\$this._propA;
+  set propA(String propA) => _\$this._propA = propA;
+
+  BModelBuilder();
+
+  BModelBuilder get _\$this {
+    if (_\$v != null) {
+      _propB1 = _\$v.propB1;
+      _propB2 = _\$v.propB2;
+      _propA = _\$v.propA;
+      _\$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(BModel other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _\$v = other;
+  }
+
+  @override
+  void update(void Function(BModelBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  BModel build() {
+    final _\$result =
+        _\$v ?? BModel(propB1: propB1, propB2: propB2, propA: propA);
+    replace(_\$result);
+    return _\$result;
+  }
+}
+
+extension _\$CModelDataClassExtension<T> on CModel<T> {
+  CModel<T> _rebuild(void Function(CModelBuilder<T>) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  CModelBuilder<T> _toBuilder() => CModelBuilder<T>()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is CModel &&
+        genericProp == other.genericProp &&
+        listProp == other.listProp &&
+        propB1 == other.propB1 &&
+        propB2 == other.propB2 &&
+        propA == other.propA;
+  }
+
+  int get _hashCode {
+    return \$jf(\$jc(
+        \$jc(
+            \$jc(\$jc(\$jc(0, genericProp.hashCode), listProp.hashCode),
+                propB1.hashCode),
+            propB2.hashCode),
+        propA.hashCode));
+  }
+
+  String get _string {
+    return (newBuiltValueToStringHelper('CModel')
+          ..add('genericProp', genericProp)
+          ..add('listProp', listProp)
+          ..add('propB1', propB1)
+          ..add('propB2', propB2)
+          ..add('propA', propA))
+        .toString();
+  }
+}
+
+class CModelBuilder<T>
+    implements DataClassBuilder<CModel<T>, CModelBuilder<T>> {
+  CModel<T> _\$v;
+
+  T _genericProp;
+  T get genericProp => _\$this._genericProp;
+  set genericProp(T genericProp) => _\$this._genericProp = genericProp;
+
+  List<String> _listProp;
+  List<String> get listProp => _\$this._listProp;
+  set listProp(List<String> listProp) => _\$this._listProp = listProp;
+
+  String _propB1;
+  String get propB1 => _\$this._propB1;
+  set propB1(String propB1) => _\$this._propB1 = propB1;
+
+  String _propA;
+  String get propA => _\$this._propA;
+  set propA(String propA) => _\$this._propA = propA;
+
+  CModelBuilder();
+
+  CModelBuilder<T> get _\$this {
+    if (_\$v != null) {
+      _genericProp = _\$v.genericProp;
+      _listProp = _\$v.listProp;
+      _propB1 = _\$v.propB1;
+      _propA = _\$v.propA;
+      _\$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(CModel<T> other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _\$v = other;
+  }
+
+  @override
+  void update(void Function(CModelBuilder<T>) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  CModel<T> build() {
+    final _\$result = _\$v ??
+        CModel<T>(
+            genericProp: genericProp,
+            listProp: listProp,
+            propB1: propB1,
+            propA: propA);
+    replace(_\$result);
+    return _\$result;
+  }
+}'''
+
+        ),
+      );
+    });
+  });
+
   group('Valid input', () {
-    test('Generator works correctly with a model with a single property',
+    test('Generator works correctly with with a single property model',
         () async {
       expect(
         await generate('''library data_class;
@@ -42,7 +437,7 @@ class Value {
       );
     });
 
-    test('Generator works correctly with an inherited data class', () async {
+    test('Generator works correctly with extending and implementing', () async {
       expect(
         await generate('''library data_class;
 import 'package:data_class/data_class.dart';
@@ -60,9 +455,15 @@ abstract class BModel extends AModel {
   BModel({this.propB, String propA}) : super(propA: propA);
 }
 
+abstract class IModel {
+  String get someGetter;
+}
+
 @DataClass()
-class CModel extends BModel {
+class CModel extends BModel implements IModel {
   final String propC;
+  
+  String get someGetter => "";
 
   CModel({String propA, String propB, this.propC})
       : super(propA: propA, propB: propB);
@@ -70,15 +471,6 @@ class CModel extends BModel {
   @override
   CModel rebuild(void Function(CModelBuilder) updates) =>
       this._rebuild(updates);
-
-  @override
-  bool operator ==(other) => this._equals(other);
-
-  @override
-  String toString() => this._string;
-
-  @override
-  int get hashCode => this._hashCode;
 }'''),
         isNot(containsErrors),
       );
@@ -100,23 +492,49 @@ class CModel<T> {
   @override
   CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
       this._rebuild(updates);
-
-  @override
-  bool operator ==(other) => this._equals(other);
-
-  @override
-  String toString() => this._string;
-
-  @override
-  int get hashCode => this._hashCode;
 }'''),
         isNot(containsErrors),
       );
     });
+
+    test('Ignores setters', () async {
+      expect(
+        await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+@DataClass()
+class Value {
+  set foo(int foo) => print(foo);
+
+  Value();
+}
+}'''),
+        isNot(containsErrors),
+      );
+    });
+
+    test('Cleans generated class names for private classes', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+@DataClass()
+class _Value {
+  _Value();
+}'''),
+          allOf(
+            isNot(contains(r'_$_')),
+            isNot(contains(r'1.')),
+          ));
+    });
   });
 
   group('Invalid input', () {
-    test('Non-final field is checked', () async {
+    test('Non-final fields are rejected', () async {
       expect(
         await generate('''library data_class;
 import 'package:data_class/data_class.dart';
@@ -126,29 +544,27 @@ mixin SomeMixin{
   int mixinProp;
 }
 
+abstract class SomeInterface {
+  String interfaceProp;
+}
+
 @DataClass()
-class CModel with SomeMixin {
+class CModel with SomeMixin implements SomeInterface {
 
   final String prop1;
   String prop2;
+
+  @override
+  String interfaceProp;
 
   CModel({this.prop1});
 
   @override
   CModel rebuild(void Function(CModelBuilder) updates) =>
       this._rebuild(updates);
-
-  @override
-  bool operator ==(other) => this._equals(other);
-
-  @override
-  String toString() => this._string;
-
-  @override
-  int get hashCode => this._hashCode;
 }'''),
         contains(
-            '1. Data class fields must be final. However, these fields are not final: prop2, mixinProp'),
+            '1. Data class fields must be final. However, these fields are not final: prop2, interfaceProp, mixinProp'),
       );
     });
 
@@ -187,7 +603,7 @@ abstract class CModel {
       );
     });
 
-    test('Rejects import with show', () async {
+    test('Rejects import with _show_', () async {
       expect(
           await generate('''library data_class;
 import 'package:data_class/data_class.dart' show DataClass, DataClassBuilder;
@@ -200,692 +616,93 @@ class Value {
           contains('1. Stop using "show" when importing '
               '"package:data_class/data_class.dart".'));
     });
-  });
 
-//  group('generator', () {
-//
-//
-//    test('rejects double quoted import with "show"', () async {
-//      expect(
-//          await generate('''library data_class;
-//import "package:data_class/data_class.dart" show Built, Builder;
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Stop using "show" when importing '
-//              '"package:data_class/data_class.dart".'));
-//    });
-//
-//    test('rejects import with "as"', () async {
-//      expect(
-//          await generate('''library data_class;
-//import 'package:data_class/data_class.dart' as bv;
-//part 'value.g.dart';
-//abstract class Value implements bv.Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements bv.Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Stop using "as" when importing '
-//              '"package:data_class/data_class.dart".'));
-//    });
-//
-//    test('rejects double quoted import with "as"', () async {
-//      expect(
-//          await generate('''library data_class;
-//import "package:data_class/data_class.dart" as bv;
-//part 'value.g.dart';
-//abstract class Value implements bv.Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements bv.Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Stop using "as" when importing '
-//              '"package:data_class/data_class.dart".'));
-//    });
-//
-//    test('suggests to import part file', () async {
-//      expect(await generate('''library data_class;
-//
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains("1. Import generated part: part 'value.g.dart';"));
-//    });
-//
-//    test('suggests to make value class abstract', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains('1. Make class abstract.'));
-//    });
-//
-//    test('suggests correct Built type parameters for implements', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Foo, Bar> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains('1. Make class implement Built<Value, ValueBuilder>.'));
-//    });
-//
-//    test('rejects "extends" with concrete base', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//class Foo {}
-//abstract class Value implements Built<Value, ValueBuilder> extends Foo {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Stop class extending other classes. '
-//              'Only "implements" and "extends Object with" are allowed.'));
-//    });
-//
-//    test('rejects "extends" with base with fields', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Foo {
-//  final int x;
-//}
-//abstract class Value implements Built<Value, ValueBuilder> extends Foo {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Stop class extending other classes. '
-//              'Only "implements" and "extends Object with" are allowed.'));
-//    });
-//
-//    test('rejects "extends" with base with abstract getter', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Foo {
-//  int get x;
-//}
-//abstract class Value implements Built<Value, ValueBuilder> extends Foo {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Stop class extending other classes. '
-//              'Only "implements" and "extends Object with" are allowed.'));
-//    });
-//
-//    test('rejects "extends" with base with operator==', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Foo {
-//  bool get operator==(other) => true;
-//}
-//abstract class Value implements Built<Value, ValueBuilder> extends Foo {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Stop class extending other classes. '
-//              'Only "implements" and "extends Object with" are allowed.'));
-//    });
-//
-//    test(
-//        'allows "extends" with base with abstract and concrete methods '
-//        'and concrete getters', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Foo {
-//  int foo();
-//  int bar() => 3;
-//  int get baz => foo();
-//}
-//abstract class Value implements Built<Value, ValueBuilder> extends Foo {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), isNot(contains('1.')));
-//    });
-//
-//    test('rejects "extends Built"', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value extends Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), allOf(contains('Make class implement Built<Value, ValueBuilder>.')));
-//    });
-//
-//    test('works with multiple implements', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder>, Object {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}'''), isNot(contains('1.')));
-//    });
-//
-//    test('allows updates to have return type', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder>, Object {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}'''), isNot(contains('1.')));
-//    });
-//
-//    test('handles unresolved Built type parameters', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}'''), isNot(contains('1.')));
-//    });
-//
-//    test('suggests making builder initializer static', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  void _initializeBuilder(ValueBuilder b) {}
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Fix _initializeBuilder signature: '
-//              'static void _initializeBuilder(ValueBuilder b)'));
-//    });
-//
-//    test('suggests making builder initializer return void', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  static String _initializeBuilder(ValueBuilder b) {}
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Fix _initializeBuilder signature: '
-//              'static void _initializeBuilder(ValueBuilder b)'));
-//    });
-//
-//    test('suggests making builder initializer accept a builder', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  static void _initializeBuilder(String b) {}
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Fix _initializeBuilder signature: '
-//              'static void _initializeBuilder(ValueBuilder b)'));
-//    });
-//
-//    test('suggests making builder finalizer static', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  void _finalizeBuilder(ValueBuilder b) {}
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Fix _finalizeBuilder signature: '
-//              'static void _finalizeBuilder(ValueBuilder b)'));
-//    });
-//
-//    test('suggests making builder finalizer return void', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  static String _finalizeBuilder(ValueBuilder b) {}
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Fix _finalizeBuilder signature: '
-//              'static void _finalizeBuilder(ValueBuilder b)'));
-//    });
-//
-//    test('suggests making builder finalizer accept a builder', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  static void _finalizeBuilder(String b) {}
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Fix _finalizeBuilder signature: '
-//              'static void _finalizeBuilder(ValueBuilder b)'));
-//    });
-//
-//    test('suggests to add constructor to value class', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains('1. Make class have exactly one constructor: Value._();'));
-//    });
-//
-//    test('suggests to add constructor when there is synthetic constructor',
-//        () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains('1. Make class have exactly one constructor: Value._();'));
-//    });
-//
-//    test('allows code in constructor of value class', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._() {
-//    print("hi");
-//  }
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          isNot(contains(
-//              '1. Make class have exactly one constructor: Value._();')));
-//    });
-//
-//    test('suggests to remove constructor from non-instantiable value class',
-//        () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//@BuiltValue(instantiable: false)
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value() {}
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains('1. Remove all constructors or remove "instantiable: false".'));
-//    });
-//
-//    test('suggests to add factory to value class', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains(
-//              '1. Add a factory so your class can be instantiated. Example:\n'
-//              '\n'
-//              'factory Value([void Function(ValueBuilder) updates]) = _\$Value;'));
-//    });
-//
-//    test('suggests to remove factory from non-instantiable value class',
-//        () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//@BuiltValue(instantiable: false)
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains('1. Remove all factories or remove "instantiable: false".'));
-//    });
-//
-//    test('suggests to make builder class abstract', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains('1. Make builder class abstract'));
-//    });
-//
-//    test('suggests correct Builder type parameters', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Foo, Bar> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains(
-//              '1. Make builder class implement Builder<Value, ValueBuilder>. '
-//              'Currently: Builder<dynamic, dynamic>'));
-//    });
-//
-//    test('suggests to add constructor to builder class', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''),
-//          contains('1. Make builder class '
-//              'have exactly one constructor: ValueBuilder._();'));
-//    });
-//
-//    test('suggests constructor for builder class with synthetic constructor',
-//        () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//}'''),
-//          contains('1. Make builder class '
-//              'have exactly one constructor: ValueBuilder._();'));
-//    });
-//
-//    test('suggests to add factory to builder class', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//}'''),
-//          contains('1. Make builder class have exactly one factory: '
-//              'factory ValueBuilder() = _\$ValueBuilder;'));
-//    });
-//
-//    test('suggests value fields must be getters', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  int foo;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//  int foo;
-//}'''), contains('1. Make field foo a getter.'));
-//    });
-//
-//    test('suggests value fields must be public', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  int get _foo;
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}'''), contains('1. Make field _foo public; remove the underscore.'));
-//    });
-//
-//    test('rejects dynamic fields', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  get foo;
-//}'''),
-//          contains('1. Make field foo have non-dynamic type. If you are '
-//              'already specifying a type, please make sure the type is correctly imported.'));
-//    });
-//
-//    test('suggests builder fields must be normal fields', () async {
-//      expect(
-//          await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  int get foo;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//  int get foo;
-//}'''),
-//          contains('1. Make builder field foo a normal field or a '
-//              'getter/setter pair.'));
-//    });
-//
-//    test('suggests builder fields must be in sync', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  int get foo;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}'''), contains('1. Make builder have exactly these fields: foo'));
-//    });
-//
-//    test('suggests builder fields must be same type', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  int get foo;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//  String foo;
-//}'''), contains('1. Make builder field foo have type: int'));
-//    });
-//
-//    test('ignores setters', () async {
-//      expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  set foo(int foo) => print(foo);
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//  set foo(int foo) => print(foo);
-//}'''), isNot(contains('1.')));
-//    });
-//
-//    test('generates empty constructor with semicolon not braces', () async {
-//      final generated = await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//}
-//abstract class ValueBuilder implements Builder<Value, ValueBuilder> {
-//  ValueBuilder._();
-//  factory ValueBuilder() = _\$ValueBuilder;
-//}
-//''');
-//      expect(generated, isNot(contains('super._() {}')));
-//      expect(generated, contains('super._();'));
-//    });
-//  });
-//
-//  test('rejects hashCode', () async {
-//    expect(
-//        await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  int get hashCode => 0;
-//}'''),
-//        contains(
-//            '1. Stop implementing hashCode; it will be generated for you.'));
-//  });
-//
-//  test('rejects operator==', () async {
-//    expect(
-//        await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  bool operator==(other) => false;
-//}'''),
-//        contains(
-//            '1. Stop implementing operator==; it will be generated for you.'));
-//  });
-//
-//  test('uses toString()', () async {
-//    expect(await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  String toString() => 'hi!';
-//}'''), isNot(contains('String toString()')));
-//  });
-//
+    test('Rejects double quoted import with _show_', () async {
+      expect(
+          await generate('''library data_class;
+import "package:data_class/data_class.dart" show DataClass, DataClassBuilder;
+part 'value.g.dart';
+
+@DataClass()
+class Value {
+  Value();
+}'''),
+          contains('1. Stop using "show" when importing '
+              '"package:data_class/data_class.dart".'));
+    });
+
+    test('Rejects import with _as_', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart' as dc;
+part 'value.g.dart';
+
+@dc.DataClass()
+class Value {
+  Value();
+}'''),
+          contains('1. Stop using "as" when importing '
+              '"package:data_class/data_class.dart".'));
+    });
+
+    test('Rejects double quoted import with _as_', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart' as dc;
+part 'value.g.dart';
+
+@dc.DataClass()
+class Value {
+  Value();
+}'''),
+          contains('1. Stop using "as" when importing '
+              '"package:data_class/data_class.dart".'));
+    });
+
+    test('Suggests to import part file', () async {
+      expect(await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+@DataClass()
+class Value {
+  Value();
+}
+'''), contains("1. Import generated part: part 'value.g.dart';"));
+    });
+
+    //todo verify rebuild signature
+
+    test('Suggests value fields must be public', () async {
+      expect(await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+@DataClass()
+class Value {
+  final int _foo;
+  
+  Value({int foo}): this._foo = foo;  
+}'''), contains('1. Make field _foo public; remove the underscore.'));
+    });
+
+    test('Rejects dynamic fields', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+@DataClass()
+class Value {
+  final dynamic foo;
+
+  Value({this.foo});
+}'''),
+          contains('1. Make field foo have non-dynamic type. If you are '
+              'already specifying a type, please make sure the type is correctly imported.'));
+    });
+
 //  test('suggests built_collection fields instead of SDK fields', () async {
 //    expect(
 //        await generate('''library data_class;
@@ -906,40 +723,20 @@ class Value {
 //                'The current type, "Set", is not allowed '
 //                'because it is mutable.')));
 //  });
-//
-//  test('rejects comparableBuilders with nestedBuilders', () async {
-//    expect(
-//        await generate('''library data_class;
-//
-//part 'value.g.dart';
-//@BuiltValue(comparableBuilders: true)
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  }'''),
-//        contains(
-//            '1. Set `nestedBuilders: false` in order to use `comparableBuilders: true`.'));
-//  });
-//
-//  test('Cleans generated class names for private classes', () async {
-//    expect(
-//        await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class _Value implements Built<_Value, _ValueBuilder> {
-//  _Value._();
-//  factory _Value([void Function(_ValueBuilder) updates]) = _\$Value;
-//}'''),
-//        allOf(
-//          isNot(contains(r'_$_')),
-//          isNot(contains(r'1.')),
-//        ));
-//  });
+  });
+
+//  group('generator', () {
 }
+
+//
+// Utilities
+// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 Matcher get containsErrors => contains('1.');
 
-// Test setup.
+//
+// Test setup
+// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 final String pkgName = 'pkg';
 
