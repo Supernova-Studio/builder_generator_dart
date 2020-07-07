@@ -435,12 +435,26 @@ abstract class ValueSourceClass
   }
 
   Iterable<GeneratorError> _checkConstructor() {
-    if (constructor != null) return <GeneratorError>[];
-    return [
-      GeneratorError((b) => b
-        ..message =
-            'Default constructor is not found. Please, add ${name}() with all required parameters.')
-    ];
+    if (constructor == null) {
+      return [
+        GeneratorError((b) => b
+          ..message =
+              'Default constructor is not found. Please, add ${name}() with all required parameters.')
+      ];
+    }
+
+    var nonNamedParams =
+        constructor.parameters.where((param) => !param.isNamed);
+
+    if (nonNamedParams.isNotEmpty) {
+      return [
+        GeneratorError((b) => b
+          ..message =
+              'Default constructor can have named parameters only. Please, make the following fields named: ${nonNamedParams.map((e) => e.name).join(', ')}.')
+      ];
+    }
+
+    return <GeneratorError>[];
   }
 
   String get _generics =>

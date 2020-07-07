@@ -198,13 +198,13 @@ class TestModelBuilder
     replace(_\$result);
     return _\$result;
   }
-}'''
-
-        ),
+}'''),
       );
     });
 
-    test('Complex dynamic data classes with inheritance, getters and setters has valid generated data', () async {
+    test(
+        'Complex dynamic data classes with inheritance, getters and setters has valid generated data',
+        () async {
       expect(
         await generate('''library data_class;
 import 'package:data_class/data_class.dart';
@@ -428,9 +428,7 @@ class CModelBuilder<T>
     replace(_\$result);
     return _\$result;
   }
-}'''
-
-        ),
+}'''),
       );
     });
   });
@@ -697,8 +695,6 @@ class Value {
 '''), contains("1. Import generated part: part 'value.g.dart';"));
     });
 
-    //todo verify rebuild signature
-
     test('Suggests value fields must be public', () async {
       expect(await generate('''library data_class;
 import 'package:data_class/data_class.dart';
@@ -728,6 +724,39 @@ class Value {
 }'''),
           contains('1. Make field foo have non-dynamic type. If you are '
               'already specifying a type, please make sure the type is correctly imported.'));
+    });
+
+//    test('Constructor with positioned parameters is rejected', () async {
+//      expect(
+//          await generate('''library data_class;
+//import 'package:data_class/data_class.dart';
+//
+//part 'value.g.dart';
+//
+//@DataClass()
+//class Value {
+//  final String foo;
+//
+//  Value(String param1, {this.foo});
+//}'''),
+//          contains('1. Make field foo have non-dynamic type. If you are '
+//              'already specifying a type, please make sure the type is correctly imported.'));
+//    });
+
+    test('Field without matching constructor parameter is rejected', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+@DataClass()
+class Value {
+  final String foo;
+
+  Value(String foo1) : this.foo = foo1;
+}'''),
+          contains('1. Default constructor can have named parameters only. Please, make the following fields named: foo1.'));
     });
 
 //  test('suggests built_collection fields instead of SDK fields', () async {
