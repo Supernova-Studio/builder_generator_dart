@@ -90,79 +90,6 @@ abstract class ValueSourceField
   bool get isNullable => element.getter.metadata
       .any((metadata) => metadataToStringValue(metadata) == 'nullable');
 
-  @memoized
-  BuiltValueField get builtValueField {
-    var annotations = element.getter.metadata
-        .map((annotation) => annotation.computeConstantValue())
-        .where((value) => DartTypes.getName(value?.type) == 'BuiltValueField');
-    if (annotations.isEmpty) return const BuiltValueField();
-    var annotation = annotations.single;
-    return BuiltValueField(
-        compare: annotation.getField('compare').toBoolValue(),
-        serialize: annotation.getField('serialize').toBoolValue(),
-        wireName: annotation.getField('wireName').toStringValue());
-  }
-
-  @memoized
-  bool get builderFieldExists => builderElement != null;
-
-  @memoized
-  bool get builderFieldIsNormalField =>
-      builderFieldExists &&
-      builderElement.getter != null &&
-      !builderElement.getter.isAbstract &&
-      builderElement.getter.isSynthetic;
-
-  @memoized
-  bool get builderFieldIsGetterSetterPair =>
-      builderFieldExists &&
-      (builderElement.getter != null && builderElement.setter != null);
-
-  @memoized
-  String get buildElementType {
-    // Try to get a resolved type first, it's faster.
-    var result = DartTypes.getName(builderElement.getter?.returnType);
-    if (result != null && result != 'dynamic') return result;
-    // Go via AST to allow use of unresolvable types not yet generated;
-    // this includes generated Builder types.
-    result = parsedLibrary
-            .getElementDeclaration(builderElement)
-            ?.node
-            ?.parent
-            ?.childEntities
-            ?.first
-            .toString() ??
-        'dynamic';
-    // If we went via the AST there may be an import prefix, but we don't
-    // want one here. Strip it off.
-    if (result.contains('.')) {
-      result = result.substring(result.indexOf('.') + 1);
-    }
-    return result;
-  }
-
-  /// The [builderElementType] plus any import prefix.
-  @memoized
-  String get builderElementTypeWithPrefix {
-    // If it's a real field, it's a [VariableDeclaration] which is guaranteed
-    // to have parent node [VariableDeclarationList] giving the type.
-    var fieldDeclaration = parsedLibrary.getElementDeclaration(builderElement);
-    if (fieldDeclaration != null) {
-      return (((fieldDeclaration.node as VariableDeclaration).parent)
-                  as VariableDeclarationList)
-              ?.type
-              ?.toSource() ??
-          'dynamic';
-    } else {
-      // Otherwise it's an explicit getter/setter pair; get the type from the getter.
-      return (parsedLibrary.getElementDeclaration(builderElement.getter).node
-                  as MethodDeclaration)
-              ?.returnType
-              ?.toSource() ??
-          'dynamic';
-    }
-  }
-
   static BuiltList<ValueSourceField> fromClassElements(
       ParsedLibraryResult parsedLibrary,
       ClassElement classElement,
@@ -181,27 +108,8 @@ abstract class ValueSourceField
     return result.build();
   }
 
-  static String _toBuilderType(DartType type, String displayName) {
-    if (DartTypes.isBuiltCollection(type)) {
-      return displayName
-          .replaceFirst('Built', '')
-          .replaceFirst('<', 'Builder<');
-    } else if (DartTypes.isInstantiableBuiltValue(type)) {
-      return displayName.contains('<')
-          ? displayName.replaceFirst('<', 'Builder<')
-          : '${displayName}Builder';
-    } else {
-      return displayName;
-    }
-  }
-
   Iterable<GeneratorError> computeErrors() {
     var result = <GeneratorError>[];
-
-//    if (!isGetter) {
-//      result.add(
-//          GeneratorError((b) => b..message = 'Make field $name a getter.'));
-//    }
 
     if (type == 'dynamic') {
       result.add(GeneratorError((b) => b
@@ -215,31 +123,11 @@ abstract class ValueSourceField
           b..message = 'Make field $name public; remove the underscore.'));
     }
 
-    //todo keep?
-    if (_suggestedTypes.keys.contains(type)) {
-      result.add(GeneratorError((b) => b
-        ..message = 'Make field "$name" have type "${_suggestedTypes[type]}". '
-            'The current type, "$type", is not allowed because it is mutable.'));
-    }
-
-    //todo test
-    if (builderFieldExists) {
-      if (buildElementType != type &&
-          buildElementType != _toBuilderType(element.type, type)) {
-        result.add(GeneratorError((b) => b
-          ..message = 'Make builder field $name have type: '
-              '$type (or, if applicable, builder)'));
-      }
-    }
-
-    if (builderFieldExists &&
-        !builderFieldIsNormalField &&
-        !builderFieldIsGetterSetterPair) {
-      result.add(GeneratorError((b) => b
-        ..message =
-            'Make builder field $name a normal field or a getter/setter '
-                'pair.'));
-    }
+//    if (_suggestedTypes.keys.contains(type)) {
+//      result.add(GeneratorError((b) => b
+//        ..message = 'Make field "$name" have type "${_suggestedTypes[type]}". '
+//            'The current type, "$type", is not allowed because it is mutable.'));
+//    }
 
     return result;
   }

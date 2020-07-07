@@ -61,29 +61,6 @@ class _$ValueSourceField extends ValueSourceField {
   bool get isNullable => __isNullable ??= super.isNullable;
 
   @override
-  BuiltValueField get builtValueField =>
-      __builtValueField ??= super.builtValueField;
-
-  @override
-  bool get builderFieldExists =>
-      __builderFieldExists ??= super.builderFieldExists;
-
-  @override
-  bool get builderFieldIsNormalField =>
-      __builderFieldIsNormalField ??= super.builderFieldIsNormalField;
-
-  @override
-  bool get builderFieldIsGetterSetterPair =>
-      __builderFieldIsGetterSetterPair ??= super.builderFieldIsGetterSetterPair;
-
-  @override
-  String get buildElementType => __buildElementType ??= super.buildElementType;
-
-  @override
-  String get builderElementTypeWithPrefix =>
-      __builderElementTypeWithPrefix ??= super.builderElementTypeWithPrefix;
-
-  @override
   ValueSourceField rebuild(void Function(ValueSourceFieldBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
