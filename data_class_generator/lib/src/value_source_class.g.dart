@@ -11,11 +11,11 @@ class _$ValueSourceClass extends ValueSourceClass {
   final ClassElement element;
   ParsedLibraryResult __parsedLibrary;
   String __name;
+  String __builderName;
   String __implName;
   ClassElement __builderElement;
   bool __implementsBuilt;
   bool __extendsIsAllowed;
-  BuiltValue __settings;
   BuiltList<String> __genericParameters;
   BuiltList<String> __genericBounds;
   ClassDeclaration __classDeclaration;
@@ -61,6 +61,9 @@ class _$ValueSourceClass extends ValueSourceClass {
 
   @override
   String get name => __name ??= super.name;
+
+  @memoized
+  String get builderName => __builderName ??= super.builderName;
 
   @override
   String get extPartName => __implName ??= super.extPartName;

@@ -42,6 +42,9 @@ abstract class ValueSourceClass
   @memoized
   String get name => element.displayName;
 
+  @memoized
+  String get builderName => '${name}Builder$_generics';
+
   /// Returns the generated extension name part. If the manually
   /// maintained class is private then we ignore the underscore here, to avoid
   /// returning a class name starting `_$_`.
@@ -251,7 +254,7 @@ abstract class ValueSourceClass
   /// builder implements the corresponding builders.
   @memoized
   BuiltList<String> get builderImplements => BuiltList<String>.build((b) => b
-    ..add('DataClassBuilder<$name$_generics, ${name}Builder$_generics>')
+    ..add('DataClassBuilder<$name$_generics, ${builderName}>')
     ..addAll(element.interfaces
         .where((interface) => needDataClass(interface.element))
         .map((interface) {
@@ -501,17 +504,13 @@ abstract class ValueSourceClass
     }
     result.writeln();
 
-    //todo extract builder class name
     result.writeln(
-        '$name$_generics _rebuild(void Function(${name}Builder$_generics) updates) '
+        '$name$_generics _rebuild(void Function($builderName) updates) '
         '=> (_toBuilder()..update(updates)).build();');
-//    result.writeln('$name '
-//        'void Function(${name}Builder$_generics) updates]) '
-//        '=> (new ${name}Builder$_generics()..update(updates)).build() $cast;');
     result.writeln();
 
-    result.writeln('${name}Builder$_generics _toBuilder() '
-        '=> ${name}Builder$_generics()..replace(this);');
+    result.writeln('$builderName _toBuilder() '
+        '=> ${builderName}()..replace(this);');
     result.writeln();
 
     result.write(_generateEqualsAndHashcode());
@@ -686,7 +685,7 @@ abstract class ValueSourceClass
 
     // Getter for "this" that does lazy copying if needed.
     if (ctorFields.isNotEmpty) {
-      result.writeln('${name}Builder$_generics get _\$this {');
+      result.writeln('$builderName get _\$this {');
       result.writeln('if (_\$v != null) {');
       for (var field in ctorFields) {
         final name = field.name;
@@ -723,7 +722,7 @@ abstract class ValueSourceClass
 
     result.writeln('@override');
     result.writeln(
-        'void update(void Function(${name}Builder$_generics) updates) {'
+        'void update(void Function(${builderName}) updates) {'
         ' if (updates != null) updates(this); }');
     result.writeln();
 
