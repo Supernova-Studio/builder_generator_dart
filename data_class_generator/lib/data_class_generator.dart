@@ -10,9 +10,7 @@ import 'package:source_gen/source_gen.dart';
 
 import 'src/value_source_class.dart';
 
-/// Generator for Enum Class and Built Values.
-///
-/// See https://github.com/google/built_value.dart/tree/master/example
+/// Generator for Data Classes.
 class DataClassGenerator extends Generator {
   // Allow creating via `const` as well as enforces immutability here.
   const DataClassGenerator();
@@ -20,30 +18,6 @@ class DataClassGenerator extends Generator {
   @override
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
     var result = StringBuffer();
-
-//    try {
-//      final enumCode = EnumSourceLibrary(library.element).generateCode();
-//      if (enumCode != null) result.writeln(enumCode);
-//      final serializerSourceLibrary = SerializerSourceLibrary(library.element);
-//      if (serializerSourceLibrary.needsBuiltJson ||
-//          serializerSourceLibrary.hasSerializers) {
-//        result.writeln(serializerSourceLibrary.generateCode());
-//      }
-//    } on InvalidGenerationSourceError catch (e, st) {
-//      result.writeln(_error(e.message));
-//      log.severe(
-//          'Error in BuiltValueGenerator for '
-//          '${library.element.source.fullName}.',
-//          e,
-//          st);
-//    } catch (e, st) {
-//      result.writeln(_error(e.toString()));
-//      log.severe(
-//          'Unknown error in BuiltValueGenerator for '
-//          '${library.element.source.fullName}.',
-//          e,
-//          st);
-//    }
 
     for (var element in library.allElements) {
       if (element is ClassElement &&

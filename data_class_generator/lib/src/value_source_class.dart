@@ -14,7 +14,6 @@ import 'package:source_gen/source_gen.dart';
 
 import 'dart_types.dart';
 import 'fixes.dart';
-import 'metadata.dart';
 import 'strings.dart';
 import 'value_source_field.dart';
 
@@ -160,33 +159,6 @@ abstract class ValueSourceClass
     })));
 
   @memoized
-  bool get implementsHashCode {
-    var getter = element.getGetter('hashCode');
-    return getter != null && !getter.isAbstract;
-  }
-
-  @memoized
-  bool get declaresMemoizedHashCode {
-    var getter = element.getGetter('hashCode');
-    return getter != null &&
-        getter.isAbstract &&
-        getter.metadata
-            .any((metadata) => metadataToStringValue(metadata) == 'memoized');
-  }
-
-  @memoized
-  bool get implementsOperatorEquals => element.getMethod('==') != null;
-
-  @memoized
-  bool get implementsToString {
-    // Check for any `toString` implementation apart from the one defined on
-    // `Object`.
-    var method = element.lookUpConcreteMethod('toString', element.library);
-    var clazz = method.enclosingElement;
-    return clazz is! ClassElement || clazz.name != 'Object';
-  }
-
-  @memoized
   CompilationUnitElement get compilationUnit =>
       element.library.definingCompilationUnit;
 
@@ -194,10 +166,6 @@ abstract class ValueSourceClass
     return classElement.metadata
         .map((annotation) => annotation.computeConstantValue())
         .any((value) => DartTypes.getName(value?.type) == 'DataClass');
-
-//    return !classElement.displayName.startsWith('_\$') &&
-//        classElement.allSupertypes
-//            .any((interfaceType) => interfaceType.element.name == 'DataClass');
   }
 
   Iterable<GeneratorError> computeErrors() {
@@ -717,19 +685,13 @@ abstract class ValueSourceClass
     result.writeln('}');
     result.writeln();
 
-    var generateMemoizedHashCode =
-        declaresMemoizedHashCode && comparedFields.isNotEmpty;
-    if (generateMemoizedHashCode) {
-      result.writeln('int __hashCode;');
-    }
-
     result.writeln('int get _hashCode {');
 
     if (comparedFields.isEmpty) {
       result.writeln('return ${name.hashCode};');
     } else {
       result.writeln(
-          'return ${generateMemoizedHashCode ? '__hashCode ??= ' : ''}\$jf(');
+          'return \$jf(');
       result.writeln(r'$jc(' * comparedFields.length);
       // Use a different seed for builders than for values, so they do not have
       // identical hashCodes if the values are identical.

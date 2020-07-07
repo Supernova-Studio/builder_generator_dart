@@ -30,10 +30,6 @@ class _$ValueSourceClass extends ValueSourceClass {
   bool __hasBuiltValueImportWithAs;
   bool __valueClassIsAbstract;
   BuiltList<String> __builderImplements;
-  bool __implementsHashCode;
-  bool __declaresMemoizedHashCode;
-  bool __implementsOperatorEquals;
-  bool __implementsToString;
   CompilationUnitElement __compilationUnit;
 
   factory _$ValueSourceClass(
@@ -121,22 +117,6 @@ class _$ValueSourceClass extends ValueSourceClass {
   @override
   BuiltList<String> get builderImplements =>
       __builderImplements ??= super.builderImplements;
-
-  @override
-  bool get implementsHashCode =>
-      __implementsHashCode ??= super.implementsHashCode;
-
-  @override
-  bool get declaresMemoizedHashCode =>
-      __declaresMemoizedHashCode ??= super.declaresMemoizedHashCode;
-
-  @override
-  bool get implementsOperatorEquals =>
-      __implementsOperatorEquals ??= super.implementsOperatorEquals;
-
-  @override
-  bool get implementsToString =>
-      __implementsToString ??= super.implementsToString;
 
   @override
   CompilationUnitElement get compilationUnit =>
