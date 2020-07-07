@@ -13,22 +13,18 @@ class _$ValueSourceClass extends ValueSourceClass {
   String __name;
   String __builderName;
   String __extPartName;
-  bool __implementsBuilt;
   BuiltList<String> __genericParameters;
   BuiltList<String> __genericBounds;
   ClassDeclaration __classDeclaration;
-  bool __hasBuilderInitializer;
-  MethodElement __builderInitializer;
-  bool __hasBuilderFinalizer;
-  MethodElement __builderFinalizer;
   BuiltList<ValueSourceField> __fields;
+  ConstructorElement __constructor;
   BuiltList<ValueSourceField> __ctorFields;
   String __source;
   String __partStatement;
   bool __hasPartStatement;
-  bool __hasBuiltValueImportWithShow;
-  bool __hasBuiltValueImportWithAs;
-  bool __valueClassIsAbstract;
+  bool __hasDataClassImportWithShow;
+  bool __hasDataClassImportWithAs;
+  bool __dataClassIsAbstract;
   BuiltList<String> __builderImplements;
   CompilationUnitElement __compilationUnit;
 
@@ -56,9 +52,6 @@ class _$ValueSourceClass extends ValueSourceClass {
   String get extPartName => __extPartName ??= super.extPartName;
 
   @override
-  bool get implementsBuilt => __implementsBuilt ??= super.implementsBuilt;
-
-  @override
   BuiltList<String> get genericParameters =>
       __genericParameters ??= super.genericParameters;
 
@@ -71,23 +64,10 @@ class _$ValueSourceClass extends ValueSourceClass {
       __classDeclaration ??= super.classDeclaration;
 
   @override
-  bool get hasBuilderInitializer =>
-      __hasBuilderInitializer ??= super.hasBuilderInitializer;
-
-  @override
-  MethodElement get builderInitializer =>
-      __builderInitializer ??= super.builderInitializer;
-
-  @override
-  bool get hasBuilderFinalizer =>
-      __hasBuilderFinalizer ??= super.hasBuilderFinalizer;
-
-  @override
-  MethodElement get builderFinalizer =>
-      __builderFinalizer ??= super.builderFinalizer;
-
-  @override
   BuiltList<ValueSourceField> get fields => __fields ??= super.fields;
+
+  @override
+  ConstructorElement get constructor => __constructor ??= super.constructor;
 
   @override
   BuiltList<ValueSourceField> get ctorFields =>
@@ -103,16 +83,16 @@ class _$ValueSourceClass extends ValueSourceClass {
   bool get hasPartStatement => __hasPartStatement ??= super.hasPartStatement;
 
   @override
-  bool get hasBuiltValueImportWithShow =>
-      __hasBuiltValueImportWithShow ??= super.hasBuiltValueImportWithShow;
+  bool get hasDataClassImportWithShow =>
+      __hasDataClassImportWithShow ??= super.hasDataClassImportWithShow;
 
   @override
-  bool get hasBuiltValueImportWithAs =>
-      __hasBuiltValueImportWithAs ??= super.hasBuiltValueImportWithAs;
+  bool get hasDataClassImportWithAs =>
+      __hasDataClassImportWithAs ??= super.hasDataClassImportWithAs;
 
   @override
-  bool get valueClassIsAbstract =>
-      __valueClassIsAbstract ??= super.valueClassIsAbstract;
+  bool get dataClassIsAbstract =>
+      __dataClassIsAbstract ??= super.dataClassIsAbstract;
 
   @override
   BuiltList<String> get builderImplements =>
