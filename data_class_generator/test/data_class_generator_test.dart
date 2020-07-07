@@ -568,7 +568,7 @@ class CModel with SomeMixin implements SomeInterface {
       );
     });
 
-    test('Missing default constructor is checked', () async {
+    test('Missing default constructor is rejected', () async {
       expect(
         await generate('''library data_class;
 import 'package:data_class/data_class.dart';
@@ -576,7 +576,6 @@ part 'value.g.dart';
 
 @DataClass()
 class CModel {
-
   final String prop1;
 
   CModel.custom({this.prop1});
@@ -586,7 +585,7 @@ class CModel {
       );
     });
 
-    test('Abstract class is checked', () async {
+    test('Abstract class is rejected', () async {
       expect(
         await generate('''library data_class;
 import 'package:data_class/data_class.dart';
