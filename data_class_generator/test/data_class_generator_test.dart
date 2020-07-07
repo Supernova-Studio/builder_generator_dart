@@ -76,7 +76,7 @@ extension _\$InnerTestModelDataClassExtension on InnerTestModel {
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('InnerTestModel')
+    return (newDataClassToStringHelper('InnerTestModel')
           ..add('someProperty', someProperty))
         .toString();
   }
@@ -141,7 +141,7 @@ extension _\$TestModelDataClassExtension on TestModel {
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('TestModel')
+    return (newDataClassToStringHelper('TestModel')
           ..add('name', name)
           ..add('age', age)
           ..add('innerTestModel', innerTestModel))
@@ -278,7 +278,7 @@ extension _\$BModelDataClassExtension on BModel {
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('BModel')
+    return (newDataClassToStringHelper('BModel')
           ..add('propB1', propB1)
           ..add('propB2', propB2)
           ..add('propA', propA))
@@ -361,7 +361,7 @@ extension _\$CModelDataClassExtension<T> on CModel<T> {
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('CModel')
+    return (newDataClassToStringHelper('CModel')
           ..add('genericProp', genericProp)
           ..add('listProp', listProp)
           ..add('propB1', propB1)
