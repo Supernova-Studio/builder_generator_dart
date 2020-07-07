@@ -28,22 +28,20 @@ const _suggestedTypes = <String, String>{
 
 abstract class ValueSourceField
     implements Built<ValueSourceField, ValueSourceFieldBuilder> {
-  BuiltValue get settings;
   ParsedLibraryResult get parsedLibrary;
+
   FieldElement get element;
+
   @nullable
   FieldElement get builderElement;
 
-  factory ValueSourceField(
-          BuiltValue settings,
-          ParsedLibraryResult parsedLibrary,
-          FieldElement element,
-          FieldElement builderElement) =>
+  factory ValueSourceField(ParsedLibraryResult parsedLibrary,
+          FieldElement element, FieldElement builderElement) =>
       _$ValueSourceField._(
-          settings: settings,
           parsedLibrary: parsedLibrary,
           element: element,
           builderElement: builderElement);
+
   ValueSourceField._();
 
   @memoized
@@ -59,11 +57,11 @@ abstract class ValueSourceField
   /// The [type] plus any import prefix.
   @memoized
   String get typeWithPrefix {
-    var typeFromAst = (parsedLibrary.getElementDeclaration(element.declaration).node
-                )
-            ?.thisOrAncestorOfType()
-            ?.toSource() ??
-        'dynamic';
+    var typeFromAst =
+        (parsedLibrary.getElementDeclaration(element.declaration).node)
+                ?.thisOrAncestorOfType()
+                ?.toSource() ??
+            'dynamic';
     var typeFromElement = type;
 
     // If the type is a function, we can't use the element result; it is
@@ -165,24 +163,7 @@ abstract class ValueSourceField
     }
   }
 
-  /// Gets the type name for the builder. Specify the compilation unit to
-  /// get the name for as [compilationUnit]; this affects whether an import
-  /// prefix is used. Pass `null` for [compilationUnit] to just omit the prefix.
-  String typeInBuilder(
-          CompilationUnitElement compilationUnit) =>
-      builderFieldExists
-          ? buildElementType
-          : _toBuilderType(element.getter.returnType,
-              typeInCompilationUnit(compilationUnit));
-
-  @memoized
-  bool get isNestedBuilder => builderFieldExists
-      ? typeInBuilder(null).contains('Builder') ?? false
-      : settings.nestedBuilders &&
-          DartTypes.needsNestedBuilder(element.getter.returnType);
-
   static BuiltList<ValueSourceField> fromClassElements(
-      BuiltValue settings,
       ParsedLibraryResult parsedLibrary,
       ClassElement classElement,
       ClassElement builderClassElement) {
@@ -193,8 +174,7 @@ abstract class ValueSourceField
           field.getter != null &&
           (field.getter.isAbstract || field.getter.isSynthetic)) {
         final builderField = builderClassElement?.getField(field.name);
-        result.add(
-            ValueSourceField(settings, parsedLibrary, field, builderField));
+        result.add(ValueSourceField(parsedLibrary, field, builderField));
       }
     }
 

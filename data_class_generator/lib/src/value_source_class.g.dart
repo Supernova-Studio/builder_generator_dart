@@ -75,9 +75,6 @@ class _$ValueSourceClass extends ValueSourceClass {
   bool get extendsIsAllowed => __extendsIsAllowed ??= super.extendsIsAllowed;
 
   @override
-  BuiltValue get settings => __settings ??= super.settings;
-
-  @override
   BuiltList<String> get genericParameters =>
       __genericParameters ??= super.genericParameters;
 

@@ -107,36 +107,6 @@ abstract class ValueSourceClass
     return true;
   }
 
-  //todo remove
-  @memoized
-  BuiltValue get settings {
-    var annotations = element.metadata
-        .map((annotation) => annotation.computeConstantValue())
-        .where((value) => DartTypes.getName(value?.type) == 'BuiltValue');
-    if (annotations.isEmpty) return const BuiltValue();
-    var annotation = annotations.single;
-    // If a field does not exist, that means an old `built_value` version; use
-    // the default.
-    return BuiltValue(
-        comparableBuilders:
-            annotation.getField('comparableBuilders')?.toBoolValue() ?? false,
-        instantiable:
-            annotation.getField('instantiable')?.toBoolValue() ?? true,
-        nestedBuilders:
-            annotation.getField('nestedBuilders')?.toBoolValue() ?? true,
-        autoCreateNestedBuilders:
-            annotation.getField('autoCreateNestedBuilders')?.toBoolValue() ??
-                true,
-        generateBuilderOnSetField:
-            annotation.getField('generateBuilderOnSetField')?.toBoolValue() ??
-                false,
-        defaultCompare:
-            annotation.getField('defaultCompare')?.toBoolValue() ?? true,
-        defaultSerialize:
-            annotation.getField('defaultSerialize')?.toBoolValue() ?? true,
-        wireName: annotation.getField('wireName')?.toStringValue());
-  }
-
   @memoized
   BuiltList<String> get genericParameters =>
       BuiltList<String>(element.typeParameters.map((e) => e.name));
@@ -184,7 +154,7 @@ abstract class ValueSourceClass
 
   @memoized
   BuiltList<ValueSourceField> get fields => ValueSourceField.fromClassElements(
-      settings, parsedLibrary, element, builderElement);
+      parsedLibrary, element, builderElement);
 
   /// Default constructor to be used to rebuild the data class.
   ConstructorElement get constructor => element.constructors
@@ -325,7 +295,6 @@ abstract class ValueSourceClass
       element.library.definingCompilationUnit;
 
   static bool needDataClass(ClassElement classElement) {
-
     return classElement.metadata
         .map((annotation) => annotation.computeConstantValue())
         .any((value) => DartTypes.getName(value?.type) == 'DataClass');
@@ -340,9 +309,7 @@ abstract class ValueSourceClass
     //todo check if rebuild implementation is correct
     return concat([
       _checkPart(),
-      _checkSettings(),
       _checkValueClass(),
-      _checkBuilderClass(),
       _checkFieldList(),
       _checkConstructor(),
       concat(fields.map((field) => field.computeErrors()))
@@ -369,21 +336,6 @@ abstract class ValueSourceClass
           ..length = 0
           ..fix = '\n\n$partStatement\n\n')
       ];
-    }
-  }
-
-  Iterable<GeneratorError> _checkSettings() {
-    // Not allowed to have comparable builders with nested builders; this
-    // would break comparing because the nested builders may not be comparable.
-    // (Collection builders, in particularly, are definitely not comparable).
-    if (settings.comparableBuilders && settings.nestedBuilders) {
-      return [
-        GeneratorError((b) => b
-          ..message = 'Set `nestedBuilders: false`'
-              ' in order to use `comparableBuilders: true`.')
-      ];
-    } else {
-      return [];
     }
   }
 
@@ -463,43 +415,43 @@ abstract class ValueSourceClass
 //            'Only "implements" and "extends Object with" are allowed.'));
 //    }
 
-    if (settings.instantiable) {
-      if (hasBuilderInitializer) {
-        if (!builderInitializer.isStatic ||
-            !builderInitializer.returnType.isVoid ||
-            builderInitializer.parameters.length != 1 ||
-            parsedLibrary
-                .getElementDeclaration(builderInitializer.parameters[0])
-                .node is! SimpleFormalParameter ||
-            DartTypes.stripGenerics((parsedLibrary
-                        .getElementDeclaration(builderInitializer.parameters[0])
-                        .node as SimpleFormalParameter)
-                    .type
-                    ?.toSource()) !=
-                '${name}Builder') {
-          result.add(GeneratorError((b) => b
-            ..message = 'Fix _initializeBuilder signature: '
-                'static void _initializeBuilder(${name}Builder b)'));
-        }
-      }
-      if (hasBuilderFinalizer) {
-        if (!builderFinalizer.isStatic ||
-            !builderFinalizer.returnType.isVoid ||
-            builderFinalizer.parameters.length != 1 ||
-            parsedLibrary
-                .getElementDeclaration(builderFinalizer.parameters[0])
-                .node is! SimpleFormalParameter ||
-            DartTypes.stripGenerics((parsedLibrary
-                        .getElementDeclaration(builderFinalizer.parameters[0])
-                        .node as SimpleFormalParameter)
-                    .type
-                    ?.toSource()) !=
-                '${name}Builder') {
-          result.add(GeneratorError((b) => b
-            ..message = 'Fix _finalizeBuilder signature: '
-                'static void _finalizeBuilder(${name}Builder b)'));
-        }
-      }
+//    if (settings.instantiable) {
+//      if (hasBuilderInitializer) {
+//        if (!builderInitializer.isStatic ||
+//            !builderInitializer.returnType.isVoid ||
+//            builderInitializer.parameters.length != 1 ||
+//            parsedLibrary
+//                .getElementDeclaration(builderInitializer.parameters[0])
+//                .node is! SimpleFormalParameter ||
+//            DartTypes.stripGenerics((parsedLibrary
+//                        .getElementDeclaration(builderInitializer.parameters[0])
+//                        .node as SimpleFormalParameter)
+//                    .type
+//                    ?.toSource()) !=
+//                '${name}Builder') {
+//          result.add(GeneratorError((b) => b
+//            ..message = 'Fix _initializeBuilder signature: '
+//                'static void _initializeBuilder(${name}Builder b)'));
+//        }
+//      }
+//      if (hasBuilderFinalizer) {
+//        if (!builderFinalizer.isStatic ||
+//            !builderFinalizer.returnType.isVoid ||
+//            builderFinalizer.parameters.length != 1 ||
+//            parsedLibrary
+//                .getElementDeclaration(builderFinalizer.parameters[0])
+//                .node is! SimpleFormalParameter ||
+//            DartTypes.stripGenerics((parsedLibrary
+//                        .getElementDeclaration(builderFinalizer.parameters[0])
+//                        .node as SimpleFormalParameter)
+//                    .type
+//                    ?.toSource()) !=
+//                '${name}Builder') {
+//          result.add(GeneratorError((b) => b
+//            ..message = 'Fix _finalizeBuilder signature: '
+//                'static void _finalizeBuilder(${name}Builder b)'));
+//        }
+//      }
 
 //      final expectedConstructor = '$name._()';
 //      if (valueClassConstructors.isEmpty) {
@@ -546,9 +498,9 @@ abstract class ValueSourceClass
 //          ..message =
 //              'Remove all constructors or remove "instantiable: false".'));
 //      }
-    }
+//    }
 
-    if (settings.instantiable) {
+//    if (settings.instantiable) {
 //      if (!valueClassFactories.any(
 //          (factory) => factory.toSource().contains('$implName$_generics'))) {
 //        final exampleFactory =
@@ -567,7 +519,7 @@ abstract class ValueSourceClass
 //        result.add(GeneratorError((b) => b
 //          ..message = 'Remove all factories or remove "instantiable: false".'));
 //      }
-    }
+//    }
 
 //    if (implementsHashCode) {
 //      result.add(GeneratorError((b) => b
@@ -584,69 +536,70 @@ abstract class ValueSourceClass
     return result;
   }
 
-  Iterable<GeneratorError> _checkBuilderClass() {
-    var result = <GeneratorError>[];
-    if (!hasBuilder) return result;
-
-    if (!builderClassIsAbstract) {
-      result.add(
-          GeneratorError((b) => b..message = 'Make builder class abstract.'));
-    }
-
-    if (settings.instantiable) {
-      final expectedBuilderParameters =
-          '$name$_generics, ${name}Builder$_generics';
-      if (builderParameters != expectedBuilderParameters) {
-        result.add(GeneratorError((b) => b
-          ..message =
-              'Make builder class implement Builder<$expectedBuilderParameters>. '
-                  'Currently: Builder<$builderParameters>'));
-      }
-    }
-
-    if (settings.instantiable) {
-      final expectedConstructor = '${name}Builder._()';
-      if (builderClassConstructors.length != 1 ||
-          !(builderClassConstructors.single.startsWith(expectedConstructor))) {
-        result.add(GeneratorError((b) => b
-          ..message =
-              'Make builder class have exactly one constructor: $expectedConstructor;'));
-      }
-    } else {
-      if (builderClassConstructors.isNotEmpty) {
-        result.add(GeneratorError((b) => b
-          ..message = 'Remove all builder constructors '
-              'or remove "instantiable: false".'));
-      }
-    }
-
-//    if (settings.instantiable) {
-//      final expectedFactory =
-//          'factory ${name}Builder() = ${extPartName}Builder$_generics;';
-//      if (builderClassFactories.length != 1 ||
-//          builderClassFactories.single != expectedFactory) {
+//  Iterable<GeneratorError> _checkBuilderClass() {
+//    var result = <GeneratorError>[];
+//    if (!hasBuilder) return result;
+//
+//    if (!builderClassIsAbstract) {
+//      result.add(
+//          GeneratorError((b) => b..message = 'Make builder class abstract.'));
+//    }
+//
+////    if (settings.instantiable) {
+//      final expectedBuilderParameters =
+//          '$name$_generics, ${name}Builder$_generics';
+//      if (builderParameters != expectedBuilderParameters) {
 //        result.add(GeneratorError((b) => b
 //          ..message =
-//              'Make builder class have exactly one factory: $expectedFactory'));
+//              'Make builder class implement Builder<$expectedBuilderParameters>. '
+//                  'Currently: Builder<$builderParameters>'));
+//      }
+////    }
+//
+//    if (settings.instantiable) {
+//      final expectedConstructor = '${name}Builder._()';
+//      if (builderClassConstructors.length != 1 ||
+//          !(builderClassConstructors.single.startsWith(expectedConstructor))) {
+//        result.add(GeneratorError((b) => b
+//          ..message =
+//              'Make builder class have exactly one constructor: $expectedConstructor;'));
 //      }
 //    } else {
-    if (builderClassFactories.isNotEmpty) {
-      result.add(GeneratorError((b) => b
-        ..message =
-            'Remove all builder factories or remove "instantiable: false".'));
-    }
+//      if (builderClassConstructors.isNotEmpty) {
+//        result.add(GeneratorError((b) => b
+//          ..message = 'Remove all builder constructors '
+//              'or remove "instantiable: false".'));
+//      }
 //    }
-
-    return result;
-  }
+//
+////    if (settings.instantiable) {
+////      final expectedFactory =
+////          'factory ${name}Builder() = ${extPartName}Builder$_generics;';
+////      if (builderClassFactories.length != 1 ||
+////          builderClassFactories.single != expectedFactory) {
+////        result.add(GeneratorError((b) => b
+////          ..message =
+////              'Make builder class have exactly one factory: $expectedFactory'));
+////      }
+////    } else {
+//    if (builderClassFactories.isNotEmpty) {
+//      result.add(GeneratorError((b) => b
+//        ..message =
+//            'Remove all builder factories or remove "instantiable: false".'));
+//    }
+////    }
+//
+//    return result;
+//  }
 
   Iterable<GeneratorError> _checkFieldList() {
     var nonFinalFields = fields.where((field) => !field.element.isFinal);
     return nonFinalFields.isNotEmpty
         ? [
             GeneratorError((b) => b
-              ..message = 'Data class fields must be final. However, these fields are not final: ' +
-                  nonFinalFields.map((field) => field.name).join(', '))
+              ..message =
+                  'Data class fields must be final. However, these fields are not final: ' +
+                      nonFinalFields.map((field) => field.name).join(', '))
           ]
         : [];
   }
@@ -679,9 +632,9 @@ abstract class ValueSourceClass
 
     var result = StringBuffer();
 //    if (settings.instantiable)
-      result.write(_generateImpl());
+    result.write(_generateImpl());
 //    if (settings.instantiable) {
-      result.write(_generateBuilder());
+    result.write(_generateBuilder());
 //    }
 //    else if (!hasBuilder) {
 //      result.write(_generateAbstractBuilder());
@@ -854,8 +807,7 @@ abstract class ValueSourceClass
 
     for (var field in ctorFields) {
       var type = field.typeInCompilationUnit(compilationUnit);
-      var typeInBuilder = field.typeInBuilder(compilationUnit);
-      var fieldType = field.isNestedBuilder ? typeInBuilder : type;
+      var fieldType = type;
       var name = field.name;
 
       // Field.
@@ -863,22 +815,11 @@ abstract class ValueSourceClass
 
       // Getter.
       result.writeln('$fieldType get $name =>');
-      if (field.isNestedBuilder && settings.autoCreateNestedBuilders) {
-        result.writeln('_\$this._$name ??= new $typeInBuilder();');
-      } else {
-        result.writeln('_\$this._$name;');
-      }
+      result.writeln('_\$this._$name;');
 
       // Setter.
-      if (settings.generateBuilderOnSetField) {
-        result.writeln('set $name($fieldType $name) {'
-            '_\$this._$name = $name;'
-            'onSet();'
-            '}');
-      } else {
-        result.writeln('set $name($fieldType $name) =>'
-            '_\$this._$name = $name;');
-      }
+      result.writeln('set $name($fieldType $name) =>'
+          '_\$this._$name = $name;');
 
       result.writeln();
     }
@@ -906,11 +847,7 @@ abstract class ValueSourceClass
       for (var field in ctorFields) {
         final name = field.name;
         final nameInBuilder = hasBuilder ? 'super.$name' : '_$name';
-        if (field.isNestedBuilder) {
-          result.writeln('$nameInBuilder = _\$v.$name?.toBuilder();');
-        } else {
-          result.writeln('$nameInBuilder = _\$v.$name;');
-        }
+        result.writeln('$nameInBuilder = _\$v.$name;');
       }
       result.writeln('_\$v = null;');
       result.writeln('}');
@@ -959,20 +896,21 @@ abstract class ValueSourceClass
     var fieldBuilders = <String, String>{};
     ctorFields.forEach((field) {
       final name = field.name;
-      if (!field.isNestedBuilder) {
-        fieldBuilders[name] = name;
-      } else if (!field.isNullable) {
-        // If not nullable, go via the public accessor, which instantiates
-        // if needed.
-        fieldBuilders[name] = '$name.build()';
-      } else if (hasBuilder) {
-        // Otherwise access the private field: in super if there's a manually
-        // maintained builder.
-        fieldBuilders[name] = 'super.$name?.build()';
-      } else {
-        // Or, directly if there is no manually maintained builder.
-        fieldBuilders[name] = '_$name?.build()';
-      }
+      fieldBuilders[name] = name;
+//      if (!field.isNestedBuilder) {
+//
+//      } else if (!field.isNullable) {
+//        // If not nullable, go via the public accessor, which instantiates
+//        // if needed.
+//        fieldBuilders[name] = '$name.build()';
+//      } else if (hasBuilder) {
+//        // Otherwise access the private field: in super if there's a manually
+//        // maintained builder.
+//        fieldBuilders[name] = 'super.$name?.build()';
+//      } else {
+//        // Or, directly if there is no manually maintained builder.
+//        fieldBuilders[name] = '_$name?.build()';
+//      }
     });
 
     // If there are nested builders then wrap the build in a try/catch so we
@@ -984,7 +922,7 @@ abstract class ValueSourceClass
 //      result.writeln('$extPartName$_generics _\$result;');
 //      result.writeln('try {');
 //    } else {
-      result.write('final ');
+    result.write('final ');
 //    }
     result.writeln('_\$result = _\$v ?? ');
     result.writeln('$name$_generics(');
@@ -1019,22 +957,16 @@ abstract class ValueSourceClass
     result.writeln('return _\$result;');
     result.writeln('}');
 
-    if (settings.comparableBuilders) {
-      result.write(_generateEqualsAndHashcode(forBuilder: true));
-    }
-
     result.writeln('}');
 
     return result.toString();
   }
 
-  String _generateEqualsAndHashcode({bool forBuilder = false}) {
+  String _generateEqualsAndHashcode() {
     var result = StringBuffer();
 
-    var comparedFields = fields
-        .where(
-            (field) => field.builtValueField.compare ?? settings.defaultCompare)
-        .toList();
+    var comparedFields =
+        fields.where((field) => field.builtValueField.compare ?? true).toList();
     var comparedFunctionFields =
         comparedFields.where((field) => field.isFunctionType).toList();
     result.writeln('bool _equals(Object other) {');
@@ -1043,7 +975,7 @@ abstract class ValueSourceClass
     if (comparedFunctionFields.isNotEmpty) {
       result.writeln('  final dynamic _\$dynamicOther = other;');
     }
-    result.writeln('  return other is $name${forBuilder ? 'Builder' : ''}');
+    result.writeln('  return other is $name');
     if (comparedFields.isNotEmpty) {
       result.writeln('&&');
       result.writeln(comparedFields.map((field) {
@@ -1074,7 +1006,7 @@ abstract class ValueSourceClass
       result.writeln(r'$jc(' * comparedFields.length);
       // Use a different seed for builders than for values, so they do not have
       // identical hashCodes if the values are identical.
-      result.writeln(forBuilder ? '1, ' : '0, ');
+      result.writeln('0, ');
       result.write(
           comparedFields.map((field) => '${field.name}.hashCode').join('), '));
       result.writeln('));');

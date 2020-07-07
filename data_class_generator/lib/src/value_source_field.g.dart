@@ -8,8 +8,6 @@ part of data_class_generator.source_field;
 
 class _$ValueSourceField extends ValueSourceField {
   @override
-  final BuiltValue settings;
-  @override
   final ParsedLibraryResult parsedLibrary;
   @override
   final FieldElement element;
@@ -34,11 +32,8 @@ class _$ValueSourceField extends ValueSourceField {
       (new ValueSourceFieldBuilder()..update(updates)).build();
 
   _$ValueSourceField._(
-      {this.settings, this.parsedLibrary, this.element, this.builderElement})
+      {this.parsedLibrary, this.element, this.builderElement})
       : super._() {
-    if (settings == null) {
-      throw new BuiltValueNullFieldError('ValueSourceField', 'settings');
-    }
     if (parsedLibrary == null) {
       throw new BuiltValueNullFieldError('ValueSourceField', 'parsedLibrary');
     }
@@ -89,9 +84,6 @@ class _$ValueSourceField extends ValueSourceField {
       __builderElementTypeWithPrefix ??= super.builderElementTypeWithPrefix;
 
   @override
-  bool get isNestedBuilder => __isNestedBuilder ??= super.isNestedBuilder;
-
-  @override
   ValueSourceField rebuild(void Function(ValueSourceFieldBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
@@ -103,7 +95,6 @@ class _$ValueSourceField extends ValueSourceField {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is ValueSourceField &&
-        settings == other.settings &&
         parsedLibrary == other.parsedLibrary &&
         element == other.element &&
         builderElement == other.builderElement;
@@ -112,7 +103,7 @@ class _$ValueSourceField extends ValueSourceField {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, settings.hashCode), parsedLibrary.hashCode),
+        $jc($jc(0, parsedLibrary.hashCode),
             element.hashCode),
         builderElement.hashCode));
   }
@@ -120,7 +111,6 @@ class _$ValueSourceField extends ValueSourceField {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ValueSourceField')
-          ..add('settings', settings)
           ..add('parsedLibrary', parsedLibrary)
           ..add('element', element)
           ..add('builderElement', builderElement))
@@ -154,7 +144,6 @@ class ValueSourceFieldBuilder
 
   ValueSourceFieldBuilder get _$this {
     if (_$v != null) {
-      _settings = _$v.settings;
       _parsedLibrary = _$v.parsedLibrary;
       _element = _$v.element;
       _builderElement = _$v.builderElement;
@@ -180,7 +169,6 @@ class ValueSourceFieldBuilder
   _$ValueSourceField build() {
     final _$result = _$v ??
         new _$ValueSourceField._(
-            settings: settings,
             parsedLibrary: parsedLibrary,
             element: element,
             builderElement: builderElement);

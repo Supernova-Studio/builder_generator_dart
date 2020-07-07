@@ -22,8 +22,7 @@ class DartTypes {
   }
 
   static bool isInstantiableBuiltValue(DartType type) {
-    return isBuiltValue(type) &&
-        ValueSourceClass(type.element as ClassElement).settings.instantiable;
+    return isBuiltValue(type);
   }
 
   static bool isBuiltValue(DartType type) {

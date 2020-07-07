@@ -258,6 +258,34 @@ class CModel<T> extends BModel {
   int get hashCode => this._hashCode;
 }'''),
         contains('''
+extension _\$BModelDataClassExtension on BModel {
+  BModel _rebuild(void Function(BModelBuilder) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  BModelBuilder _toBuilder() => BModelBuilder()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is BModel &&
+        propB1 == other.propB1 &&
+        propB2 == other.propB2 &&
+        propA == other.propA;
+  }
+
+  int get _hashCode {
+    return \$jf(
+        \$jc(\$jc(\$jc(0, propB1.hashCode), propB2.hashCode), propA.hashCode));
+  }
+
+  String get _string {
+    return (newBuiltValueToStringHelper('BModel')
+          ..add('propB1', propB1)
+          ..add('propB2', propB2)
+          ..add('propA', propA))
+        .toString();
+  }
+}
+
 class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   BModel _\$v;
 
