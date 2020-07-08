@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'nested_model.dart';
+part of 'nested_builder_example.dart';
 
 // **************************************************************************
 // DataClassGenerator

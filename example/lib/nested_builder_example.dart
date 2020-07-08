@@ -1,6 +1,6 @@
 import 'package:data_class/data_class.dart';
 
-part 'nested_model.g.dart';
+part 'nested_builder_example.g.dart';
 
 @DataClass()
 class NodeDataClass {
