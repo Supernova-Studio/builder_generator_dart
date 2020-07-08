@@ -17,13 +17,13 @@ import 'metadata.dart';
 
 part 'value_source_field.g.dart';
 
-//const _suggestedTypes = <String, String>{
-//  'List': 'BuiltList',
-//  'Map': 'BuiltMap',
-//  'Set': 'BuiltSet',
-//  'ListMultimap': 'BuiltListMultimap',
-//  'SetMultimap': 'BuiltSetMultimap',
-//};
+const _suggestedTypes = <String, String>{
+  'List': 'BuiltList',
+  'Map': 'BuiltMap',
+  'Set': 'BuiltSet',
+  'ListMultimap': 'BuiltListMultimap',
+  'SetMultimap': 'BuiltSetMultimap',
+};
 
 abstract class ValueSourceField
     implements Built<ValueSourceField, ValueSourceFieldBuilder> {
@@ -137,11 +137,18 @@ abstract class ValueSourceField
           b..message = 'Make field $name public; remove the underscore.'));
     }
 
-//    if (_suggestedTypes.keys.contains(type)) {
-//      result.add(GeneratorError((b) => b
-//        ..message = 'Make field "$name" have type "${_suggestedTypes[type]}". '
-//            'The current type, "$type", is not allowed because it is mutable.'));
-//    }
+    // Type can be specified with or without generic part.
+    var typeWithoutGenerics = type.contains('<')
+        ? type.replaceRange(type.indexOf('<'), type.length, '')
+        : type;
+
+    // Checks if this member's type is mutable and returns the immutable replacement.
+    var suggestedType = _suggestedTypes[typeWithoutGenerics];
+    if (suggestedType != null) {
+      result.add(GeneratorError((b) => b
+        ..message = 'Make field "$name" have type "$suggestedType". '
+            'The current type, "$typeWithoutGenerics", is not allowed because it is mutable.'));
+    }
 
     return result;
   }

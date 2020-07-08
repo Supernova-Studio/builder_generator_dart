@@ -228,9 +228,6 @@ class BModel extends AModel {
 @DataClass()
 class CModel<T> extends BModel {
   final T genericProp;
-
-  final List<String> listProp;
-
   bool get someGetter => false;
   set someSetter(String input) => null;
 
@@ -238,7 +235,7 @@ class CModel<T> extends BModel {
   String get getterA => 'value';
   static String staticMember = 'value';
 
-  CModel({String propA, String propB1, this.genericProp, this.listProp})
+  CModel({String propA, String propB1, this.genericProp})
       : super(propA: propA, propB1: propB1, propB2: 'fixedValue');
 
   @override
@@ -338,7 +335,6 @@ extension _\$CModelDataClassExtension<T> on CModel<T> {
     if (identical(other, this)) return true;
     return other is CModel &&
         genericProp == other.genericProp &&
-        listProp == other.listProp &&
         propB1 == other.propB1 &&
         propB2 == other.propB2 &&
         propA == other.propA;
@@ -346,9 +342,7 @@ extension _\$CModelDataClassExtension<T> on CModel<T> {
 
   int get _hashCode {
     return \$jf(\$jc(
-        \$jc(
-            \$jc(\$jc(\$jc(0, genericProp.hashCode), listProp.hashCode),
-                propB1.hashCode),
+        \$jc(\$jc(\$jc(0, genericProp.hashCode), propB1.hashCode),
             propB2.hashCode),
         propA.hashCode));
   }
@@ -356,7 +350,6 @@ extension _\$CModelDataClassExtension<T> on CModel<T> {
   String get _string {
     return (newDataClassToStringHelper('CModel')
           ..add('genericProp', genericProp)
-          ..add('listProp', listProp)
           ..add('propB1', propB1)
           ..add('propB2', propB2)
           ..add('propA', propA))
@@ -372,10 +365,6 @@ class CModelBuilder<T>
   T get genericProp => _\$this._genericProp;
   set genericProp(T genericProp) => _\$this._genericProp = genericProp;
 
-  List<String> _listProp;
-  List<String> get listProp => _\$this._listProp;
-  set listProp(List<String> listProp) => _\$this._listProp = listProp;
-
   String _propB1;
   String get propB1 => _\$this._propB1;
   set propB1(String propB1) => _\$this._propB1 = propB1;
@@ -389,7 +378,6 @@ class CModelBuilder<T>
   CModelBuilder<T> get _\$this {
     if (_\$v != null) {
       _genericProp = _\$v.genericProp;
-      _listProp = _\$v.listProp;
       _propB1 = _\$v.propB1;
       _propA = _\$v.propA;
       _\$v = null;
@@ -413,11 +401,7 @@ class CModelBuilder<T>
   @override
   CModel<T> build() {
     final _\$result = _\$v ??
-        CModel<T>(
-            genericProp: genericProp,
-            listProp: listProp,
-            propB1: propB1,
-            propA: propA);
+        CModel<T>(genericProp: genericProp, propB1: propB1, propA: propA);
     replace(_\$result);
     return _\$result;
   }
@@ -799,22 +783,39 @@ class Value {
               'already specifying a type, please make sure the type is correctly imported.'));
     });
 
-//    test('Constructor with positioned parameters is rejected', () async {
-//      expect(
-//          await generate('''library data_class;
-//import 'package:data_class/data_class.dart';
-//
-//part 'value.g.dart';
-//
-//@DataClass()
-//class Value {
-//  final String foo;
-//
-//  Value(String param1, {this.foo});
-//}'''),
-//          contains('1. Make field foo have non-dynamic type. If you are '
-//              'already specifying a type, please make sure the type is correctly imported.'));
-//    });
+    test('Constructor with positioned parameters is rejected', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+@DataClass()
+class Value {
+  final String foo;
+
+  Value(String param1, {this.foo});
+}'''),
+          contains('1. Default constructor can have named parameters only. '
+              'Please, make the following fields named: param1.'));
+    });
+
+    test('Constructor with optional parameters is rejected', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+@DataClass()
+class Value {
+  final String foo;
+
+  Value([this.foo = "123"]]);
+}'''),
+          contains('1. Default constructor can have named parameters only. '
+              'Please, make the following fields named: foo.'));
+    });
 
     test('Field without matching constructor parameter is rejected', () async {
       expect(
@@ -833,29 +834,46 @@ class Value {
               '1. Default constructor can have named parameters only. Please, make the following fields named: foo1.'));
     });
 
-//  test('suggests built_collection fields instead of SDK fields', () async {
-//    expect(
-//        await generate('''library data_class;
-//
-//part 'value.g.dart';
-//abstract class Value implements Built<Value, ValueBuilder> {
-//  Value._();
-//  factory Value([void Function(ValueBuilder) updates]) = _\$Value;
-//  List get list;
-//  Set get set;
-//  Map get map;
-//}'''),
-//        allOf(
-//            contains('1. Make field "list" have type "BuiltList". '
-//                'The current type, "List", is not allowed '
-//                'because it is mutable.'),
-//            contains('2. Make field "set" have type "BuiltSet". '
-//                'The current type, "Set", is not allowed '
-//                'because it is mutable.')));
-//  });
-  });
+    test('Suggests built_collection fields instead of SDK fields', () async {
+      expect(
+          await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+part 'value.g.dart';
 
-//  group('generator', () {
+@DataClass()
+class Value {
+  final List list;
+  final Set set;
+  final Map map;
+  
+  final List<String> listTyped;
+  final Set<int> setTyped;
+  final Map<String, dynamic> mapTyped;
+  
+  Value({this.list, this.set, this.map, this.listTyped, this.setTyped, this.mapTyped});
+}'''),
+          allOf(
+            contains('1. Make field "list" have type "BuiltList". '
+                'The current type, "List", is not allowed '
+                'because it is mutable.'),
+            contains('2. Make field "set" have type "BuiltSet". '
+                'The current type, "Set", is not allowed '
+                'because it is mutable.'),
+            contains('3. Make field "map" have type "BuiltMap". '
+                'The current type, "Map", is not allowed '
+                'because it is mutable.'),
+            contains('4. Make field "listTyped" have type "BuiltList". '
+                'The current type, "List", is not allowed '
+                'because it is mutable.'),
+            contains('5. Make field "setTyped" have type "BuiltSet". '
+                'The current type, "Set", is not allowed '
+                'because it is mutable.'),
+            contains('6. Make field "mapTyped" have type "BuiltMap". '
+                'The current type, "Map", is not allowed '
+                'because it is mutable.'),
+          ));
+    });
+  });
 }
 
 //
