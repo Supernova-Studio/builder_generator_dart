@@ -79,20 +79,18 @@ extension _$TestModelDataClassExtension on TestModel {
     return other is TestModel &&
         name == other.name &&
         age == other.age &&
-        list == other.list &&
         innerTestModel == other.innerTestModel;
   }
 
   int get _hashCode {
-    return $jf($jc($jc($jc($jc(0, name.hashCode), age.hashCode), list.hashCode),
-        innerTestModel.hashCode));
+    return $jf(
+        $jc($jc($jc(0, name.hashCode), age.hashCode), innerTestModel.hashCode));
   }
 
   String get _string {
     return (newDataClassToStringHelper('TestModel')
           ..add('name', name)
           ..add('age', age)
-          ..add('list', list)
           ..add('innerTestModel', innerTestModel))
         .toString();
   }
@@ -110,10 +108,6 @@ class TestModelBuilder
   int get age => _$this._age;
   set age(int age) => _$this._age = age;
 
-  List<String> _list;
-  List<String> get list => _$this._list;
-  set list(List<String> list) => _$this._list = list;
-
   InnerTestModel _innerTestModel;
   InnerTestModel get innerTestModel => _$this._innerTestModel;
   set innerTestModel(InnerTestModel innerTestModel) =>
@@ -125,7 +119,6 @@ class TestModelBuilder
     if (_$v != null) {
       _name = _$v.name;
       _age = _$v.age;
-      _list = _$v.list;
       _innerTestModel = _$v.innerTestModel;
       _$v = null;
     }
@@ -147,9 +140,8 @@ class TestModelBuilder
 
   @override
   TestModel build() {
-    final _$result = _$v ??
-        TestModel(
-            name: name, age: age, list: list, innerTestModel: innerTestModel);
+    final _$result =
+        _$v ?? TestModel(name: name, age: age, innerTestModel: innerTestModel);
     replace(_$result);
     return _$result;
   }
@@ -242,7 +234,6 @@ extension _$CModelDataClassExtension<T> on CModel<T> {
     if (identical(other, this)) return true;
     return other is CModel &&
         genericProp == other.genericProp &&
-        listProp == other.listProp &&
         propB1 == other.propB1 &&
         propB2 == other.propB2 &&
         propA == other.propA;
@@ -250,9 +241,7 @@ extension _$CModelDataClassExtension<T> on CModel<T> {
 
   int get _hashCode {
     return $jf($jc(
-        $jc(
-            $jc($jc($jc(0, genericProp.hashCode), listProp.hashCode),
-                propB1.hashCode),
+        $jc($jc($jc(0, genericProp.hashCode), propB1.hashCode),
             propB2.hashCode),
         propA.hashCode));
   }
@@ -260,7 +249,6 @@ extension _$CModelDataClassExtension<T> on CModel<T> {
   String get _string {
     return (newDataClassToStringHelper('CModel')
           ..add('genericProp', genericProp)
-          ..add('listProp', listProp)
           ..add('propB1', propB1)
           ..add('propB2', propB2)
           ..add('propA', propA))
@@ -276,10 +264,6 @@ class CModelBuilder<T>
   T get genericProp => _$this._genericProp;
   set genericProp(T genericProp) => _$this._genericProp = genericProp;
 
-  List<String> _listProp;
-  List<String> get listProp => _$this._listProp;
-  set listProp(List<String> listProp) => _$this._listProp = listProp;
-
   String _propB1;
   String get propB1 => _$this._propB1;
   set propB1(String propB1) => _$this._propB1 = propB1;
@@ -293,7 +277,6 @@ class CModelBuilder<T>
   CModelBuilder<T> get _$this {
     if (_$v != null) {
       _genericProp = _$v.genericProp;
-      _listProp = _$v.listProp;
       _propB1 = _$v.propB1;
       _propA = _$v.propA;
       _$v = null;
@@ -317,11 +300,7 @@ class CModelBuilder<T>
   @override
   CModel<T> build() {
     final _$result = _$v ??
-        CModel<T>(
-            genericProp: genericProp,
-            listProp: listProp,
-            propB1: propB1,
-            propA: propA);
+        CModel<T>(genericProp: genericProp, propB1: propB1, propA: propA);
     replace(_$result);
     return _$result;
   }
@@ -348,7 +327,6 @@ TestModel _$TestModelFromJson(Map<String, dynamic> json) {
   return TestModel(
     name: json['name'] as String,
     age: json['age'] as int,
-    list: (json['list'] as List)?.map((e) => e as String)?.toList(),
     innerTestModel: json['innerTestModel'] == null
         ? null
         : InnerTestModel.fromJson(
@@ -359,7 +337,6 @@ TestModel _$TestModelFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$TestModelToJson(TestModel instance) => <String, dynamic>{
       'name': instance.name,
       'age': instance.age,
-      'list': instance.list,
       'innerTestModel': instance.innerTestModel,
     };
 
@@ -367,12 +344,10 @@ CModel<T> _$CModelFromJson<T>(Map<String, dynamic> json) {
   return CModel<T>(
     propA: json['propA'] as String,
     propB1: json['propB1'] as String,
-    listProp: (json['listProp'] as List)?.map((e) => e as String)?.toList(),
   );
 }
 
 Map<String, dynamic> _$CModelToJson<T>(CModel<T> instance) => <String, dynamic>{
       'propA': instance.propA,
       'propB1': instance.propB1,
-      'listProp': instance.listProp,
     };

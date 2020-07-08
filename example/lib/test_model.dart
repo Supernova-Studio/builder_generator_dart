@@ -1,4 +1,3 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:data_class/data_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -23,7 +22,7 @@ class InnerTestModel {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  bool operator ==(other) => this._equals(other);
+  bool operator ==(dynamic other) => this._equals(other);
 
   @override
   String toString() => this._string;
@@ -49,21 +48,20 @@ class TestModel {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
   final String name;
   final int age;
-  final List<String> list;
   final InnerTestModel innerTestModel;
 
   //
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  TestModel({this.name, this.age, this.list, this.innerTestModel});
+  TestModel({this.name, this.age, this.innerTestModel});
 
   //
   /// Data class members
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  bool operator ==(other) => this._equals(other);
+  bool operator ==(dynamic other) => this._equals(other);
 
   @override
   String toString() => this._string;
@@ -109,8 +107,6 @@ class CModel<T> extends BModel {
   @JsonKey(ignore: true)
   final T genericProp;
 
-  final List<String> listProp;
-
   bool get someGetter => false;
 
   set someSetter(String input) => null;
@@ -123,7 +119,7 @@ class CModel<T> extends BModel {
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  CModel({String propA, String propB1, this.genericProp, this.listProp})
+  CModel({String propA, String propB1, this.genericProp})
       : super(propA: propA, propB1: propB1, propB2: 'fixedValue');
 
   //
@@ -131,7 +127,7 @@ class CModel<T> extends BModel {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  bool operator ==(other) => this._equals(other);
+  bool operator ==(dynamic other) => this._equals(other);
 
   @override
   String toString() => this._string;
