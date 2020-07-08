@@ -44,7 +44,6 @@ abstract class ValueSourceField
   @memoized
   String get name => element.displayName;
 
-  //todo getter ->declaration?
   @memoized
   String get type => DartTypes.getName(element.getter.returnType);
 
