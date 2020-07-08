@@ -7,10 +7,10 @@ part of 'test_model.dart';
 // **************************************************************************
 
 extension _$InnerTestModelDataClassExtension on InnerTestModel {
-  InnerTestModel _rebuild(void Function(InnerTestModelBuilder) updates) =>
-      (_toBuilder()..update(updates)).build();
+  InnerTestModel rebuild(void Function(InnerTestModelBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
-  InnerTestModelBuilder _toBuilder() => InnerTestModelBuilder()..replace(this);
+  InnerTestModelBuilder toBuilder() => InnerTestModelBuilder()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -22,7 +22,7 @@ extension _$InnerTestModelDataClassExtension on InnerTestModel {
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('InnerTestModel')
+    return (newDataClassToStringHelper('InnerTestModel')
           ..add('someProperty', someProperty))
         .toString();
   }
@@ -68,10 +68,10 @@ class InnerTestModelBuilder
 }
 
 extension _$TestModelDataClassExtension on TestModel {
-  TestModel _rebuild(void Function(TestModelBuilder) updates) =>
-      (_toBuilder()..update(updates)).build();
+  TestModel rebuild(void Function(TestModelBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
-  TestModelBuilder _toBuilder() => TestModelBuilder()..replace(this);
+  TestModelBuilder toBuilder() => TestModelBuilder()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -88,7 +88,7 @@ extension _$TestModelDataClassExtension on TestModel {
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('TestModel')
+    return (newDataClassToStringHelper('TestModel')
           ..add('name', name)
           ..add('age', age)
           ..add('list', list)
@@ -155,10 +155,10 @@ class TestModelBuilder
 }
 
 extension _$BModelDataClassExtension on BModel {
-  BModel _rebuild(void Function(BModelBuilder) updates) =>
-      (_toBuilder()..update(updates)).build();
+  BModel rebuild(void Function(BModelBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
-  BModelBuilder _toBuilder() => BModelBuilder()..replace(this);
+  BModelBuilder toBuilder() => BModelBuilder()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -174,7 +174,7 @@ extension _$BModelDataClassExtension on BModel {
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('BModel')
+    return (newDataClassToStringHelper('BModel')
           ..add('propB1', propB1)
           ..add('propB2', propB2)
           ..add('propA', propA))
@@ -232,10 +232,10 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
 }
 
 extension _$CModelDataClassExtension<T> on CModel<T> {
-  CModel<T> _rebuild(void Function(CModelBuilder<T>) updates) =>
-      (_toBuilder()..update(updates)).build();
+  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
+      (toBuilder()..update(updates)).build();
 
-  CModelBuilder<T> _toBuilder() => CModelBuilder<T>()..replace(this);
+  CModelBuilder<T> toBuilder() => CModelBuilder<T>()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -257,7 +257,7 @@ extension _$CModelDataClassExtension<T> on CModel<T> {
   }
 
   String get _string {
-    return (newBuiltValueToStringHelper('CModel')
+    return (newDataClassToStringHelper('CModel')
           ..add('genericProp', genericProp)
           ..add('listProp', listProp)
           ..add('propB1', propB1)
@@ -326,6 +326,52 @@ class CModelBuilder<T>
   }
 }
 
+extension _$TestTestDataClassExtension on TestTest {
+  TestTest rebuild(void Function(TestTestBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  TestTestBuilder toBuilder() => TestTestBuilder()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is TestTest;
+  }
+
+  int get _hashCode {
+    return 368418753;
+  }
+
+  String get _string {
+    return newDataClassToStringHelper('TestTest').toString();
+  }
+}
+
+class TestTestBuilder implements DataClassBuilder<TestTest, TestTestBuilder> {
+  TestTest _$v;
+
+  TestTestBuilder();
+
+  @override
+  void replace(TestTest other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other;
+  }
+
+  @override
+  void update(void Function(TestTestBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  TestTest build() {
+    final _$result = _$v ?? TestTest();
+    replace(_$result);
+    return _$result;
+  }
+}
+
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
 
 // **************************************************************************
@@ -375,3 +421,9 @@ Map<String, dynamic> _$CModelToJson<T>(CModel<T> instance) => <String, dynamic>{
       'propB1': instance.propB1,
       'listProp': instance.listProp,
     };
+
+TestTest _$TestTestFromJson(Map<String, dynamic> json) {
+  return TestTest();
+}
+
+Map<String, dynamic> _$TestTestToJson(TestTest instance) => <String, dynamic>{};

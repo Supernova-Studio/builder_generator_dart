@@ -23,9 +23,6 @@ class $CLASS_NAME$ {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     
   @override
-  $CLASS_NAME$ rebuild(Function($CLASS_NAME$Builder) updates) => this._rebuild(updates);
-
-  @override
   bool operator ==(other) => this._equals(other);
 
   @override

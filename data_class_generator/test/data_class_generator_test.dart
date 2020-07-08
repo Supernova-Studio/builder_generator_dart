@@ -26,10 +26,6 @@ class InnerTestModel {
   InnerTestModel({this.someProperty});
 
   @override
-  InnerTestModel rebuild(Function(InnerTestModelBuilder) updates) =>
-      _rebuild(updates);
-
-  @override
   bool operator ==(other) => this._equals(other);
 
   @override
@@ -48,9 +44,6 @@ class TestModel {
   TestModel({this.name, this.age, this.innerTestModel});
 
   @override
-  TestModel rebuild(Function(TestModelBuilder) updates) => _rebuild(updates);
-
-  @override
   bool operator ==(other) => this._equals(other);
 
   @override
@@ -61,10 +54,10 @@ class TestModel {
 }'''),
         contains('''
 extension _\$InnerTestModelDataClassExtension on InnerTestModel {
-  InnerTestModel _rebuild(void Function(InnerTestModelBuilder) updates) =>
-      (_toBuilder()..update(updates)).build();
+  InnerTestModel rebuild(void Function(InnerTestModelBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
-  InnerTestModelBuilder _toBuilder() => InnerTestModelBuilder()..replace(this);
+  InnerTestModelBuilder toBuilder() => InnerTestModelBuilder()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -122,10 +115,10 @@ class InnerTestModelBuilder
 }
 
 extension _\$TestModelDataClassExtension on TestModel {
-  TestModel _rebuild(void Function(TestModelBuilder) updates) =>
-      (_toBuilder()..update(updates)).build();
+  TestModel rebuild(void Function(TestModelBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
-  TestModelBuilder _toBuilder() => TestModelBuilder()..replace(this);
+  TestModelBuilder toBuilder() => TestModelBuilder()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -245,9 +238,6 @@ class CModel<T> extends BModel {
   CModel({String propA, String propB1, this.genericProp, this.listProp})
       : super(propA: propA, propB1: propB1, propB2: 'fixedValue');
 
-  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
-      this._rebuild(updates);
-
   @override
   bool operator ==(other) => this._equals(other);
 
@@ -259,10 +249,10 @@ class CModel<T> extends BModel {
 }'''),
         contains('''
 extension _\$BModelDataClassExtension on BModel {
-  BModel _rebuild(void Function(BModelBuilder) updates) =>
-      (_toBuilder()..update(updates)).build();
+  BModel rebuild(void Function(BModelBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
-  BModelBuilder _toBuilder() => BModelBuilder()..replace(this);
+  BModelBuilder toBuilder() => BModelBuilder()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -336,10 +326,10 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
 }
 
 extension _\$CModelDataClassExtension<T> on CModel<T> {
-  CModel<T> _rebuild(void Function(CModelBuilder<T>) updates) =>
-      (_toBuilder()..update(updates)).build();
+  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
+      (toBuilder()..update(updates)).build();
 
-  CModelBuilder<T> _toBuilder() => CModelBuilder<T>()..replace(this);
+  CModelBuilder<T> toBuilder() => CModelBuilder<T>()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -448,9 +438,6 @@ class Value {
   Value({this.name});
 
   @override
-  Value rebuild(Function(DataClassBuilder<Value>) updates) => _rebuild(updates);
-
-  @override
   bool operator ==(other) => _equals(other);
 
   @override
@@ -493,10 +480,6 @@ class CModel extends BModel implements IModel {
 
   CModel({String propA, String propB, this.propC})
       : super(propA: propA, propB: propB);
-
-  @override
-  CModel rebuild(void Function(CModelBuilder) updates) =>
-      this._rebuild(updates);
 }'''),
         isNot(containsErrors),
       );
@@ -514,10 +497,6 @@ class CModel<T> {
   final T genericProp;
 
   CModel({this.genericProp});
-
-  @override
-  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
-      this._rebuild(updates);
 }'''),
         isNot(containsErrors),
       );
@@ -584,10 +563,6 @@ class CModel with SomeMixin implements SomeInterface {
   String interfaceProp;
 
   CModel({this.prop1});
-
-  @override
-  CModel rebuild(void Function(CModelBuilder) updates) =>
-      this._rebuild(updates);
 }'''),
         contains(
             '1. Data class fields must be final. However, these fields are not final: prop2, interfaceProp, mixinProp'),

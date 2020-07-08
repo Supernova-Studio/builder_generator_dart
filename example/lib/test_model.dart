@@ -23,10 +23,6 @@ class InnerTestModel {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   @override
-  InnerTestModel rebuild(Function(InnerTestModelBuilder) updates) =>
-      _rebuild(updates);
-
-  @override
   bool operator ==(other) => this._equals(other);
 
   @override
@@ -65,9 +61,6 @@ class TestModel {
   //
   /// Data class members
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-  @override
-  TestModel rebuild(Function(TestModelBuilder) updates) => _rebuild(updates);
 
   @override
   bool operator ==(other) => this._equals(other);
@@ -136,9 +129,6 @@ class CModel<T> extends BModel {
   /// Data class members
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
-      this._rebuild(updates);
-
   @override
   bool operator ==(other) => this._equals(other);
 
@@ -165,4 +155,43 @@ void main() {
   });
 
   print(newModel.genericProp);
+}
+
+
+
+@JsonSerializable()
+@DataClass()
+class TestTest {
+  //
+  /// Properties
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+  //
+  /// Constructor
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  TestTest();
+
+  //
+  /// Data class members
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  @override
+  bool operator ==(other) => this._equals(other);
+
+  @override
+  String toString() => this._string;
+
+  @override
+  int get hashCode => this._hashCode;
+
+  //
+  /// Mapping
+  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+  Map<String, dynamic> toJson() => _$TestTestToJson(this);
+
+  factory TestTest.fromJson(Map<String, dynamic> json) =>
+      _$TestTestFromJson(json);
 }

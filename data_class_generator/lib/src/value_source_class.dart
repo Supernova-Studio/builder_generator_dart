@@ -280,11 +280,11 @@ abstract class ValueSourceClass
     result.writeln();
 
     result.writeln(
-        '$name$_generics _rebuild(void Function($builderName) updates) '
-            '=> (_toBuilder()..update(updates)).build();');
+        '$name$_generics rebuild(void Function($builderName) updates) '
+            '=> (toBuilder()..update(updates)).build();');
     result.writeln();
 
-    result.writeln('$builderName _toBuilder() '
+    result.writeln('$builderName toBuilder() '
         '=> ${builderName}()..replace(this);');
     result.writeln();
 
