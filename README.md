@@ -23,7 +23,7 @@ class $CLASS_NAME$ {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     
   @override
-  bool operator ==(other) => this._equals(other);
+  bool operator ==(dynamic other) => this._equals(other);
 
   @override
   String toString() => this._string;
