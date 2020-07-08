@@ -18,18 +18,16 @@ BuiltSet<String> _builtCollectionNames = BuiltSet<String>([
 
 class DartTypes {
   static bool needsNestedBuilder(DartType type) {
-    return isInstantiableBuiltValue(type) || isBuiltCollection(type);
+    return isDataClass(type) || isBuiltCollection(type);
   }
 
-  static bool isInstantiableBuiltValue(DartType type) {
-    return isBuiltValue(type);
-  }
-
-  static bool isBuiltValue(DartType type) {
+  static bool isDataClass(DartType type) {
     if (type.element is! ClassElement) return false;
+
     return (type.element as ClassElement)
-        .allSupertypes
-        .any((interfaceType) => interfaceType.element.name == 'Built');
+        .metadata
+        .map((annotation) => annotation.computeConstantValue())
+        .any((value) => DartTypes.getName(value?.type) == 'DataClass');
   }
 
   static bool isBuiltCollection(DartType type) {
@@ -38,7 +36,7 @@ class DartTypes {
   }
 
   static bool isBuilt(DartType type) =>
-      isBuiltValue(type) || isBuiltCollection(type);
+      isDataClass(type) || isBuiltCollection(type);
 
   static bool isBuiltCollectionTypeName(String name) =>
       _builtCollectionNames.contains(name);

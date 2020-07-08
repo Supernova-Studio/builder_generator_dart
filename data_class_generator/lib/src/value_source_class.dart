@@ -65,7 +65,7 @@ abstract class ValueSourceClass
   @memoized
   ClassDeclaration get classDeclaration {
     return parsedLibrary.getElementDeclaration(element).node
-    as ClassDeclaration;
+        as ClassDeclaration;
   }
 
   @memoized
@@ -217,11 +217,11 @@ abstract class ValueSourceClass
     var nonFinalFields = fields.where((field) => !field.element.isFinal);
     return nonFinalFields.isNotEmpty
         ? [
-      GeneratorError((b) => b
-        ..message =
-            'Data class fields must be final. However, these fields are not final: ' +
-                nonFinalFields.map((field) => field.name).join(', '))
-    ]
+            GeneratorError((b) => b
+              ..message =
+                  'Data class fields must be final. However, these fields are not final: ' +
+                      nonFinalFields.map((field) => field.name).join(', '))
+          ]
         : [];
   }
 
@@ -235,7 +235,7 @@ abstract class ValueSourceClass
     }
 
     var nonNamedParams =
-    constructor.parameters.where((param) => !param.isNamed);
+        constructor.parameters.where((param) => !param.isNamed);
 
     if (nonNamedParams.isNotEmpty) {
       return [
@@ -254,12 +254,12 @@ abstract class ValueSourceClass
   String get _boundedGenerics => genericParameters.isEmpty
       ? ''
       : '<' +
-      zip(<Iterable>[genericParameters, genericBounds]).map((zipped) {
-        final parameter = zipped[0] as String;
-        final bound = zipped[1] as String;
-        return bound.isEmpty ? parameter : '$parameter extends $bound';
-      }).join(', ') +
-      '>';
+          zip(<Iterable>[genericParameters, genericBounds]).map((zipped) {
+            final parameter = zipped[0] as String;
+            final bound = zipped[1] as String;
+            return bound.isEmpty ? parameter : '$parameter extends $bound';
+          }).join(', ') +
+          '>';
 
   String generateCode() {
     var errors = computeErrors();
@@ -281,7 +281,7 @@ abstract class ValueSourceClass
 
     result.writeln(
         '$name$_generics rebuild(void Function($builderName builder) updates) '
-            '=> (toBuilder()..update(updates)).build();');
+        '=> (toBuilder()..update(updates)).build();');
     result.writeln();
 
     result.writeln('$builderName toBuilder() '
@@ -320,7 +320,8 @@ abstract class ValueSourceClass
 
     for (var field in ctorFields) {
       var type = field.typeInCompilationUnit(compilationUnit);
-      var fieldType = type;
+      var typeInBuilder = field.typeInBuilder(compilationUnit);
+      var fieldType = field.isNestedBuilder ? typeInBuilder : type;
       var name = field.name;
 
       // Field
@@ -328,7 +329,11 @@ abstract class ValueSourceClass
 
       // Getter
       result.writeln('$fieldType get $name =>');
-      result.writeln('_\$this._$name;');
+      if (field.isNestedBuilder) {
+        result.writeln('_\$this._$name ??= new $typeInBuilder();');
+      } else {
+        result.writeln('_\$this._$name;');
+      }
 
       // Setter
       result.writeln('set $name($fieldType $name) =>'
@@ -347,7 +352,12 @@ abstract class ValueSourceClass
       for (var field in ctorFields) {
         final name = field.name;
         final nameInBuilder = '_$name';
-        result.writeln('$nameInBuilder = _\$v.$name;');
+        if (field.isNestedBuilder) {
+          result.writeln('$nameInBuilder = _\$v.$name?.toBuilder();');
+        } else {
+          result.writeln('$nameInBuilder = _\$v.$name;');
+        }
+//        result.writeln('$nameInBuilder = _\$v.$name;');
       }
       result.writeln('_\$v = null;');
       result.writeln('}');
@@ -365,8 +375,9 @@ abstract class ValueSourceClass
     result.writeln('}');
 
     result.writeln('@override');
-    result.writeln('void update(void Function(${builderName} builder) updates) {'
-        ' if (updates != null) updates(this); }');
+    result
+        .writeln('void update(void Function(${builderName} builder) updates) {'
+            ' if (updates != null) updates(this); }');
     result.writeln();
 
     result.writeln('@override');
@@ -378,7 +389,11 @@ abstract class ValueSourceClass
     var fieldBuilders = <String, String>{};
     ctorFields.forEach((field) {
       final name = field.name;
-      fieldBuilders[name] = name;
+      if (!field.isNestedBuilder) {
+        fieldBuilders[name] = name;
+      } else {
+        fieldBuilders[name] = '_$name?.build()';
+      }
     });
 
     result.write('final ');
@@ -404,7 +419,7 @@ abstract class ValueSourceClass
 
     var comparedFields = fields.toList();
     var comparedFunctionFields =
-    comparedFields.where((field) => field.isFunctionType).toList();
+        comparedFields.where((field) => field.isFunctionType).toList();
     result.writeln('bool _equals(Object other) {');
     result.writeln('  if (identical(other, this)) return true;');
 
@@ -416,7 +431,7 @@ abstract class ValueSourceClass
       result.writeln('&&');
       result.writeln(comparedFields.map((field) {
         var nameOrThisDotName =
-        field.name == 'other' ? 'this.other' : field.name;
+            field.name == 'other' ? 'this.other' : field.name;
         return field.isFunctionType
             ? '$nameOrThisDotName == _\$dynamicOther.${field.name}'
             : '$nameOrThisDotName == other.${field.name}';
@@ -447,7 +462,7 @@ abstract class ValueSourceClass
 
 InvalidGenerationSourceError _makeError(Iterable<GeneratorError> todos) {
   var message =
-  StringBuffer('Please make the following changes to use DataClass:\n');
+      StringBuffer('Please make the following changes to use DataClass:\n');
   for (var i = 0; i != todos.length; ++i) {
     message.write('\n${i + 1}. ${todos.elementAt(i).message}');
   }

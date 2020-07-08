@@ -8,6 +8,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
+import 'package:analyzer/dart/element/type.dart';
 
 import 'dart_types.dart';
 import 'fields.dart';
@@ -30,14 +31,9 @@ abstract class ValueSourceField
 
   FieldElement get element;
 
-  @nullable
-  FieldElement get builderElement;
-
-  factory ValueSourceField(ParsedLibraryResult parsedLibrary,
-          FieldElement element) =>
-      _$ValueSourceField._(
-          parsedLibrary: parsedLibrary,
-          element: element);
+  factory ValueSourceField(
+          ParsedLibraryResult parsedLibrary, FieldElement element) =>
+      _$ValueSourceField._(parsedLibrary: parsedLibrary, element: element);
 
   ValueSourceField._();
 
@@ -86,9 +82,33 @@ abstract class ValueSourceField
   bool get isNullable => element.getter.metadata
       .any((metadata) => metadataToStringValue(metadata) == 'nullable');
 
+  static String _toBuilderType(DartType type, String displayName) {
+    if (DartTypes.isBuiltCollection(type)) {
+      return displayName
+          .replaceFirst('Built', '')
+          .replaceFirst('<', 'Builder<');
+    } else if (DartTypes.isDataClass(type)) {
+      return displayName.contains('<')
+          ? displayName.replaceFirst('<', 'Builder<')
+          : '${displayName}Builder';
+    } else {
+      return displayName;
+    }
+  }
+
+  /// Gets the type name for the builder. Specify the compilation unit to
+  /// get the name for as [compilationUnit]; this affects whether an import
+  /// prefix is used. Pass `null` for [compilationUnit] to just omit the prefix.
+  String typeInBuilder(CompilationUnitElement compilationUnit) =>
+      _toBuilderType(
+          element.getter.returnType, typeInCompilationUnit(compilationUnit));
+
+  @memoized
+  bool get isNestedBuilder =>
+      DartTypes.needsNestedBuilder(element.getter.returnType);
+
   static BuiltList<ValueSourceField> fromClassElements(
-      ParsedLibraryResult parsedLibrary,
-      ClassElement classElement) {
+      ParsedLibraryResult parsedLibrary, ClassElement classElement) {
     var result = ListBuilder<ValueSourceField>();
 
     for (var field in collectFields(classElement)) {

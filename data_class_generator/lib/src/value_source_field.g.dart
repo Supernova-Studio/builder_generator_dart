@@ -11,21 +11,19 @@ class _$ValueSourceField extends ValueSourceField {
   final ParsedLibraryResult parsedLibrary;
   @override
   final FieldElement element;
-  @override
-  final FieldElement builderElement;
   String __name;
   String __type;
   bool __isFunctionType;
   String __typeWithPrefix;
   bool __isGetter;
   bool __isNullable;
+  bool __isNestedBuilder;
 
   factory _$ValueSourceField(
           [void Function(ValueSourceFieldBuilder) updates]) =>
       (new ValueSourceFieldBuilder()..update(updates)).build();
 
-  _$ValueSourceField._({this.parsedLibrary, this.element, this.builderElement})
-      : super._() {
+  _$ValueSourceField._({this.parsedLibrary, this.element}) : super._() {
     if (parsedLibrary == null) {
       throw new BuiltValueNullFieldError('ValueSourceField', 'parsedLibrary');
     }
@@ -53,6 +51,9 @@ class _$ValueSourceField extends ValueSourceField {
   bool get isNullable => __isNullable ??= super.isNullable;
 
   @override
+  bool get isNestedBuilder => __isNestedBuilder ??= super.isNestedBuilder;
+
+  @override
   ValueSourceField rebuild(void Function(ValueSourceFieldBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
@@ -65,22 +66,19 @@ class _$ValueSourceField extends ValueSourceField {
     if (identical(other, this)) return true;
     return other is ValueSourceField &&
         parsedLibrary == other.parsedLibrary &&
-        element == other.element &&
-        builderElement == other.builderElement;
+        element == other.element;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, parsedLibrary.hashCode), element.hashCode),
-        builderElement.hashCode));
+    return $jf($jc($jc(0, parsedLibrary.hashCode), element.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ValueSourceField')
           ..add('parsedLibrary', parsedLibrary)
-          ..add('element', element)
-          ..add('builderElement', builderElement))
+          ..add('element', element))
         .toString();
   }
 }
@@ -98,18 +96,12 @@ class ValueSourceFieldBuilder
   FieldElement get element => _$this._element;
   set element(FieldElement element) => _$this._element = element;
 
-  FieldElement _builderElement;
-  FieldElement get builderElement => _$this._builderElement;
-  set builderElement(FieldElement builderElement) =>
-      _$this._builderElement = builderElement;
-
   ValueSourceFieldBuilder();
 
   ValueSourceFieldBuilder get _$this {
     if (_$v != null) {
       _parsedLibrary = _$v.parsedLibrary;
       _element = _$v.element;
-      _builderElement = _$v.builderElement;
       _$v = null;
     }
     return this;
@@ -132,9 +124,7 @@ class ValueSourceFieldBuilder
   _$ValueSourceField build() {
     final _$result = _$v ??
         new _$ValueSourceField._(
-            parsedLibrary: parsedLibrary,
-            element: element,
-            builderElement: builderElement);
+            parsedLibrary: parsedLibrary, element: element);
     replace(_$result);
     return _$result;
   }

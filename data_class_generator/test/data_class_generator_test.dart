@@ -13,7 +13,7 @@ import 'package:source_gen/source_gen.dart';
 
 void main() {
   group('Output tests', () {
-    test('Inner data classes has valid generated data', () async {
+    test('Referenced data classes has valid generated data', () async {
       expect(
         await generate('''library data_class;
 import 'package:data_class/data_class.dart';
@@ -155,9 +155,10 @@ class TestModelBuilder
   int get age => _\$this._age;
   set age(int age) => _\$this._age = age;
 
-  InnerTestModel _innerTestModel;
-  InnerTestModel get innerTestModel => _\$this._innerTestModel;
-  set innerTestModel(InnerTestModel innerTestModel) =>
+  InnerTestModelBuilder _innerTestModel;
+  InnerTestModelBuilder get innerTestModel =>
+      _\$this._innerTestModel ??= new InnerTestModelBuilder();
+  set innerTestModel(InnerTestModelBuilder innerTestModel) =>
       _\$this._innerTestModel = innerTestModel;
 
   TestModelBuilder();
@@ -166,7 +167,7 @@ class TestModelBuilder
     if (_\$v != null) {
       _name = _\$v.name;
       _age = _\$v.age;
-      _innerTestModel = _\$v.innerTestModel;
+      _innerTestModel = _\$v.innerTestModel?.toBuilder();
       _\$v = null;
     }
     return this;
@@ -187,8 +188,9 @@ class TestModelBuilder
 
   @override
   TestModel build() {
-    final _\$result =
-        _\$v ?? TestModel(name: name, age: age, innerTestModel: innerTestModel);
+    final _\$result = _\$v ??
+        TestModel(
+            name: name, age: age, innerTestModel: _innerTestModel?.build());
     replace(_\$result);
     return _\$result;
   }
@@ -421,6 +423,101 @@ class CModelBuilder<T>
   }
 }'''),
       );
+    });
+
+    test('Nested builders are supported', () async {
+      expect(await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+@DataClass()
+class NodeDataClass {
+  final String label;
+  final NodeDataClass left;
+  final NodeDataClass right;
+
+  NodeDataClass({this.label, this.left, this.right});
+}
+}'''), contains('''
+extension _\$NodeDataClassDataClassExtension on NodeDataClass {
+  NodeDataClass rebuild(void Function(NodeDataClassBuilder builder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  NodeDataClassBuilder toBuilder() => NodeDataClassBuilder()..replace(this);
+
+  bool _equals(Object other) {
+    if (identical(other, this)) return true;
+    return other is NodeDataClass &&
+        label == other.label &&
+        left == other.left &&
+        right == other.right;
+  }
+
+  int get _hashCode {
+    return \$jf(\$jc(\$jc(\$jc(0, label.hashCode), left.hashCode), right.hashCode));
+  }
+
+  String get _string {
+    return (newDataClassToStringHelper('NodeDataClass')
+          ..add('label', label)
+          ..add('left', left)
+          ..add('right', right))
+        .toString();
+  }
+}
+
+class NodeDataClassBuilder
+    implements DataClassBuilder<NodeDataClass, NodeDataClassBuilder> {
+  NodeDataClass _\$v;
+
+  String _label;
+  String get label => _\$this._label;
+  set label(String label) => _\$this._label = label;
+
+  NodeDataClassBuilder _left;
+  NodeDataClassBuilder get left => _\$this._left ??= new NodeDataClassBuilder();
+  set left(NodeDataClassBuilder left) => _\$this._left = left;
+
+  NodeDataClassBuilder _right;
+  NodeDataClassBuilder get right =>
+      _\$this._right ??= new NodeDataClassBuilder();
+  set right(NodeDataClassBuilder right) => _\$this._right = right;
+
+  NodeDataClassBuilder();
+
+  NodeDataClassBuilder get _\$this {
+    if (_\$v != null) {
+      _label = _\$v.label;
+      _left = _\$v.left?.toBuilder();
+      _right = _\$v.right?.toBuilder();
+      _\$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(NodeDataClass other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _\$v = other;
+  }
+
+  @override
+  void update(void Function(NodeDataClassBuilder builder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  NodeDataClass build() {
+    final _\$result = _\$v ??
+        NodeDataClass(
+            label: label, left: _left?.build(), right: _right?.build());
+    replace(_\$result);
+    return _\$result;
+  }
+}'''));
     });
   });
 
@@ -732,7 +829,8 @@ class Value {
 
   Value(String foo1) : this.foo = foo1;
 }'''),
-          contains('1. Default constructor can have named parameters only. Please, make the following fields named: foo1.'));
+          contains(
+              '1. Default constructor can have named parameters only. Please, make the following fields named: foo1.'));
     });
 
 //  test('suggests built_collection fields instead of SDK fields', () async {
