@@ -12,6 +12,10 @@ dependencies:
   source_gen: ^0.9.0
   quiver: '>=0.21.0 <3.0.0'
 
+  # Json serialization is part of this package build.yaml so we need this here
+  json_serializable_immutable_collections: ^0.3.0+1
+  json_serializable: ^3.3.0
+
 dev_dependencies:
   test: ^1.0.0
   build_test: ^1.0.0

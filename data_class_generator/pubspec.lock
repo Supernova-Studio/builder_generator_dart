@@ -239,6 +239,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  json_serializable:
+    dependency: "direct main"
+    description:
+      name: json_serializable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.3.0"
+  json_serializable_immutable_collections:
+    dependency: "direct main"
+    description:
+      name: json_serializable_immutable_collections
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0+1"
+  kt_dart:
+    dependency: transitive
+    description:
+      name: kt_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0+1"
   logging:
     dependency: "direct dev"
     description:
