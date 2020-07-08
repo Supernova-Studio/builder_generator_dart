@@ -112,6 +112,7 @@ class CModel<T> extends BModel {
   final List<String> listProp;
 
   bool get someGetter => false;
+
   set someSetter(String input) => null;
 
   @override
@@ -148,6 +149,14 @@ class CModel<T> extends BModel {
 }
 
 void main() {
+  var testModel = TestModel();
+
+  testModel.rebuild((builder) {
+    builder.innerTestModel.rebuild((builder) {
+      builder.someProperty = '1234';
+    });
+  });
+
   var model = CModel<String>();
 
   var newModel = model.rebuild((CModelBuilder<String> builder) {
@@ -155,43 +164,4 @@ void main() {
   });
 
   print(newModel.genericProp);
-}
-
-
-
-@JsonSerializable()
-@DataClass()
-class TestTest {
-  //
-  /// Properties
-  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-  //
-  /// Constructor
-  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-  TestTest();
-
-  //
-  /// Data class members
-  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-  @override
-  bool operator ==(other) => this._equals(other);
-
-  @override
-  String toString() => this._string;
-
-  @override
-  int get hashCode => this._hashCode;
-
-  //
-  /// Mapping
-  // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-  Map<String, dynamic> toJson() => _$TestTestToJson(this);
-
-  factory TestTest.fromJson(Map<String, dynamic> json) =>
-      _$TestTestFromJson(json);
 }

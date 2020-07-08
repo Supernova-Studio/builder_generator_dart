@@ -54,7 +54,8 @@ class TestModel {
 }'''),
         contains('''
 extension _\$InnerTestModelDataClassExtension on InnerTestModel {
-  InnerTestModel rebuild(void Function(InnerTestModelBuilder) updates) =>
+  InnerTestModel rebuild(
+          void Function(InnerTestModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
   InnerTestModelBuilder toBuilder() => InnerTestModelBuilder()..replace(this);
@@ -102,7 +103,7 @@ class InnerTestModelBuilder
   }
 
   @override
-  void update(void Function(InnerTestModelBuilder) updates) {
+  void update(void Function(InnerTestModelBuilder builder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -115,7 +116,7 @@ class InnerTestModelBuilder
 }
 
 extension _\$TestModelDataClassExtension on TestModel {
-  TestModel rebuild(void Function(TestModelBuilder) updates) =>
+  TestModel rebuild(void Function(TestModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
   TestModelBuilder toBuilder() => TestModelBuilder()..replace(this);
@@ -180,7 +181,7 @@ class TestModelBuilder
   }
 
   @override
-  void update(void Function(TestModelBuilder) updates) {
+  void update(void Function(TestModelBuilder builder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -249,7 +250,7 @@ class CModel<T> extends BModel {
 }'''),
         contains('''
 extension _\$BModelDataClassExtension on BModel {
-  BModel rebuild(void Function(BModelBuilder) updates) =>
+  BModel rebuild(void Function(BModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
   BModelBuilder toBuilder() => BModelBuilder()..replace(this);
@@ -312,7 +313,7 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   }
 
   @override
-  void update(void Function(BModelBuilder) updates) {
+  void update(void Function(BModelBuilder builder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -326,7 +327,7 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
 }
 
 extension _\$CModelDataClassExtension<T> on CModel<T> {
-  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
+  CModel<T> rebuild(void Function(CModelBuilder<T> builder) updates) =>
       (toBuilder()..update(updates)).build();
 
   CModelBuilder<T> toBuilder() => CModelBuilder<T>()..replace(this);
@@ -403,7 +404,7 @@ class CModelBuilder<T>
   }
 
   @override
-  void update(void Function(CModelBuilder<T>) updates) {
+  void update(void Function(CModelBuilder<T> builder) updates) {
     if (updates != null) updates(this);
   }
 

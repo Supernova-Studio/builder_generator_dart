@@ -7,7 +7,8 @@ part of 'test_model.dart';
 // **************************************************************************
 
 extension _$InnerTestModelDataClassExtension on InnerTestModel {
-  InnerTestModel rebuild(void Function(InnerTestModelBuilder) updates) =>
+  InnerTestModel rebuild(
+          void Function(InnerTestModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
   InnerTestModelBuilder toBuilder() => InnerTestModelBuilder()..replace(this);
@@ -55,7 +56,7 @@ class InnerTestModelBuilder
   }
 
   @override
-  void update(void Function(InnerTestModelBuilder) updates) {
+  void update(void Function(InnerTestModelBuilder builder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -68,7 +69,7 @@ class InnerTestModelBuilder
 }
 
 extension _$TestModelDataClassExtension on TestModel {
-  TestModel rebuild(void Function(TestModelBuilder) updates) =>
+  TestModel rebuild(void Function(TestModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
   TestModelBuilder toBuilder() => TestModelBuilder()..replace(this);
@@ -140,7 +141,7 @@ class TestModelBuilder
   }
 
   @override
-  void update(void Function(TestModelBuilder) updates) {
+  void update(void Function(TestModelBuilder builder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -155,7 +156,7 @@ class TestModelBuilder
 }
 
 extension _$BModelDataClassExtension on BModel {
-  BModel rebuild(void Function(BModelBuilder) updates) =>
+  BModel rebuild(void Function(BModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
   BModelBuilder toBuilder() => BModelBuilder()..replace(this);
@@ -218,7 +219,7 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   }
 
   @override
-  void update(void Function(BModelBuilder) updates) {
+  void update(void Function(BModelBuilder builder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -232,7 +233,7 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
 }
 
 extension _$CModelDataClassExtension<T> on CModel<T> {
-  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
+  CModel<T> rebuild(void Function(CModelBuilder<T> builder) updates) =>
       (toBuilder()..update(updates)).build();
 
   CModelBuilder<T> toBuilder() => CModelBuilder<T>()..replace(this);
@@ -309,7 +310,7 @@ class CModelBuilder<T>
   }
 
   @override
-  void update(void Function(CModelBuilder<T>) updates) {
+  void update(void Function(CModelBuilder<T> builder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -321,52 +322,6 @@ class CModelBuilder<T>
             listProp: listProp,
             propB1: propB1,
             propA: propA);
-    replace(_$result);
-    return _$result;
-  }
-}
-
-extension _$TestTestDataClassExtension on TestTest {
-  TestTest rebuild(void Function(TestTestBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  TestTestBuilder toBuilder() => TestTestBuilder()..replace(this);
-
-  bool _equals(Object other) {
-    if (identical(other, this)) return true;
-    return other is TestTest;
-  }
-
-  int get _hashCode {
-    return 368418753;
-  }
-
-  String get _string {
-    return newDataClassToStringHelper('TestTest').toString();
-  }
-}
-
-class TestTestBuilder implements DataClassBuilder<TestTest, TestTestBuilder> {
-  TestTest _$v;
-
-  TestTestBuilder();
-
-  @override
-  void replace(TestTest other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other;
-  }
-
-  @override
-  void update(void Function(TestTestBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  TestTest build() {
-    final _$result = _$v ?? TestTest();
     replace(_$result);
     return _$result;
   }
@@ -421,9 +376,3 @@ Map<String, dynamic> _$CModelToJson<T>(CModel<T> instance) => <String, dynamic>{
       'propB1': instance.propB1,
       'listProp': instance.listProp,
     };
-
-TestTest _$TestTestFromJson(Map<String, dynamic> json) {
-  return TestTest();
-}
-
-Map<String, dynamic> _$TestTestToJson(TestTest instance) => <String, dynamic>{};

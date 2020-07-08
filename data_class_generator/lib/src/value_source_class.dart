@@ -280,7 +280,7 @@ abstract class ValueSourceClass
     result.writeln();
 
     result.writeln(
-        '$name$_generics rebuild(void Function($builderName) updates) '
+        '$name$_generics rebuild(void Function($builderName builder) updates) '
             '=> (toBuilder()..update(updates)).build();');
     result.writeln();
 
@@ -365,7 +365,7 @@ abstract class ValueSourceClass
     result.writeln('}');
 
     result.writeln('@override');
-    result.writeln('void update(void Function(${builderName}) updates) {'
+    result.writeln('void update(void Function(${builderName} builder) updates) {'
         ' if (updates != null) updates(this); }');
     result.writeln();
 
