@@ -21,9 +21,9 @@ Data class requirements:
 
  - Non-abstract;
  - All fields must be public and final;
- - Data class should have a default constructor (without a name) with named parameters only;
+ - Data class must have a default constructor (without a name) with named parameters only;
 
-Note: fields and corresponding constructor parameters should have the same name to be properly matched.
+Note: fields and corresponding constructor parameters must have the same name to be properly matched.
 
 ## Generated results
 
