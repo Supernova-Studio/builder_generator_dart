@@ -1,20 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'complex_model.dart';
+part of 'inheritance_example.dart';
 
 // **************************************************************************
 // DataClassGenerator
 // **************************************************************************
 
-extension BModelDataClassExtension on BModel {
-  BModel rebuild(void Function(BModelBuilder builder) updates) =>
+extension ModelBDataClassExtension on ModelB {
+  ModelB rebuild(void Function(ModelBBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
-  BModelBuilder toBuilder() => BModelBuilder()..replace(this);
+  ModelBBuilder toBuilder() => ModelBBuilder()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
-    return other is BModel &&
+    return other is ModelB &&
         propB1 == other.propB1 &&
         propB2 == other.propB2 &&
         propA == other.propA;
@@ -26,7 +26,7 @@ extension BModelDataClassExtension on BModel {
   }
 
   String get _string {
-    return (newDataClassToStringHelper('BModel')
+    return (newDataClassToStringHelper('ModelB')
           ..add('propB1', propB1)
           ..add('propB2', propB2)
           ..add('propA', propA))
@@ -34,8 +34,8 @@ extension BModelDataClassExtension on BModel {
   }
 }
 
-class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
-  BModel _$v;
+class ModelBBuilder implements DataClassBuilder<ModelB, ModelBBuilder> {
+  ModelB _$v;
 
   String _propB1;
   String get propB1 => _$this._propB1;
@@ -49,9 +49,9 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   String get propA => _$this._propA;
   set propA(String propA) => _$this._propA = propA;
 
-  BModelBuilder();
+  ModelBBuilder();
 
-  BModelBuilder get _$this {
+  ModelBBuilder get _$this {
     if (_$v != null) {
       _propB1 = _$v.propB1;
       _propB2 = _$v.propB2;
@@ -62,7 +62,7 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   }
 
   @override
-  void replace(BModel other) {
+  void replace(ModelB other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -70,29 +70,29 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   }
 
   @override
-  void update(void Function(BModelBuilder builder) updates) {
+  void update(void Function(ModelBBuilder builder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  BModel build() {
+  ModelB build() {
     final _$result =
-        _$v ?? BModel(propB1: propB1, propB2: propB2, propA: propA);
+        _$v ?? ModelB(propB1: propB1, propB2: propB2, propA: propA);
     replace(_$result);
     return _$result;
   }
 }
 
-extension CModelDataClassExtension<T> on CModel<T> {
-  CModel<T> rebuild(void Function(CModelBuilder<T> builder) updates) =>
+extension ModelCDataClassExtension on ModelC {
+  ModelC rebuild(void Function(ModelCBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
-  CModelBuilder<T> toBuilder() => CModelBuilder<T>()..replace(this);
+  ModelCBuilder toBuilder() => ModelCBuilder()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
-    return other is CModel &&
-        genericProp == other.genericProp &&
+    return other is ModelC &&
+        propC == other.propC &&
         propB1 == other.propB1 &&
         propB2 == other.propB2 &&
         propA == other.propA;
@@ -100,14 +100,13 @@ extension CModelDataClassExtension<T> on CModel<T> {
 
   int get _hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, genericProp.hashCode), propB1.hashCode),
-            propB2.hashCode),
+        $jc($jc($jc(0, propC.hashCode), propB1.hashCode), propB2.hashCode),
         propA.hashCode));
   }
 
   String get _string {
-    return (newDataClassToStringHelper('CModel')
-          ..add('genericProp', genericProp)
+    return (newDataClassToStringHelper('ModelC')
+          ..add('propC', propC)
           ..add('propB1', propB1)
           ..add('propB2', propB2)
           ..add('propA', propA))
@@ -115,13 +114,12 @@ extension CModelDataClassExtension<T> on CModel<T> {
   }
 }
 
-class CModelBuilder<T>
-    implements DataClassBuilder<CModel<T>, CModelBuilder<T>> {
-  CModel<T> _$v;
+class ModelCBuilder implements DataClassBuilder<ModelC, ModelCBuilder> {
+  ModelC _$v;
 
-  T _genericProp;
-  T get genericProp => _$this._genericProp;
-  set genericProp(T genericProp) => _$this._genericProp = genericProp;
+  int _propC;
+  int get propC => _$this._propC;
+  set propC(int propC) => _$this._propC = propC;
 
   String _propB1;
   String get propB1 => _$this._propB1;
@@ -131,11 +129,11 @@ class CModelBuilder<T>
   String get propA => _$this._propA;
   set propA(String propA) => _$this._propA = propA;
 
-  CModelBuilder();
+  ModelCBuilder();
 
-  CModelBuilder<T> get _$this {
+  ModelCBuilder get _$this {
     if (_$v != null) {
-      _genericProp = _$v.genericProp;
+      _propC = _$v.propC;
       _propB1 = _$v.propB1;
       _propA = _$v.propA;
       _$v = null;
@@ -144,7 +142,7 @@ class CModelBuilder<T>
   }
 
   @override
-  void replace(CModel<T> other) {
+  void replace(ModelC other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -152,33 +150,16 @@ class CModelBuilder<T>
   }
 
   @override
-  void update(void Function(CModelBuilder<T> builder) updates) {
+  void update(void Function(ModelCBuilder builder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  CModel<T> build() {
-    final _$result = _$v ??
-        CModel<T>(genericProp: genericProp, propB1: propB1, propA: propA);
+  ModelC build() {
+    final _$result = _$v ?? ModelC(propC: propC, propB1: propB1, propA: propA);
     replace(_$result);
     return _$result;
   }
 }
 
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-CModel<T> _$CModelFromJson<T>(Map<String, dynamic> json) {
-  return CModel<T>(
-    propA: json['propA'] as String,
-    propB1: json['propB1'] as String,
-  );
-}
-
-Map<String, dynamic> _$CModelToJson<T>(CModel<T> instance) => <String, dynamic>{
-      'propA': instance.propA,
-      'propB1': instance.propB1,
-    };

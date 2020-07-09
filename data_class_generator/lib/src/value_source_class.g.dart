@@ -12,7 +12,6 @@ class _$ValueSourceClass extends ValueSourceClass {
   ParsedLibraryResult __parsedLibrary;
   String __name;
   String __builderName;
-  String __extPartName;
   BuiltList<String> __genericParameters;
   BuiltList<String> __genericBounds;
   ClassDeclaration __classDeclaration;
