@@ -43,13 +43,6 @@ abstract class ValueSourceClass
   @memoized
   String get builderName => '${name}Builder$_generics';
 
-  /// Returns the generated extension name part. If the manually
-  /// maintained class is private then we ignore the underscore here, to avoid
-  /// returning a class name starting `_$_`.
-  @memoized
-  String get extPartName =>
-      name.startsWith('_') ? '_\$${name.substring(1)}' : '_\$$name';
-
   @memoized
   BuiltList<String> get genericParameters =>
       BuiltList<String>(element.typeParameters.map((e) => e.name));
@@ -275,7 +268,7 @@ abstract class ValueSourceClass
   /// Generates the data class extension.
   String _generateExtension() {
     var result = StringBuffer();
-    result.writeln('extension ${extPartName}DataClassExtension$_generics '
+    result.writeln('extension ${name}DataClassExtension$_generics '
         'on $name$_generics {');
     result.writeln();
 

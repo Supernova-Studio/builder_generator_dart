@@ -53,7 +53,7 @@ class TestModel {
   int get hashCode => this._hashCode;
 }'''),
         contains('''
-extension _\$InnerTestModelDataClassExtension on InnerTestModel {
+extension InnerTestModelDataClassExtension on InnerTestModel {
   InnerTestModel rebuild(
           void Function(InnerTestModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
@@ -115,7 +115,7 @@ class InnerTestModelBuilder
   }
 }
 
-extension _\$TestModelDataClassExtension on TestModel {
+extension TestModelDataClassExtension on TestModel {
   TestModel rebuild(void Function(TestModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
@@ -248,7 +248,7 @@ class CModel<T> extends BModel {
   int get hashCode => this._hashCode;
 }'''),
         contains('''
-extension _\$BModelDataClassExtension on BModel {
+extension BModelDataClassExtension on BModel {
   BModel rebuild(void Function(BModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
@@ -325,7 +325,7 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   }
 }
 
-extension _\$CModelDataClassExtension<T> on CModel<T> {
+extension CModelDataClassExtension<T> on CModel<T> {
   CModel<T> rebuild(void Function(CModelBuilder<T> builder) updates) =>
       (toBuilder()..update(updates)).build();
 
@@ -424,7 +424,7 @@ class NodeDataClass {
   NodeDataClass({this.label, this.left, this.right});
 }
 }'''), contains('''
-extension _\$NodeDataClassDataClassExtension on NodeDataClass {
+extension NodeDataClassDataClassExtension on NodeDataClass {
   NodeDataClass rebuild(void Function(NodeDataClassBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 

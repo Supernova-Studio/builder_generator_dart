@@ -6,7 +6,7 @@ part of 'complex_model.dart';
 // DataClassGenerator
 // **************************************************************************
 
-extension _$BModelDataClassExtension on BModel {
+extension BModelDataClassExtension on BModel {
   BModel rebuild(void Function(BModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 
@@ -83,7 +83,7 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   }
 }
 
-extension _$CModelDataClassExtension<T> on CModel<T> {
+extension CModelDataClassExtension<T> on CModel<T> {
   CModel<T> rebuild(void Function(CModelBuilder<T> builder) updates) =>
       (toBuilder()..update(updates)).build();
 

@@ -6,7 +6,7 @@ part of 'built_list_example.dart';
 // DataClassGenerator
 // **************************************************************************
 
-extension _$BuiltListModelDataClassExtension on BuiltListModel {
+extension BuiltListModelDataClassExtension on BuiltListModel {
   BuiltListModel rebuild(
           void Function(BuiltListModelBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();

@@ -6,7 +6,7 @@ part of 'nested_builder_example.dart';
 // DataClassGenerator
 // **************************************************************************
 
-extension _$NodeDataClassDataClassExtension on NodeDataClass {
+extension NodeDataClassDataClassExtension on NodeDataClass {
   NodeDataClass rebuild(void Function(NodeDataClassBuilder builder) updates) =>
       (toBuilder()..update(updates)).build();
 

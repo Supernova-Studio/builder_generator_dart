@@ -49,9 +49,6 @@ class _$ValueSourceClass extends ValueSourceClass {
   String get builderName => __builderName ??= super.builderName;
 
   @override
-  String get extPartName => __extPartName ??= super.extPartName;
-
-  @override
   BuiltList<String> get genericParameters =>
       __genericParameters ??= super.genericParameters;
 
