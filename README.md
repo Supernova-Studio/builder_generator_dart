@@ -23,6 +23,8 @@ Data class requirements:
  - All fields must be public and final;
  - Data class should have a default constructor (without a name) with named parameters only;
 
+Note: fields and corresponding constructor parameters should have the same name to be properly matched.
+
 ## Generated results
 
 Every data class will have a generated extension with the following operations:
