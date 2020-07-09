@@ -1,0 +1,12 @@
+language: dart
+
+dart:
+  - beta
+
+jobs:
+  include:
+    - name: "Run Tests"
+      if: branch=master
+
+script:
+  - cd data_class_generator && pub run test && cd ..
