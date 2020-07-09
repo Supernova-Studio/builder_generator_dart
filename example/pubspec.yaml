@@ -21,3 +21,7 @@ dev_dependencies:
     path: ../data_class_generator
 
   test: ^1.15.1
+
+  json_serializable_immutable_collections: ^0.3.0+1
+  json_serializable: ^3.3.0
+

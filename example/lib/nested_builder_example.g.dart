@@ -17,18 +17,22 @@ extension _$NodeDataClassDataClassExtension on NodeDataClass {
     return other is NodeDataClass &&
         label == other.label &&
         left == other.left &&
-        right == other.right;
+        right == other.right &&
+        values == other.values;
   }
 
   int get _hashCode {
-    return $jf($jc($jc($jc(0, label.hashCode), left.hashCode), right.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, label.hashCode), left.hashCode), right.hashCode),
+        values.hashCode));
   }
 
   String get _string {
     return (newDataClassToStringHelper('NodeDataClass')
           ..add('label', label)
           ..add('left', left)
-          ..add('right', right))
+          ..add('right', right)
+          ..add('values', values))
         .toString();
   }
 }
@@ -50,6 +54,11 @@ class NodeDataClassBuilder
       _$this._right ??= new NodeDataClassBuilder();
   set right(NodeDataClassBuilder right) => _$this._right = right;
 
+  ListBuilder<String> _values;
+  ListBuilder<String> get values =>
+      _$this._values ??= new ListBuilder<String>();
+  set values(ListBuilder<String> values) => _$this._values = values;
+
   NodeDataClassBuilder();
 
   NodeDataClassBuilder get _$this {
@@ -57,6 +66,7 @@ class NodeDataClassBuilder
       _label = _$v.label;
       _left = _$v.left?.toBuilder();
       _right = _$v.right?.toBuilder();
+      _values = _$v.values?.toBuilder();
       _$v = null;
     }
     return this;
@@ -79,7 +89,10 @@ class NodeDataClassBuilder
   NodeDataClass build() {
     final _$result = _$v ??
         NodeDataClass(
-            label: label, left: _left?.build(), right: _right?.build());
+            label: label,
+            left: _left?.build(),
+            right: _right?.build(),
+            values: _values?.build());
     replace(_$result);
     return _$result;
   }
