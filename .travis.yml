@@ -9,4 +9,4 @@ jobs:
       if: branch=master
 
 script:
-  - cd data_class_generator && pub run test && cd ..
+  - scripts/test_generator.sh
