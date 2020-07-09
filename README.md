@@ -89,14 +89,15 @@ IDE File template (Supernova guidelines) for creating a new file with a single d
       // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     
       
+      
       //
       /// Constructor
       // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     
-      $className();
+      const $className();
     
       //
-      /// Data class members 
+      /// Data class members
       // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         
       @override
@@ -128,14 +129,15 @@ class $CLASS_NAME$ {
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
   
+  
   //
   /// Constructor
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-  $CLASS_NAME$();
+  const $CLASS_NAME$();
 
   //
-  /// Data class members 
+  /// Data class members
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     
   @override
