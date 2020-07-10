@@ -25,6 +25,8 @@ Data class requirements:
 
 Note: fields and corresponding constructor parameters must have the same name to be properly matched.
 
+See [example](https://github.com/Supernova-Studio/builder_generator_dart/tree/master/example/lib) for additional info.
+
 ## Generated results
 
 Every data class will have a generated extension with the following operations:
