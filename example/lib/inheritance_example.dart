@@ -14,6 +14,16 @@ class ModelB extends ModelA {
   final String propB2;
 
   ModelB({this.propB1, this.propB2, String propA}) : super(propA: propA);
+
+
+  @override
+  bool operator ==(dynamic other) => _equals(other);
+
+  @override
+  String toString() => _string;
+
+  @override
+  int get hashCode => _hashCode;
 }
 
 @DataClass()

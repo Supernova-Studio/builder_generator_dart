@@ -90,15 +90,22 @@ extension InnerModelDataClassExtension on InnerModel {
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
-    return other is InnerModel && prop == other.prop;
+    return other is InnerModel &&
+        prop1 == other.prop1 &&
+        prop2 == other.prop2 &&
+        prop3 == other.prop3;
   }
 
   int get _hashCode {
-    return $jf($jc(0, prop.hashCode));
+    return $jf(
+        $jc($jc($jc(0, prop1.hashCode), prop2.hashCode), prop3.hashCode));
   }
 
   String get _string {
-    return (newDataClassToStringHelper('InnerModel')..add('prop', prop))
+    return (newDataClassToStringHelper('InnerModel')
+          ..add('prop1', prop1)
+          ..add('prop2', prop2)
+          ..add('prop3', prop3))
         .toString();
   }
 }
@@ -107,15 +114,25 @@ class InnerModelBuilder
     implements DataClassBuilder<InnerModel, InnerModelBuilder> {
   InnerModel _$v;
 
-  String _prop;
-  String get prop => _$this._prop;
-  set prop(String prop) => _$this._prop = prop;
+  String _prop1;
+  String get prop1 => _$this._prop1;
+  set prop1(String prop1) => _$this._prop1 = prop1;
+
+  String _prop2;
+  String get prop2 => _$this._prop2;
+  set prop2(String prop2) => _$this._prop2 = prop2;
+
+  String _prop3;
+  String get prop3 => _$this._prop3;
+  set prop3(String prop3) => _$this._prop3 = prop3;
 
   InnerModelBuilder();
 
   InnerModelBuilder get _$this {
     if (_$v != null) {
-      _prop = _$v.prop;
+      _prop1 = _$v.prop1;
+      _prop2 = _$v.prop2;
+      _prop3 = _$v.prop3;
       _$v = null;
     }
     return this;
@@ -136,7 +153,8 @@ class InnerModelBuilder
 
   @override
   InnerModel build() {
-    final _$result = _$v ?? InnerModel(prop: prop);
+    final _$result =
+        _$v ?? InnerModel(prop1: prop1, prop2: prop2, prop3: prop3);
     replace(_$result);
     return _$result;
   }

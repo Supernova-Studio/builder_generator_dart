@@ -6,35 +6,39 @@ part of 'json_serializable_example.dart';
 // DataClassGenerator
 // **************************************************************************
 
-extension ModelDataClassExtension on Model {
-  Model rebuild(void Function(ModelBuilder builder) updates) =>
+extension ModelDataClassExtension<S> on Model<S> {
+  Model<S> rebuild(void Function(ModelBuilder<S> builder) updates) =>
       (toBuilder()..update(updates)).build();
 
-  ModelBuilder toBuilder() => ModelBuilder()..replace(this);
+  ModelBuilder<S> toBuilder() => ModelBuilder<S>()..replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
     return other is Model &&
         prop1 == other.prop1 &&
         prop2 == other.prop2 &&
-        list == other.list;
+        list == other.list &&
+        genericProp == other.genericProp;
   }
 
   int get _hashCode {
-    return $jf($jc($jc($jc(0, prop1.hashCode), prop2.hashCode), list.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, prop1.hashCode), prop2.hashCode), list.hashCode),
+        genericProp.hashCode));
   }
 
   String get _string {
     return (newDataClassToStringHelper('Model')
           ..add('prop1', prop1)
           ..add('prop2', prop2)
-          ..add('list', list))
+          ..add('list', list)
+          ..add('genericProp', genericProp))
         .toString();
   }
 }
 
-class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
-  Model _$v;
+class ModelBuilder<S> implements DataClassBuilder<Model<S>, ModelBuilder<S>> {
+  Model<S> _$v;
 
   String _prop1;
   String get prop1 => _$this._prop1;
@@ -48,20 +52,25 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
   ListBuilder<int> get list => _$this._list ??= new ListBuilder<int>();
   set list(ListBuilder<int> list) => _$this._list = list;
 
+  S _genericProp;
+  S get genericProp => _$this._genericProp;
+  set genericProp(S genericProp) => _$this._genericProp = genericProp;
+
   ModelBuilder();
 
-  ModelBuilder get _$this {
+  ModelBuilder<S> get _$this {
     if (_$v != null) {
       _prop1 = _$v.prop1;
       _prop2 = _$v.prop2;
       _list = _$v.list?.toBuilder();
+      _genericProp = _$v.genericProp;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(Model other) {
+  void replace(Model<S> other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -69,14 +78,18 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
   }
 
   @override
-  void update(void Function(ModelBuilder builder) updates) {
+  void update(void Function(ModelBuilder<S> builder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  Model build() {
-    final _$result =
-        _$v ?? Model(prop1: prop1, prop2: prop2, list: _list?.build());
+  Model<S> build() {
+    final _$result = _$v ??
+        Model<S>(
+            prop1: prop1,
+            prop2: prop2,
+            list: _list?.build(),
+            genericProp: genericProp);
     replace(_$result);
     return _$result;
   }
@@ -88,18 +101,21 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-Model _$ModelFromJson(Map<String, dynamic> json) {
-  return Model(
+Model<S> _$ModelFromJson<S>(Map<String, dynamic> json) {
+  return Model<S>(
     prop1: json['prop1'] as String,
     prop2: json['prop2'] as int,
     list: json['list'] != null
         ? (json['list'] as List).map((e) => e as int).toBuiltList()
         : null,
+    genericProp: _SimpleConverter<S>()
+        .fromJson(json['genericProp'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$ModelToJson(Model instance) => <String, dynamic>{
+Map<String, dynamic> _$ModelToJson<S>(Model<S> instance) => <String, dynamic>{
       'prop1': instance.prop1,
       'prop2': instance.prop2,
       'list': instance.list?.toList(),
+      'genericProp': _SimpleConverter<S>().toJson(instance.genericProp),
     };
