@@ -28,12 +28,6 @@ abstract class DataClass<V extends DataClass<V, B>,
 /// You don't need to create one by hand; it will be generated
 /// for you.
 abstract class DataClassBuilder<V, B extends DataClassBuilder<V, B>> {
-  /// Replaces the value in the builder with a new one.
-  ///
-  /// The implementation of this method will be generated for you by the
-  /// data_class generator.
-  void replace(covariant V value);
-
   /// Applies updates.
   ///
   /// [updates] is a function that takes a builder [B].

@@ -297,7 +297,7 @@ abstract class ValueSourceClass
     result.writeln();
 
     result.writeln('$builderName _toBuilder() '
-        '=> ${builderName}()..replace(this);');
+        '=> ${builderName}().._replace(this);');
     result.writeln();
 
     result.write(_generateEqualsAndHashcode());
@@ -417,7 +417,7 @@ abstract class ValueSourceClass
     result.writeln(');');
 
     // Set _$v to the data class, so it will be lazily copied if needed.
-    result.writeln('replace(_\$result);');
+    result.writeln('_replace(_\$result);');
     result.writeln('return _\$result;');
     result.writeln('}');
 
@@ -439,7 +439,7 @@ abstract class ValueSourceClass
   String _generateBuilderReplace() {
     var result = StringBuffer();
 
-    result.writeln('void replace($name$_generics other) {');
+    result.writeln('void _replace(covariant $name$_generics other) {');
 
     result.writeln('if (other == null) {');
     result.writeln("throw new ArgumentError.notNull('other');");
