@@ -89,18 +89,6 @@ void main() {
   });
 
   group('Builder tests', () {
-    test('Data class can be replaced', () {
-      var model1 = InnerModel(prop1: 'prop1', prop2: 'prop2');
-      var builder = model1.toBuilder();
-      var model2 = InnerModel(prop3: 'prop3');
-
-      builder.replace(model2);
-
-      expect(model2.prop1, builder.prop1);
-      expect(model2.prop2, builder.prop2);
-      expect(model2.prop3, builder.prop3);
-    });
-
     test('Builder can be updated', () {
       var model1 = InnerModel(prop1: 'prop1', prop2: 'prop2');
       var builder = model1.toBuilder();

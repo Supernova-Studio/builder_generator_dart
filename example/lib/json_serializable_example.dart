@@ -5,8 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'json_serializable_example.g.dart';
 
 @JsonSerializable()
-@DataClass()
-class Model<S> {
+class Model<S> implements DataClass<Model<S>, ModelBuilder<S>> {
   final String prop1;
   final int prop2;
   final BuiltList<int> list;
@@ -24,6 +23,12 @@ class Model<S> {
 
   @override
   int get hashCode => _hashCode;
+
+  @override
+  Model<S> rebuild(void Function(ModelBuilder<S>) updates) => _rebuild(updates);
+
+  @override
+  ModelBuilder<S> toBuilder() => _toBuilder();
 
   Map<String, dynamic> toJson() => _$ModelToJson(this);
 

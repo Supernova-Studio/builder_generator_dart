@@ -7,10 +7,10 @@ part of 'generic_example.dart';
 // **************************************************************************
 
 extension ModelDataClassExtension<T, S> on Model<T, S> {
-  Model<T, S> rebuild(void Function(ModelBuilder<T, S> builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  Model<T, S> _rebuild(void Function(ModelBuilder<T, S> builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  ModelBuilder<T, S> toBuilder() => ModelBuilder<T, S>()..replace(this);
+  ModelBuilder<T, S> _toBuilder() => ModelBuilder<T, S>().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -36,16 +36,14 @@ extension ModelDataClassExtension<T, S> on Model<T, S> {
 
 class ModelBuilder<T, S>
     implements DataClassBuilder<Model<T, S>, ModelBuilder<T, S>> {
-  Model<T, S> _$v;
+  Model<T, S> _$ModelTS;
 
   T _prop1;
   T get prop1 => _$this._prop1;
   set prop1(T prop1) => _$this._prop1 = prop1;
-
   ListBuilder<S> _prop2;
   ListBuilder<S> get prop2 => _$this._prop2 ??= new ListBuilder<S>();
   set prop2(ListBuilder<S> prop2) => _$this._prop2 = prop2;
-
   String _prop3;
   String get prop3 => _$this._prop3;
   set prop3(String prop3) => _$this._prop3 = prop3;
@@ -53,21 +51,20 @@ class ModelBuilder<T, S>
   ModelBuilder();
 
   ModelBuilder<T, S> get _$this {
-    if (_$v != null) {
-      _prop1 = _$v.prop1;
-      _prop2 = _$v.prop2?.toBuilder();
-      _prop3 = _$v.prop3;
-      _$v = null;
+    if (_$ModelTS != null) {
+      _prop1 = _$ModelTS.prop1;
+      _prop2 = _$ModelTS.prop2?.toBuilder();
+      _prop3 = _$ModelTS.prop3;
+      _$ModelTS = null;
     }
     return this;
   }
 
-  @override
-  void replace(Model<T, S> other) {
+  void _replace(covariant Model<T, S> other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other;
+    _$ModelTS = other;
   }
 
   @override
@@ -77,9 +74,9 @@ class ModelBuilder<T, S>
 
   @override
   Model<T, S> build() {
-    final _$result =
-        _$v ?? Model<T, S>(prop1: prop1, prop2: _prop2?.build(), prop3: prop3);
-    replace(_$result);
+    final _$result = _$ModelTS ??
+        Model<T, S>(prop1: prop1, prop2: _prop2?.build(), prop3: prop3);
+    _replace(_$result);
     return _$result;
   }
 }

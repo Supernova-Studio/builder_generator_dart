@@ -20,7 +20,7 @@ extension ModelBDataClassExtension on ModelB {
   ModelB _rebuild(void Function(ModelBBuilder builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ModelBBuilder _toBuilder() => ModelBBuilder()..replace(this);
+  ModelBBuilder _toBuilder() => ModelBBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -76,7 +76,7 @@ class ModelBBuilder extends ModelABuilder {
     return this;
   }
 
-  void replace(ModelB other) {
+  void _replace(covariant ModelB other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -93,7 +93,7 @@ class ModelBBuilder extends ModelABuilder {
     final _$result = _$ModelB ??
         ModelB(
             propB1: propB1, propB2: propB2, propA: propA, list: _list?.build());
-    replace(_$result);
+    _replace(_$result);
     return _$result;
   }
 }
@@ -102,7 +102,7 @@ extension ModelCDataClassExtension on ModelC {
   ModelC _rebuild(void Function(ModelCBuilder builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ModelCBuilder _toBuilder() => ModelCBuilder()..replace(this);
+  ModelCBuilder _toBuilder() => ModelCBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -161,7 +161,7 @@ class ModelCBuilder extends ModelBBuilder {
     return this;
   }
 
-  void replace(ModelC other) {
+  void _replace(covariant ModelC other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -177,7 +177,7 @@ class ModelCBuilder extends ModelBBuilder {
   ModelC build() {
     final _$result = _$ModelC ??
         ModelC(propC: propC, propB1: propB1, propB2: propB2, propA: propA);
-    replace(_$result);
+    _replace(_$result);
     return _$result;
   }
 }
@@ -199,7 +199,7 @@ extension ModelEDataClassExtension on ModelE {
   ModelE _rebuild(void Function(ModelEBuilder builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ModelEBuilder _toBuilder() => ModelEBuilder()..replace(this);
+  ModelEBuilder _toBuilder() => ModelEBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -268,7 +268,7 @@ class ModelEBuilder extends ModelDBuilder {
     return this;
   }
 
-  void replace(ModelE other) {
+  void _replace(covariant ModelE other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -289,7 +289,7 @@ class ModelEBuilder extends ModelDBuilder {
             propB1: propB1,
             propB2: propB2,
             propA: propA);
-    replace(_$result);
+    _replace(_$result);
     return _$result;
   }
 }

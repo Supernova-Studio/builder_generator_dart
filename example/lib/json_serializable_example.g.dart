@@ -7,10 +7,10 @@ part of 'json_serializable_example.dart';
 // **************************************************************************
 
 extension ModelDataClassExtension<S> on Model<S> {
-  Model<S> rebuild(void Function(ModelBuilder<S> builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  Model<S> _rebuild(void Function(ModelBuilder<S> builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  ModelBuilder<S> toBuilder() => ModelBuilder<S>()..replace(this);
+  ModelBuilder<S> _toBuilder() => ModelBuilder<S>().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -38,20 +38,17 @@ extension ModelDataClassExtension<S> on Model<S> {
 }
 
 class ModelBuilder<S> implements DataClassBuilder<Model<S>, ModelBuilder<S>> {
-  Model<S> _$v;
+  Model<S> _$ModelS;
 
   String _prop1;
   String get prop1 => _$this._prop1;
   set prop1(String prop1) => _$this._prop1 = prop1;
-
   int _prop2;
   int get prop2 => _$this._prop2;
   set prop2(int prop2) => _$this._prop2 = prop2;
-
   ListBuilder<int> _list;
   ListBuilder<int> get list => _$this._list ??= new ListBuilder<int>();
   set list(ListBuilder<int> list) => _$this._list = list;
-
   S _genericProp;
   S get genericProp => _$this._genericProp;
   set genericProp(S genericProp) => _$this._genericProp = genericProp;
@@ -59,22 +56,21 @@ class ModelBuilder<S> implements DataClassBuilder<Model<S>, ModelBuilder<S>> {
   ModelBuilder();
 
   ModelBuilder<S> get _$this {
-    if (_$v != null) {
-      _prop1 = _$v.prop1;
-      _prop2 = _$v.prop2;
-      _list = _$v.list?.toBuilder();
-      _genericProp = _$v.genericProp;
-      _$v = null;
+    if (_$ModelS != null) {
+      _prop1 = _$ModelS.prop1;
+      _prop2 = _$ModelS.prop2;
+      _list = _$ModelS.list?.toBuilder();
+      _genericProp = _$ModelS.genericProp;
+      _$ModelS = null;
     }
     return this;
   }
 
-  @override
-  void replace(Model<S> other) {
+  void _replace(covariant Model<S> other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other;
+    _$ModelS = other;
   }
 
   @override
@@ -84,13 +80,13 @@ class ModelBuilder<S> implements DataClassBuilder<Model<S>, ModelBuilder<S>> {
 
   @override
   Model<S> build() {
-    final _$result = _$v ??
+    final _$result = _$ModelS ??
         Model<S>(
             prop1: prop1,
             prop2: prop2,
             list: _list?.build(),
             genericProp: genericProp);
-    replace(_$result);
+    _replace(_$result);
     return _$result;
   }
 }

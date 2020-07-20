@@ -7,10 +7,10 @@ part of 'built_collection_example.dart';
 // **************************************************************************
 
 extension ModelDataClassExtension on Model {
-  Model rebuild(void Function(ModelBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  Model _rebuild(void Function(ModelBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  ModelBuilder toBuilder() => ModelBuilder()..replace(this);
+  ModelBuilder _toBuilder() => ModelBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -34,16 +34,14 @@ extension ModelDataClassExtension on Model {
 }
 
 class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
-  Model _$v;
+  Model _$Model;
 
   ListBuilder<String> _list;
   ListBuilder<String> get list => _$this._list ??= new ListBuilder<String>();
   set list(ListBuilder<String> list) => _$this._list = list;
-
   BuiltList _list2;
   BuiltList get list2 => _$this._list2;
   set list2(BuiltList list2) => _$this._list2 = list2;
-
   SetBuilder<String> _set;
   SetBuilder<String> get set => _$this._set ??= new SetBuilder<String>();
   set set(SetBuilder<String> set) => _$this._set = set;
@@ -51,21 +49,20 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
   ModelBuilder();
 
   ModelBuilder get _$this {
-    if (_$v != null) {
-      _list = _$v.list?.toBuilder();
-      _list2 = _$v.list2;
-      _set = _$v.set?.toBuilder();
-      _$v = null;
+    if (_$Model != null) {
+      _list = _$Model.list?.toBuilder();
+      _list2 = _$Model.list2;
+      _set = _$Model.set?.toBuilder();
+      _$Model = null;
     }
     return this;
   }
 
-  @override
-  void replace(Model other) {
+  void _replace(covariant Model other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other;
+    _$Model = other;
   }
 
   @override
@@ -75,9 +72,9 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
 
   @override
   Model build() {
-    final _$result =
-        _$v ?? Model(list: _list?.build(), list2: list2, set: _set?.build());
-    replace(_$result);
+    final _$result = _$Model ??
+        Model(list: _list?.build(), list2: list2, set: _set?.build());
+    _replace(_$result);
     return _$result;
   }
 }

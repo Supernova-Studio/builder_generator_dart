@@ -6,11 +6,19 @@ part of 'inheritance_example.dart';
 // DataClassGenerator
 // **************************************************************************
 
-extension ModelBDataClassExtension on ModelB {
-  ModelB rebuild(void Function(ModelBBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+abstract class ModelABuilder
+    implements DataClassBuilder<ModelA, ModelABuilder> {
+  String get propA;
+  set propA(String propA);
 
-  ModelBBuilder toBuilder() => ModelBBuilder()..replace(this);
+  ModelABuilder();
+}
+
+extension ModelBDataClassExtension on ModelB {
+  ModelB _rebuild(void Function(ModelBBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  ModelBBuilder _toBuilder() => ModelBBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -34,17 +42,15 @@ extension ModelBDataClassExtension on ModelB {
   }
 }
 
-class ModelBBuilder implements DataClassBuilder<ModelB, ModelBBuilder> {
-  ModelB _$v;
+class ModelBBuilder extends ModelABuilder {
+  ModelB _$ModelB;
 
   String _propB1;
   String get propB1 => _$this._propB1;
   set propB1(String propB1) => _$this._propB1 = propB1;
-
   String _propB2;
   String get propB2 => _$this._propB2;
   set propB2(String propB2) => _$this._propB2 = propB2;
-
   String _propA;
   String get propA => _$this._propA;
   set propA(String propA) => _$this._propA = propA;
@@ -52,21 +58,20 @@ class ModelBBuilder implements DataClassBuilder<ModelB, ModelBBuilder> {
   ModelBBuilder();
 
   ModelBBuilder get _$this {
-    if (_$v != null) {
-      _propB1 = _$v.propB1;
-      _propB2 = _$v.propB2;
-      _propA = _$v.propA;
-      _$v = null;
+    if (_$ModelB != null) {
+      _propB1 = _$ModelB.propB1;
+      _propB2 = _$ModelB.propB2;
+      _propA = _$ModelB.propA;
+      _$ModelB = null;
     }
     return this;
   }
 
-  @override
-  void replace(ModelB other) {
+  void _replace(covariant ModelB other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other;
+    _$ModelB = other;
   }
 
   @override
@@ -77,17 +82,17 @@ class ModelBBuilder implements DataClassBuilder<ModelB, ModelBBuilder> {
   @override
   ModelB build() {
     final _$result =
-        _$v ?? ModelB(propB1: propB1, propB2: propB2, propA: propA);
-    replace(_$result);
+        _$ModelB ?? ModelB(propB1: propB1, propB2: propB2, propA: propA);
+    _replace(_$result);
     return _$result;
   }
 }
 
 extension ModelCDataClassExtension on ModelC {
-  ModelC rebuild(void Function(ModelCBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  ModelC _rebuild(void Function(ModelCBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  ModelCBuilder toBuilder() => ModelCBuilder()..replace(this);
+  ModelCBuilder _toBuilder() => ModelCBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -114,17 +119,15 @@ extension ModelCDataClassExtension on ModelC {
   }
 }
 
-class ModelCBuilder implements DataClassBuilder<ModelC, ModelCBuilder> {
-  ModelC _$v;
+class ModelCBuilder extends ModelBBuilder {
+  ModelC _$ModelC;
 
   int _propC;
   int get propC => _$this._propC;
   set propC(int propC) => _$this._propC = propC;
-
   String _propB1;
   String get propB1 => _$this._propB1;
   set propB1(String propB1) => _$this._propB1 = propB1;
-
   String _propA;
   String get propA => _$this._propA;
   set propA(String propA) => _$this._propA = propA;
@@ -132,21 +135,20 @@ class ModelCBuilder implements DataClassBuilder<ModelC, ModelCBuilder> {
   ModelCBuilder();
 
   ModelCBuilder get _$this {
-    if (_$v != null) {
-      _propC = _$v.propC;
-      _propB1 = _$v.propB1;
-      _propA = _$v.propA;
-      _$v = null;
+    if (_$ModelC != null) {
+      _propC = _$ModelC.propC;
+      _propB1 = _$ModelC.propB1;
+      _propA = _$ModelC.propA;
+      _$ModelC = null;
     }
     return this;
   }
 
-  @override
-  void replace(ModelC other) {
+  void _replace(covariant ModelC other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other;
+    _$ModelC = other;
   }
 
   @override
@@ -156,8 +158,9 @@ class ModelCBuilder implements DataClassBuilder<ModelC, ModelCBuilder> {
 
   @override
   ModelC build() {
-    final _$result = _$v ?? ModelC(propC: propC, propB1: propB1, propA: propA);
-    replace(_$result);
+    final _$result =
+        _$ModelC ?? ModelC(propC: propC, propB1: propB1, propA: propA);
+    _replace(_$result);
     return _$result;
   }
 }

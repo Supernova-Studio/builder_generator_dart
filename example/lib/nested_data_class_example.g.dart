@@ -7,10 +7,10 @@ part of 'nested_data_class_example.dart';
 // **************************************************************************
 
 extension NodeDataClassExtension on Node {
-  Node rebuild(void Function(NodeBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  Node _rebuild(void Function(NodeBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  NodeBuilder toBuilder() => NodeBuilder()..replace(this);
+  NodeBuilder _toBuilder() => NodeBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -34,16 +34,14 @@ extension NodeDataClassExtension on Node {
 }
 
 class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
-  Node _$v;
+  Node _$Node;
 
   String _label;
   String get label => _$this._label;
   set label(String label) => _$this._label = label;
-
   NodeBuilder _left;
   NodeBuilder get left => _$this._left ??= new NodeBuilder();
   set left(NodeBuilder left) => _$this._left = left;
-
   NodeBuilder _right;
   NodeBuilder get right => _$this._right ??= new NodeBuilder();
   set right(NodeBuilder right) => _$this._right = right;
@@ -51,21 +49,20 @@ class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
   NodeBuilder();
 
   NodeBuilder get _$this {
-    if (_$v != null) {
-      _label = _$v.label;
-      _left = _$v.left?.toBuilder();
-      _right = _$v.right?.toBuilder();
-      _$v = null;
+    if (_$Node != null) {
+      _label = _$Node.label;
+      _left = _$Node.left?.toBuilder();
+      _right = _$Node.right?.toBuilder();
+      _$Node = null;
     }
     return this;
   }
 
-  @override
-  void replace(Node other) {
+  void _replace(covariant Node other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other;
+    _$Node = other;
   }
 
   @override
@@ -75,18 +72,18 @@ class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
 
   @override
   Node build() {
-    final _$result =
-        _$v ?? Node(label: label, left: _left?.build(), right: _right?.build());
-    replace(_$result);
+    final _$result = _$Node ??
+        Node(label: label, left: _left?.build(), right: _right?.build());
+    _replace(_$result);
     return _$result;
   }
 }
 
 extension InnerModelDataClassExtension on InnerModel {
-  InnerModel rebuild(void Function(InnerModelBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  InnerModel _rebuild(void Function(InnerModelBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  InnerModelBuilder toBuilder() => InnerModelBuilder()..replace(this);
+  InnerModelBuilder _toBuilder() => InnerModelBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -112,16 +109,14 @@ extension InnerModelDataClassExtension on InnerModel {
 
 class InnerModelBuilder
     implements DataClassBuilder<InnerModel, InnerModelBuilder> {
-  InnerModel _$v;
+  InnerModel _$InnerModel;
 
   String _prop1;
   String get prop1 => _$this._prop1;
   set prop1(String prop1) => _$this._prop1 = prop1;
-
   String _prop2;
   String get prop2 => _$this._prop2;
   set prop2(String prop2) => _$this._prop2 = prop2;
-
   String _prop3;
   String get prop3 => _$this._prop3;
   set prop3(String prop3) => _$this._prop3 = prop3;
@@ -129,21 +124,20 @@ class InnerModelBuilder
   InnerModelBuilder();
 
   InnerModelBuilder get _$this {
-    if (_$v != null) {
-      _prop1 = _$v.prop1;
-      _prop2 = _$v.prop2;
-      _prop3 = _$v.prop3;
-      _$v = null;
+    if (_$InnerModel != null) {
+      _prop1 = _$InnerModel.prop1;
+      _prop2 = _$InnerModel.prop2;
+      _prop3 = _$InnerModel.prop3;
+      _$InnerModel = null;
     }
     return this;
   }
 
-  @override
-  void replace(InnerModel other) {
+  void _replace(covariant InnerModel other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other;
+    _$InnerModel = other;
   }
 
   @override
@@ -154,17 +148,17 @@ class InnerModelBuilder
   @override
   InnerModel build() {
     final _$result =
-        _$v ?? InnerModel(prop1: prop1, prop2: prop2, prop3: prop3);
-    replace(_$result);
+        _$InnerModel ?? InnerModel(prop1: prop1, prop2: prop2, prop3: prop3);
+    _replace(_$result);
     return _$result;
   }
 }
 
 extension OuterModelDataClassExtension on OuterModel {
-  OuterModel rebuild(void Function(OuterModelBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  OuterModel _rebuild(void Function(OuterModelBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  OuterModelBuilder toBuilder() => OuterModelBuilder()..replace(this);
+  OuterModelBuilder _toBuilder() => OuterModelBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -187,12 +181,11 @@ extension OuterModelDataClassExtension on OuterModel {
 
 class OuterModelBuilder
     implements DataClassBuilder<OuterModel, OuterModelBuilder> {
-  OuterModel _$v;
+  OuterModel _$OuterModel;
 
   String _prop;
   String get prop => _$this._prop;
   set prop(String prop) => _$this._prop = prop;
-
   InnerModelBuilder _innerModel;
   InnerModelBuilder get innerModel =>
       _$this._innerModel ??= new InnerModelBuilder();
@@ -202,20 +195,19 @@ class OuterModelBuilder
   OuterModelBuilder();
 
   OuterModelBuilder get _$this {
-    if (_$v != null) {
-      _prop = _$v.prop;
-      _innerModel = _$v.innerModel?.toBuilder();
-      _$v = null;
+    if (_$OuterModel != null) {
+      _prop = _$OuterModel.prop;
+      _innerModel = _$OuterModel.innerModel?.toBuilder();
+      _$OuterModel = null;
     }
     return this;
   }
 
-  @override
-  void replace(OuterModel other) {
+  void _replace(covariant OuterModel other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other;
+    _$OuterModel = other;
   }
 
   @override
@@ -225,9 +217,9 @@ class OuterModelBuilder
 
   @override
   OuterModel build() {
-    final _$result =
-        _$v ?? OuterModel(prop: prop, innerModel: _innerModel?.build());
-    replace(_$result);
+    final _$result = _$OuterModel ??
+        OuterModel(prop: prop, innerModel: _innerModel?.build());
+    _replace(_$result);
     return _$result;
   }
 }

@@ -1,10 +1,10 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:data_class/data_class.dart';
+import 'package:example/built_collection_example.dart';
 
 part 'generic_example.g.dart';
 
-@DataClass()
-class Model<T, S> {
+class Model<T, S> implements DataClass<Model<T, S>, ModelBuilder<T, S>> {
   final T prop1;
   final BuiltList<S> prop2;
   final String prop3;
@@ -19,4 +19,10 @@ class Model<T, S> {
 
   @override
   int get hashCode => _hashCode;
+
+  @override
+  Model<T, S> rebuild(void Function(ModelBuilder<T, S>) updates) => _rebuild(updates);
+
+  @override
+  ModelBuilder<T, S> toBuilder() => _toBuilder();
 }
