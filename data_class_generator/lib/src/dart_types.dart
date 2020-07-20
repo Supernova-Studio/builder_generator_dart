@@ -6,8 +6,6 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:built_collection/built_collection.dart';
 
-import 'value_source_class.dart';
-
 BuiltSet<String> _builtCollectionNames = BuiltSet<String>([
   'BuiltList',
   'BuiltListMultimap',
@@ -25,9 +23,8 @@ class DartTypes {
     if (type.element is! ClassElement) return false;
 
     return (type.element as ClassElement)
-        .metadata
-        .map((annotation) => annotation.computeConstantValue())
-        .any((value) => DartTypes.getName(value?.type) == 'DataClass');
+        .allSupertypes
+        .any((interfaceType) => interfaceType.element.name == 'DataClass');
   }
 
   static bool isBuiltCollection(DartType type) {
