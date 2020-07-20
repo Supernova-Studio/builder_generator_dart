@@ -12,6 +12,7 @@ class _$ValueSourceClass extends ValueSourceClass {
   ParsedLibraryResult __parsedLibrary;
   String __name;
   String __builderName;
+  bool __isParentDataClass;
   BuiltList<String> __genericParameters;
   BuiltList<String> __genericBounds;
   ClassDeclaration __classDeclaration;
@@ -26,6 +27,7 @@ class _$ValueSourceClass extends ValueSourceClass {
   bool __dataClassIsAbstract;
   BuiltList<String> __builderImplements;
   CompilationUnitElement __compilationUnit;
+  String __builderPropName;
 
   factory _$ValueSourceClass(
           [void Function(ValueSourceClassBuilder) updates]) =>
@@ -46,6 +48,9 @@ class _$ValueSourceClass extends ValueSourceClass {
 
   @override
   String get builderName => __builderName ??= super.builderName;
+
+  @override
+  bool get isParentDataClass => __isParentDataClass ??= super.isParentDataClass;
 
   @override
   BuiltList<String> get genericParameters =>
@@ -97,6 +102,9 @@ class _$ValueSourceClass extends ValueSourceClass {
   @override
   CompilationUnitElement get compilationUnit =>
       __compilationUnit ??= super.compilationUnit;
+
+  @override
+  String get builderPropName => __builderPropName ??= super.builderPropName;
 
   @override
   ValueSourceClass rebuild(void Function(ValueSourceClassBuilder) updates) =>

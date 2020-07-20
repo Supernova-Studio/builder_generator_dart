@@ -44,6 +44,10 @@ abstract class ValueSourceClass
   String get builderName => '${name}Builder$_generics';
 
   @memoized
+  bool get isParentDataClass =>
+      element.supertype != null && needDataClass(element.supertype.element);
+
+  @memoized
   BuiltList<String> get genericParameters =>
       BuiltList<String>(element.typeParameters.map((e) => e.name));
 
@@ -139,10 +143,14 @@ abstract class ValueSourceClass
   CompilationUnitElement get compilationUnit =>
       element.library.definingCompilationUnit;
 
+  @memoized
+  String get builderPropName =>
+      (name.startsWith('_') ? '_\$${name.substring(1)}' : '_\$$name') +
+      genericParameters.join();
+
   static bool needDataClass(ClassElement classElement) {
-    return classElement.metadata
-        .map((annotation) => annotation.computeConstantValue())
-        .any((value) => DartTypes.getName(value?.type) == 'DataClass');
+    return classElement.allSupertypes
+        .any((interfaceType) => interfaceType.element.name == 'DataClass');
   }
 
   Iterable<GeneratorError> computeErrors() {
@@ -181,13 +189,13 @@ abstract class ValueSourceClass
   Iterable<GeneratorError> _checkClass() {
     var result = <GeneratorError>[];
 
-    if (dataClassIsAbstract) {
-      result.add(GeneratorError((b) => b
-        ..message = 'Class is abstract. Make it instantiable.'
-        ..offset = classDeclaration.offset
-        ..length = 0
-        ..fix = 'abstract '));
-    }
+//    if (dataClassIsAbstract) {
+//      result.add(GeneratorError((b) => b
+//        ..message = 'Class is abstract. Make it instantiable.'
+//        ..offset = classDeclaration.offset
+//        ..length = 0
+//        ..fix = 'abstract '));
+//    }
 
     if (hasDataClassImportWithShow) {
       result.add(GeneratorError((b) => b
@@ -201,6 +209,15 @@ abstract class ValueSourceClass
         ..message = 'Stop using "as" when importing '
             '"package:data_class/data_class.dart". It prevents the generated '
             'code from finding helper methods.'));
+    }
+
+    //todo add tests
+    var hasDataClassInterface = element.interfaces
+        .any((interface) => interface.element.name == 'DataClass');
+    if (!isParentDataClass && !hasDataClassInterface) {
+      result.add(GeneratorError((b) => b
+        ..message =
+            'Class must either implement DataClass or extend another class which implements DataClass.'));
     }
 
     return result;
@@ -259,7 +276,9 @@ abstract class ValueSourceClass
     if (errors.isNotEmpty) throw _makeError(errors);
 
     var result = StringBuffer();
-    result.write(_generateExtension());
+    if (!dataClassIsAbstract) {
+      result.write(_generateExtension());
+    }
     result.write(_generateBuilder());
 
     return result.toString();
@@ -273,11 +292,11 @@ abstract class ValueSourceClass
     result.writeln();
 
     result.writeln(
-        '$name$_generics rebuild(void Function($builderName builder) updates) '
-        '=> (toBuilder()..update(updates)).build();');
+        '$name$_generics _rebuild(void Function($builderName builder) updates) '
+        '=> (_toBuilder()..update(updates)).build();');
     result.writeln();
 
-    result.writeln('$builderName toBuilder() '
+    result.writeln('$builderName _toBuilder() '
         '=> ${builderName}()..replace(this);');
     result.writeln();
 
@@ -304,12 +323,21 @@ abstract class ValueSourceClass
   /// Generates the builder implementation.
   String _generateBuilder() {
     var result = StringBuffer();
-    result.writeln('class ${name}Builder$_boundedGenerics '
-        'implements ${builderImplements.join(", ")} {');
+    if (dataClassIsAbstract) result.writeln('abstract ');
+    result.write('class ${name}Builder$_boundedGenerics ');
+
+    if (isParentDataClass) {
+      result.write('extends ${element.supertype.name}Builder');
+    } else {
+      result.write('implements ${builderImplements.join(", ")}');
+    }
+    result.write('{');
 
     // Builder holds a reference to a data class, copies from it lazily.
-    result.writeln('$name$_generics _\$v;');
-    result.writeln('');
+    if (!dataClassIsAbstract) {
+      result.writeln('$name$_generics $builderPropName;');
+      result.writeln('');
+    }
 
     for (var field in ctorFields) {
       var type = field.typeInCompilationUnit(compilationUnit);
@@ -318,19 +346,29 @@ abstract class ValueSourceClass
       var name = field.name;
 
       // Field
-      result.writeln('$fieldType _$name;');
+      if (!dataClassIsAbstract) result.writeln('$fieldType _$name;');
 
       // Getter
-      result.writeln('$fieldType get $name =>');
-      if (field.isNestedBuilder) {
-        result.writeln('_\$this._$name ??= new $typeInBuilder();');
+      result.write('$fieldType get $name');
+      if (dataClassIsAbstract) {
+        result.write(';');
       } else {
-        result.writeln('_\$this._$name;');
+        result.write(' => ');
+        if (field.isNestedBuilder) {
+          result.write('_\$this._$name ??= new $typeInBuilder();');
+        } else {
+          result.write('_\$this._$name;');
+        }
       }
+      result.writeln();
 
       // Setter
-      result.writeln('set $name($fieldType $name) =>'
-          '_\$this._$name = $name;');
+      result.write('set $name($fieldType $name)');
+      if (dataClassIsAbstract) {
+        result.write(';');
+      } else {
+        result.write(' => _\$this._$name = $name;');
+      }
 
       result.writeln();
     }
@@ -339,39 +377,20 @@ abstract class ValueSourceClass
     result.writeln('${name}Builder();');
     result.writeln('');
 
-    if (ctorFields.isNotEmpty) {
-      result.writeln('$builderName get _\$this {');
-      result.writeln('if (_\$v != null) {');
-      for (var field in ctorFields) {
-        final name = field.name;
-        final nameInBuilder = '_$name';
-        if (field.isNestedBuilder) {
-          result.writeln('$nameInBuilder = _\$v.$name?.toBuilder();');
-        } else {
-          result.writeln('$nameInBuilder = _\$v.$name;');
-        }
-//        result.writeln('$nameInBuilder = _\$v.$name;');
-      }
-      result.writeln('_\$v = null;');
-      result.writeln('}');
-      result.writeln('return this;');
-      result.writeln('}');
+    if (!dataClassIsAbstract) {
+      result.writeln(_generateBuilderThisProp());
+      result.writeln(_generateBuilderReplace());
+      result.writeln(_generateBuilderUpdate());
+      result.writeln(_generateBuilderBuild());
     }
 
-    result.writeln('@override');
-    result.writeln('void replace($name$_generics other) {');
-
-    result.writeln('if (other == null) {');
-    result.writeln("throw new ArgumentError.notNull('other');");
-    result.writeln('}');
-    result.writeln('_\$v = other;');
     result.writeln('}');
 
-    result.writeln('@override');
-    result
-        .writeln('void update(void Function(${builderName} builder) updates) {'
-            ' if (updates != null) updates(this); }');
-    result.writeln();
+    return result.toString();
+  }
+
+  String _generateBuilderBuild() {
+    var result = StringBuffer();
 
     result.writeln('@override');
     result.writeln('$name$_generics build() {');
@@ -390,7 +409,7 @@ abstract class ValueSourceClass
     });
 
     result.write('final ');
-    result.writeln('_\$result = _\$v ?? ');
+    result.writeln('_\$result = $builderPropName ?? ');
     result.writeln('$name$_generics(');
     result.write(fieldBuilders.keys
         .map((field) => '$field: ${fieldBuilders[field]}')
@@ -402,7 +421,56 @@ abstract class ValueSourceClass
     result.writeln('return _\$result;');
     result.writeln('}');
 
+    return result.toString();
+  }
+
+  String _generateBuilderUpdate() {
+    var result = StringBuffer();
+
+    result.writeln('@override');
+    result
+        .writeln('void update(void Function(${builderName} builder) updates) {'
+            ' if (updates != null) updates(this); }');
+    result.writeln();
+
+    return result.toString();
+  }
+
+  String _generateBuilderReplace() {
+    var result = StringBuffer();
+
+    result.writeln('void replace($name$_generics other) {');
+
+    result.writeln('if (other == null) {');
+    result.writeln("throw new ArgumentError.notNull('other');");
     result.writeln('}');
+    result.writeln('$builderPropName = other;');
+    result.writeln('}');
+
+    return result.toString();
+  }
+
+  String _generateBuilderThisProp() {
+    var result = StringBuffer();
+
+    if (ctorFields.isNotEmpty) {
+      result.writeln('$builderName get _\$this {');
+      result.writeln('if ($builderPropName != null) {');
+      for (var field in ctorFields) {
+        final name = field.name;
+        final nameInBuilder = '_$name';
+        if (field.isNestedBuilder) {
+          result
+              .writeln('$nameInBuilder = $builderPropName.$name?.toBuilder();');
+        } else {
+          result.writeln('$nameInBuilder = $builderPropName.$name;');
+        }
+      }
+      result.writeln('$builderPropName = null;');
+      result.writeln('}');
+      result.writeln('return this;');
+      result.writeln('}');
+    }
 
     return result.toString();
   }
