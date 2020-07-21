@@ -23,6 +23,16 @@ abstract class DataClass<V extends DataClass<V, B>,
   B toBuilder();
 }
 
+class DataClassField {
+  /// This field won't be exposed by builder.
+  ///
+  /// This field will still be used in data class operations:
+  /// comparison, calculating hash code and string.
+  final bool ignoreForBuilder;
+
+  const DataClassField({this.ignoreForBuilder = false});
+}
+
 /// Every [DataClass] class has a corresponding [DataClassBuilder] class.
 ///
 /// You don't need to create one by hand; it will be generated

@@ -12,6 +12,7 @@ class _$ValueSourceField extends ValueSourceField {
   @override
   final FieldElement element;
   String __name;
+  DataClassField __settings;
   String __type;
   bool __isFunctionType;
   String __typeWithPrefix;
@@ -34,6 +35,9 @@ class _$ValueSourceField extends ValueSourceField {
 
   @override
   String get name => __name ??= super.name;
+
+  @override
+  DataClassField get settings => __settings ??= super.settings;
 
   @override
   String get type => __type ??= super.type;

@@ -340,6 +340,8 @@ abstract class ValueSourceClass
     }
 
     for (var field in ctorFields) {
+      if (field.settings.ignoreForBuilder) continue;
+
       var type = field.typeInCompilationUnit(compilationUnit);
       var typeInBuilder = field.typeInBuilder(compilationUnit);
       var fieldType = field.isNestedBuilder ? typeInBuilder : type;
@@ -403,14 +405,17 @@ abstract class ValueSourceClass
       // this is just the field name; if it's a nested builder, this is an
       // invocation of the nested builder taking into account nullability.
       var fieldBuilders = <String, String>{};
-      ctorFields.forEach((field) {
+
+      for (var field in ctorFields) {
+        if (field.settings.ignoreForBuilder) continue;
+
         final name = field.name;
         if (!field.isNestedBuilder) {
           fieldBuilders[name] = name;
         } else {
           fieldBuilders[name] = '_$name?.build()';
         }
-      });
+      }
 
       result.write('final ');
       result.writeln('_\$result = $builderPropName ?? ');
@@ -462,6 +467,8 @@ abstract class ValueSourceClass
       result.writeln('$builderName get _\$this {');
       result.writeln('if ($builderPropName != null) {');
       for (var field in ctorFields) {
+        if (field.settings.ignoreForBuilder) continue;
+
         final name = field.name;
         final nameInBuilder = '_$name';
         if (field.isNestedBuilder) {

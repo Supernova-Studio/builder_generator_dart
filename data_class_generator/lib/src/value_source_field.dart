@@ -6,9 +6,10 @@ library data_class_generator.source_field;
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
-import 'package:analyzer/dart/element/type.dart';
+import 'package:data_class/src/data_class_annotation.dart';
 
 import 'dart_types.dart';
 import 'fields.dart';
@@ -39,6 +40,25 @@ abstract class ValueSourceField
 
   @memoized
   String get name => element.displayName;
+
+  @memoized
+  DataClassField get settings {
+    var annotations = element.metadata
+        .map((annotation) => annotation.computeConstantValue())
+        .where((value) => DartTypes.getName(value?.type) == 'DataClassField');
+
+    if (annotations.isEmpty) return const DataClassField();
+    var annotation = annotations.single;
+
+    return DataClassField(
+      ignoreForBuilder:
+          annotation.getField('ignoreForBuilder')?.toBoolValue() ?? false,
+    );
+  }
+
+//  firstWhere(
+//      (element) => element.element.name == 'DataClassField',
+//      orElse: () => null);
 
   @memoized
   String get type => DartTypes.getName(element.getter.returnType);

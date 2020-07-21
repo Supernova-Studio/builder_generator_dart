@@ -691,6 +691,36 @@ class _Value<T, S> implements DataClass<_Value<T, S>, _ValueBuilder<T, S>> {
         isNot(containsErrors),
       );
     });
+
+    test('Data class field: ignoreForBuilder is supported', () async {
+      expect(
+        await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+class Value implements DataClass<Value, ValueBuilder> {
+  final String str;
+  
+  @DataClassField(ignoreForBuilder: true)
+  final String ignoredStr;
+
+  const Value({this.str, this.ignoredStr});
+
+  @override
+  Value rebuild(void Function(ValueBuilder builder) updates) => 
+      _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
+}'''),
+        allOf(
+          contains(r'_str'),
+          isNot(contains(r'_ignoredStr')),
+          isNot(contains(r'1.')),
+        ),
+      );
+    });
   });
 
   group('Invalid input', () {
@@ -1064,6 +1094,12 @@ abstract class DataClass<V extends DataClass<V, B>, B extends DataClassBuilder<V
   DataClass._();
   V rebuild(void Function(B builder) updates);
   B toBuilder();
+}
+
+class DataClassField {
+  final bool ignoreForBuilder;
+
+  const DataClassField({this.ignoreForBuilder = false});
 }
 
 abstract class DataClassBuilder<V, B extends DataClassBuilder<V, B>> {

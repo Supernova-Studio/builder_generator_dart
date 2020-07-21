@@ -12,6 +12,9 @@ dependencies:
   source_gen: ^0.9.0
   quiver: '>=0.21.0 <3.0.0'
 
+  data_class:
+    path: ../data_class
+
 dev_dependencies:
   test: ^1.0.0
   build_test: ^1.0.0
