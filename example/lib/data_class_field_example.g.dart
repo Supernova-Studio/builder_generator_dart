@@ -14,17 +14,22 @@ extension ValueDataClassExtension on Value {
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
-    return other is Value && prop1 == other.prop1 && prop2 == other.prop2;
+    return other is Value &&
+        prop1 == other.prop1 &&
+        prop2 == other.prop2 &&
+        prop3 == other.prop3;
   }
 
   int get _hashCode {
-    return $jf($jc($jc(0, prop1.hashCode), prop2.hashCode));
+    return $jf(
+        $jc($jc($jc(0, prop1.hashCode), prop2.hashCode), prop3.hashCode));
   }
 
   String get _string {
     return (newDataClassToStringHelper('Value')
           ..add('prop1', prop1)
-          ..add('prop2', prop2))
+          ..add('prop2', prop2)
+          ..add('prop3', prop3))
         .toString();
   }
 }
@@ -35,12 +40,16 @@ class ValueBuilder implements DataClassBuilder<Value, ValueBuilder> {
   String _prop1;
   String get prop1 => _$this._prop1;
   set prop1(String prop1) => _$this._prop1 = prop1;
+  String _prop3;
+  String get prop3 => _$this._prop3;
+  set prop3(String prop3) => _$this._prop3 = prop3;
 
   ValueBuilder();
 
   ValueBuilder get _$this {
     if (_$Value$ != null) {
       _prop1 = _$Value$.prop1;
+      _prop3 = _$Value$.prop3;
       _$Value$ = null;
     }
     return this;
@@ -60,7 +69,7 @@ class ValueBuilder implements DataClassBuilder<Value, ValueBuilder> {
 
   @override
   Value build() {
-    final _$result = _$Value$ ?? Value(prop1: prop1);
+    final _$result = _$Value$ ?? Value(prop1: prop1, prop3: prop3);
     _replace(_$result);
     return _$result;
   }

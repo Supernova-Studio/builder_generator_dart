@@ -158,16 +158,20 @@ packages:
   data_class:
     dependency: "direct main"
     description:
-      path: "../data_class"
-      relative: true
-    source: path
+      path: "data_class/"
+      ref: "feature/builder_inheritance"
+      resolved-ref: "101451f52db985189ebdc14188cbfa4b74f842bf"
+      url: "git://github.com/Supernova-Studio/builder_generator_dart.git"
+    source: git
     version: "1.0.0"
   data_class_generator:
     dependency: "direct dev"
     description:
-      path: "../data_class_generator"
-      relative: true
-    source: path
+      path: "data_class_generator/"
+      ref: "feature/builder_inheritance"
+      resolved-ref: "101451f52db985189ebdc14188cbfa4b74f842bf"
+      url: "git://github.com/Supernova-Studio/builder_generator_dart.git"
+    source: git
     version: "1.0.0"
   fixnum:
     dependency: transitive
