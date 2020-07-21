@@ -19,8 +19,7 @@ void main() {
 import 'package:data_class/data_class.dart';
 part 'value.g.dart';
 
-@DataClass()
-class InnerTestModel {
+class InnerTestModel implements DataClass<InnerTestModel, InnerTestModelBuilder> {
   final String someProperty;
 
   InnerTestModel({this.someProperty});
@@ -33,10 +32,15 @@ class InnerTestModel {
 
   @override
   int get hashCode => this._hashCode;
+
+  @override
+  InnerTestModel rebuild(void Function(InnerTestModelBuilder) updates) => _rebuild(updates);
+
+  @override
+  InnerTestModelBuilder toBuilder() => _toBuilder();
 }
 
-@DataClass()
-class TestModel {
+class TestModel implements DataClass<TestModel, TestModelBuilder> {
   final String name;
   final int age;
   final InnerTestModel innerTestModel;
@@ -51,14 +55,20 @@ class TestModel {
 
   @override
   int get hashCode => this._hashCode;
+
+  @override
+  TestModel rebuild(void Function(TestModelBuilder) updates) => _rebuild(updates);
+
+  @override
+  TestModelBuilder toBuilder() => _toBuilder();
 }'''),
         contains('''
 extension InnerTestModelDataClassExtension on InnerTestModel {
-  InnerTestModel rebuild(
+  InnerTestModel _rebuild(
           void Function(InnerTestModelBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+      (_toBuilder()..update(updates)).build();
 
-  InnerTestModelBuilder toBuilder() => InnerTestModelBuilder()..replace(this);
+  InnerTestModelBuilder _toBuilder() => InnerTestModelBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -78,7 +88,7 @@ extension InnerTestModelDataClassExtension on InnerTestModel {
 
 class InnerTestModelBuilder
     implements DataClassBuilder<InnerTestModel, InnerTestModelBuilder> {
-  InnerTestModel _\$v;
+  InnerTestModel _\$InnerTestModel;
 
   String _someProperty;
   String get someProperty => _\$this._someProperty;
@@ -87,19 +97,18 @@ class InnerTestModelBuilder
   InnerTestModelBuilder();
 
   InnerTestModelBuilder get _\$this {
-    if (_\$v != null) {
-      _someProperty = _\$v.someProperty;
-      _\$v = null;
+    if (_\$InnerTestModel != null) {
+      _someProperty = _\$InnerTestModel.someProperty;
+      _\$InnerTestModel = null;
     }
     return this;
   }
 
-  @override
-  void replace(InnerTestModel other) {
+  void _replace(covariant InnerTestModel other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$v = other;
+    _\$InnerTestModel = other;
   }
 
   @override
@@ -109,17 +118,18 @@ class InnerTestModelBuilder
 
   @override
   InnerTestModel build() {
-    final _\$result = _\$v ?? InnerTestModel(someProperty: someProperty);
-    replace(_\$result);
+    final _\$result =
+        _\$InnerTestModel ?? InnerTestModel(someProperty: someProperty);
+    _replace(_\$result);
     return _\$result;
   }
 }
 
 extension TestModelDataClassExtension on TestModel {
-  TestModel rebuild(void Function(TestModelBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  TestModel _rebuild(void Function(TestModelBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  TestModelBuilder toBuilder() => TestModelBuilder()..replace(this);
+  TestModelBuilder _toBuilder() => TestModelBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -145,16 +155,14 @@ extension TestModelDataClassExtension on TestModel {
 
 class TestModelBuilder
     implements DataClassBuilder<TestModel, TestModelBuilder> {
-  TestModel _\$v;
+  TestModel _\$TestModel;
 
   String _name;
   String get name => _\$this._name;
   set name(String name) => _\$this._name = name;
-
   int _age;
   int get age => _\$this._age;
   set age(int age) => _\$this._age = age;
-
   InnerTestModelBuilder _innerTestModel;
   InnerTestModelBuilder get innerTestModel =>
       _\$this._innerTestModel ??= new InnerTestModelBuilder();
@@ -164,21 +172,20 @@ class TestModelBuilder
   TestModelBuilder();
 
   TestModelBuilder get _\$this {
-    if (_\$v != null) {
-      _name = _\$v.name;
-      _age = _\$v.age;
-      _innerTestModel = _\$v.innerTestModel?.toBuilder();
-      _\$v = null;
+    if (_\$TestModel != null) {
+      _name = _\$TestModel.name;
+      _age = _\$TestModel.age;
+      _innerTestModel = _\$TestModel.innerTestModel?.toBuilder();
+      _\$TestModel = null;
     }
     return this;
   }
 
-  @override
-  void replace(TestModel other) {
+  void _replace(covariant TestModel other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$v = other;
+    _\$TestModel = other;
   }
 
   @override
@@ -188,10 +195,10 @@ class TestModelBuilder
 
   @override
   TestModel build() {
-    final _\$result = _\$v ??
+    final _\$result = _\$TestModel ??
         TestModel(
             name: name, age: age, innerTestModel: _innerTestModel?.build());
-    replace(_\$result);
+    _replace(_\$result);
     return _\$result;
   }
 }'''),
@@ -206,7 +213,7 @@ class TestModelBuilder
 import 'package:data_class/data_class.dart';
 part 'value.g.dart';
 
-abstract class AModel {
+abstract class AModel implements DataClass<AModel, AModelBuilder> {
   final String propA;
 
   String get getterA;
@@ -214,7 +221,6 @@ abstract class AModel {
   AModel({this.propA});
 }
 
-@DataClass()
 class BModel extends AModel {
   final String propB1;
   final String propB2;
@@ -223,12 +229,20 @@ class BModel extends AModel {
   String get getterA => 'getterA in BModel';
 
   BModel({this.propB1, this.propB2, String propA}) : super(propA: propA);
+
+  @override
+  BModel rebuild(void Function(BModelBuilder) updates) =>
+      _rebuild(updates);
+
+  @override
+  BModelBuilder toBuilder() => _toBuilder();
 }
 
-@DataClass()
 class CModel<T> extends BModel {
   final T genericProp;
+
   bool get someGetter => false;
+
   set someSetter(String input) => null;
 
   @override
@@ -239,20 +253,35 @@ class CModel<T> extends BModel {
       : super(propA: propA, propB1: propB1, propB2: 'fixedValue');
 
   @override
-  bool operator ==(other) => this._equals(other);
+  bool operator ==(other) => _equals(other);
 
   @override
-  String toString() => this._string;
+  String toString() => _string;
 
   @override
-  int get hashCode => this._hashCode;
+  int get hashCode => _hashCode;
+
+  @override
+  CModel<T> rebuild(void Function(CModelBuilder<T>) updates) =>
+      _rebuild(updates);
+
+  @override
+  CModelBuilder<T> toBuilder() => _toBuilder();
 }'''),
         contains('''
-extension BModelDataClassExtension on BModel {
-  BModel rebuild(void Function(BModelBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+abstract class AModelBuilder
+    implements DataClassBuilder<AModel, AModelBuilder> {
+  String get propA;
+  set propA(String propA);
 
-  BModelBuilder toBuilder() => BModelBuilder()..replace(this);
+  AModelBuilder();
+}
+
+extension BModelDataClassExtension on BModel {
+  BModel _rebuild(void Function(BModelBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
+
+  BModelBuilder _toBuilder() => BModelBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -276,17 +305,15 @@ extension BModelDataClassExtension on BModel {
   }
 }
 
-class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
-  BModel _\$v;
+class BModelBuilder extends AModelBuilder {
+  BModel _\$BModel;
 
   String _propB1;
   String get propB1 => _\$this._propB1;
   set propB1(String propB1) => _\$this._propB1 = propB1;
-
   String _propB2;
   String get propB2 => _\$this._propB2;
   set propB2(String propB2) => _\$this._propB2 = propB2;
-
   String _propA;
   String get propA => _\$this._propA;
   set propA(String propA) => _\$this._propA = propA;
@@ -294,21 +321,20 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   BModelBuilder();
 
   BModelBuilder get _\$this {
-    if (_\$v != null) {
-      _propB1 = _\$v.propB1;
-      _propB2 = _\$v.propB2;
-      _propA = _\$v.propA;
-      _\$v = null;
+    if (_\$BModel != null) {
+      _propB1 = _\$BModel.propB1;
+      _propB2 = _\$BModel.propB2;
+      _propA = _\$BModel.propA;
+      _\$BModel = null;
     }
     return this;
   }
 
-  @override
-  void replace(BModel other) {
+  void _replace(covariant BModel other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$v = other;
+    _\$BModel = other;
   }
 
   @override
@@ -319,17 +345,17 @@ class BModelBuilder implements DataClassBuilder<BModel, BModelBuilder> {
   @override
   BModel build() {
     final _\$result =
-        _\$v ?? BModel(propB1: propB1, propB2: propB2, propA: propA);
-    replace(_\$result);
+        _\$BModel ?? BModel(propB1: propB1, propB2: propB2, propA: propA);
+    _replace(_\$result);
     return _\$result;
   }
 }
 
 extension CModelDataClassExtension<T> on CModel<T> {
-  CModel<T> rebuild(void Function(CModelBuilder<T> builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  CModel<T> _rebuild(void Function(CModelBuilder<T> builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  CModelBuilder<T> toBuilder() => CModelBuilder<T>()..replace(this);
+  CModelBuilder<T> _toBuilder() => CModelBuilder<T>().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -357,18 +383,15 @@ extension CModelDataClassExtension<T> on CModel<T> {
   }
 }
 
-class CModelBuilder<T>
-    implements DataClassBuilder<CModel<T>, CModelBuilder<T>> {
-  CModel<T> _\$v;
+class CModelBuilder<T> extends BModelBuilder {
+  CModel<T> _\$CModelT;
 
   T _genericProp;
   T get genericProp => _\$this._genericProp;
   set genericProp(T genericProp) => _\$this._genericProp = genericProp;
-
   String _propB1;
   String get propB1 => _\$this._propB1;
   set propB1(String propB1) => _\$this._propB1 = propB1;
-
   String _propA;
   String get propA => _\$this._propA;
   set propA(String propA) => _\$this._propA = propA;
@@ -376,21 +399,20 @@ class CModelBuilder<T>
   CModelBuilder();
 
   CModelBuilder<T> get _\$this {
-    if (_\$v != null) {
-      _genericProp = _\$v.genericProp;
-      _propB1 = _\$v.propB1;
-      _propA = _\$v.propA;
-      _\$v = null;
+    if (_\$CModelT != null) {
+      _genericProp = _\$CModelT.genericProp;
+      _propB1 = _\$CModelT.propB1;
+      _propA = _\$CModelT.propA;
+      _\$CModelT = null;
     }
     return this;
   }
 
-  @override
-  void replace(CModel<T> other) {
+  void _replace(covariant CModel<T> other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$v = other;
+    _\$CModelT = other;
   }
 
   @override
@@ -400,9 +422,9 @@ class CModelBuilder<T>
 
   @override
   CModel<T> build() {
-    final _\$result = _\$v ??
+    final _\$result = _\$CModelT ??
         CModel<T>(genericProp: genericProp, propB1: propB1, propA: propA);
-    replace(_\$result);
+    _replace(_\$result);
     return _\$result;
   }
 }'''),
@@ -415,20 +437,24 @@ import 'package:data_class/data_class.dart';
 
 part 'value.g.dart';
 
-@DataClass()
-class NodeDataClass {
+class NodeDataClass implements DataClass<NodeDataClass, NodeDataClassBuilder> {
   final String label;
   final NodeDataClass left;
   final NodeDataClass right;
 
   NodeDataClass({this.label, this.left, this.right});
-}
+
+  @override
+  NodeDataClass rebuild(void Function(NodeDataClassBuilder) updates) => _rebuild(updates);
+
+  @override
+  NodeDataClassBuilder toBuilder() => _toBuilder();
 }'''), contains('''
 extension NodeDataClassDataClassExtension on NodeDataClass {
-  NodeDataClass rebuild(void Function(NodeDataClassBuilder builder) updates) =>
-      (toBuilder()..update(updates)).build();
+  NodeDataClass _rebuild(void Function(NodeDataClassBuilder builder) updates) =>
+      (_toBuilder()..update(updates)).build();
 
-  NodeDataClassBuilder toBuilder() => NodeDataClassBuilder()..replace(this);
+  NodeDataClassBuilder _toBuilder() => NodeDataClassBuilder().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -453,16 +479,14 @@ extension NodeDataClassDataClassExtension on NodeDataClass {
 
 class NodeDataClassBuilder
     implements DataClassBuilder<NodeDataClass, NodeDataClassBuilder> {
-  NodeDataClass _\$v;
+  NodeDataClass _\$NodeDataClass;
 
   String _label;
   String get label => _\$this._label;
   set label(String label) => _\$this._label = label;
-
   NodeDataClassBuilder _left;
   NodeDataClassBuilder get left => _\$this._left ??= new NodeDataClassBuilder();
   set left(NodeDataClassBuilder left) => _\$this._left = left;
-
   NodeDataClassBuilder _right;
   NodeDataClassBuilder get right =>
       _\$this._right ??= new NodeDataClassBuilder();
@@ -471,21 +495,20 @@ class NodeDataClassBuilder
   NodeDataClassBuilder();
 
   NodeDataClassBuilder get _\$this {
-    if (_\$v != null) {
-      _label = _\$v.label;
-      _left = _\$v.left?.toBuilder();
-      _right = _\$v.right?.toBuilder();
-      _\$v = null;
+    if (_\$NodeDataClass != null) {
+      _label = _\$NodeDataClass.label;
+      _left = _\$NodeDataClass.left?.toBuilder();
+      _right = _\$NodeDataClass.right?.toBuilder();
+      _\$NodeDataClass = null;
     }
     return this;
   }
 
-  @override
-  void replace(NodeDataClass other) {
+  void _replace(covariant NodeDataClass other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$v = other;
+    _\$NodeDataClass = other;
   }
 
   @override
@@ -495,10 +518,10 @@ class NodeDataClassBuilder
 
   @override
   NodeDataClass build() {
-    final _\$result = _\$v ??
+    final _\$result = _\$NodeDataClass ??
         NodeDataClass(
             label: label, left: _left?.build(), right: _right?.build());
-    replace(_\$result);
+    _replace(_\$result);
     return _\$result;
   }
 }'''));
@@ -513,8 +536,7 @@ class NodeDataClassBuilder
 import 'package:data_class/data_class.dart';
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   final String name;
   
   Value({this.name});
@@ -527,6 +549,12 @@ class Value {
 
   @override
   int get hashCode => _hashCode;
+  
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
         isNot(containsErrors),
       );
@@ -554,14 +582,19 @@ abstract class IModel {
   String get someGetter;
 }
 
-@DataClass()
-class CModel extends BModel implements IModel {
+class CModel extends BModel implements DataClass<CModel, CModelBuilder> {
   final String propC;
   
   String get someGetter => "";
 
   CModel({String propA, String propB, this.propC})
       : super(propA: propA, propB: propB);
+
+  @override
+  CModel rebuild(void Function(CModelBuilder) updates) => _rebuild(updates);
+
+  @override
+  CModelBuilder toBuilder() => _toBuilder();      
 }'''),
         isNot(containsErrors),
       );
@@ -573,12 +606,17 @@ class CModel extends BModel implements IModel {
 import 'package:data_class/data_class.dart';
 part 'value.g.dart';
 
-@DataClass()
-class CModel<T> {
+class Value<T> implements DataClass<Value<T>, ValueBuilder<T>> {
 
   final T genericProp;
 
-  CModel({this.genericProp});
+  Value({this.genericProp});
+    
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
         isNot(containsErrors),
       );
@@ -591,11 +629,16 @@ import 'package:data_class/data_class.dart';
 
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   set foo(int foo) => print(foo);
 
   Value();
+    
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();  
 }
 }'''),
         isNot(containsErrors),
@@ -609,9 +652,14 @@ import 'package:data_class/data_class.dart';
 
 part 'value.g.dart';
 
-@DataClass()
-class _Value {
+class _Value implements DataClass<_Value, _ValueBuilder> {
   _Value();
+
+  @override
+  _Value rebuild(void Function(_ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  _ValueBuilder toBuilder() => _toBuilder();  
 }'''),
           allOf(
             isNot(contains(r'_$_')),
@@ -635,8 +683,7 @@ abstract class SomeInterface {
   String interfaceProp;
 }
 
-@DataClass()
-class CModel with SomeMixin implements SomeInterface {
+class Value with SomeMixin implements SomeInterface, DataClass<Value, ValueBuilder> {
 
   final String prop1;
   String prop2;
@@ -644,7 +691,13 @@ class CModel with SomeMixin implements SomeInterface {
   @override
   String interfaceProp;
 
-  CModel({this.prop1});
+  Value({this.prop1});
+
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();    
 }'''),
         contains(
             '1. Data class fields must be final. However, these fields are not final: prop2, interfaceProp, mixinProp'),
@@ -657,31 +710,19 @@ class CModel with SomeMixin implements SomeInterface {
 import 'package:data_class/data_class.dart';
 part 'value.g.dart';
 
-@DataClass()
-class CModel {
+class Value implements DataClass<Value, ValueBuilder> {
   final String prop1;
 
-  CModel.custom({this.prop1});
+  Value.custom({this.prop1});
+      
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();  
 }'''),
         contains(
-            '1. Default constructor is not found. Please, add CModel() with all required parameters.'),
-      );
-    });
-
-    test('Abstract class is rejected', () async {
-      expect(
-        await generate('''library data_class;
-import 'package:data_class/data_class.dart';
-part 'value.g.dart';
-
-@DataClass()
-abstract class CModel {
-
-  final String prop1;
-
-  CModel({this.prop1});
-}'''),
-        contains('1. Class is abstract. Make it instantiable.'),
+            '1. Default constructor is not found. Please, add Value() with all required parameters.'),
       );
     });
 
@@ -691,9 +732,14 @@ abstract class CModel {
 import 'package:data_class/data_class.dart' show DataClass, DataClassBuilder;
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   Value();
+        
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
           contains('1. Stop using "show" when importing '
               '"package:data_class/data_class.dart".'));
@@ -705,9 +751,14 @@ class Value {
 import "package:data_class/data_class.dart" show DataClass, DataClassBuilder;
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   Value();
+        
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
           contains('1. Stop using "show" when importing '
               '"package:data_class/data_class.dart".'));
@@ -719,9 +770,14 @@ class Value {
 import 'package:data_class/data_class.dart' as dc;
 part 'value.g.dart';
 
-@dc.DataClass()
-class Value {
+class Value implements dc.DataClass<Value, ValueBuilder> {
   Value();
+
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();  
 }'''),
           contains('1. Stop using "as" when importing '
               '"package:data_class/data_class.dart".'));
@@ -733,9 +789,14 @@ class Value {
 import 'package:data_class/data_class.dart' as dc;
 part 'value.g.dart';
 
-@dc.DataClass()
-class Value {
+class Value implements dc.DataClass<Value, ValueBuilder> {
   Value();
+
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();  
 }'''),
           contains('1. Stop using "as" when importing '
               '"package:data_class/data_class.dart".'));
@@ -745,9 +806,14 @@ class Value {
       expect(await generate('''library data_class;
 import 'package:data_class/data_class.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   Value();
+  
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }
 '''), contains("1. Import generated part: part 'value.g.dart';"));
     });
@@ -758,11 +824,16 @@ import 'package:data_class/data_class.dart';
 
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   final int _foo;
   
-  Value({int foo}): this._foo = foo;  
+  Value({int foo}): this._foo = foo;
+    
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''), contains('1. Make field _foo public; remove the underscore.'));
     });
 
@@ -773,11 +844,16 @@ import 'package:data_class/data_class.dart';
 
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   final dynamic foo;
 
   Value({this.foo});
+    
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
           contains('1. Make field foo have non-dynamic type. If you are '
               'already specifying a type, please make sure the type is correctly imported.'));
@@ -790,11 +866,16 @@ import 'package:data_class/data_class.dart';
 
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   final String foo;
 
   Value(String param1, {this.foo});
+    
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
           contains('1. Default constructor can have named parameters only. '
               'Please, make the following fields named: param1.'));
@@ -807,11 +888,16 @@ import 'package:data_class/data_class.dart';
 
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   final String foo;
 
   Value([this.foo = "123"]]);
+  
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
           contains('1. Default constructor can have named parameters only. '
               'Please, make the following fields named: foo.'));
@@ -824,11 +910,16 @@ import 'package:data_class/data_class.dart';
 
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   final String foo;
 
   Value(String foo1) : this.foo = foo1;
+  
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
           contains(
               '1. Default constructor can have named parameters only. Please, make the following fields named: foo1.'));
@@ -840,8 +931,7 @@ class Value {
 import 'package:data_class/data_class.dart';
 part 'value.g.dart';
 
-@DataClass()
-class Value {
+class Value implements DataClass<Value, ValueBuilder> {
   final List list;
   final Set set;
   final Map map;
@@ -851,6 +941,12 @@ class Value {
   final Map<String, dynamic> mapTyped;
   
   Value({this.list, this.set, this.map, this.listTyped, this.setTyped, this.mapTyped});
+    
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
 }'''),
           allOf(
             contains('1. Make field "list" have type "BuiltList". '
@@ -917,12 +1013,14 @@ Future<String> generate(String source) async {
 const String dataClassSource = r'''
 library data_class;
 
-class DataClass {
-  const DataClass();
+abstract class DataClass<V extends DataClass<V, B>, B extends DataClassBuilder<V, B>> {
+  DataClass._();
+  V rebuild(void Function(B builder) updates);
+  B toBuilder();
 }
 
 abstract class DataClassBuilder<V, B extends DataClassBuilder<V, B>> {
-  void replace(V value);
-  void update(updates(DataClassBuilder<V> builder));
+  void update(Function(B builder) updates);
   V build();
+}
 ''';
