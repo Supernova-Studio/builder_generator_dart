@@ -969,6 +969,27 @@ class Value implements DataClass<Value, ValueBuilder> {
                 'because it is mutable.'),
           ));
     });
+
+    test('Extending data class is rejected', () async {
+      expect(
+        await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+part 'value.g.dart';
+
+class Value extends DataClass<Value, ValueBuilder> {
+  final String prop;
+  
+  Value({this.prop});
+    
+  @override
+  Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
+}'''),
+        contains('1. Class must either implement DataClass or extend another class which implements DataClass.'),
+      );
+    });
   });
 }
 

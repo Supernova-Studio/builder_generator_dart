@@ -211,7 +211,6 @@ abstract class ValueSourceClass
             'code from finding helper methods.'));
     }
 
-    //todo add tests
     var hasDataClassInterface = element.interfaces
         .any((interface) => interface.element.name == 'DataClass');
     if (!isParentDataClass && !hasDataClassInterface) {

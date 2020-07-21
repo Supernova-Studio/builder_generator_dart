@@ -81,31 +81,3 @@ class ModelE extends ModelD {
   @override
   ModelEBuilder toBuilder() => _toBuilder();
 }
-
-void main() {
-  ModelA modelA = ModelB();
-
-  var modelABuilder = modelA.toBuilder();
-  modelABuilder.propA = '123';
-  modelABuilder.list.addAll([1, 2, 3]);
-  var newModelA = modelABuilder.build();
-
-  print(newModelA);
-
-  ModelB modelB = ModelC();
-
-  var modelBBuilder = modelB.toBuilder();
-  modelBBuilder.propB1 = 'b1';
-  modelBBuilder.propA = 'a';
-  var newModelB = modelBBuilder.build();
-
-  print(newModelB);
-
-  ModelD modelD = ModelE(propA: 'propA');
-  var modelDBuilder = modelD.toBuilder();
-  modelDBuilder.propB2 = 'propB2';
-  modelDBuilder.propC = 'propC';
-  var newModelD = modelDBuilder.build();
-
-  print(newModelD);
-}
