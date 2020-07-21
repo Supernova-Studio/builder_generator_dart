@@ -327,7 +327,7 @@ abstract class ValueSourceClass
     result.write('class ${name}Builder$_boundedGenerics ');
 
     if (isParentDataClass) {
-      result.write('extends ${element.supertype.name}Builder');
+      result.write('extends ${element.supertype.element.name}Builder');
     } else {
       result.write('implements ${builderImplements.join(", ")}');
     }

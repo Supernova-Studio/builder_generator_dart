@@ -1,6 +1,5 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:data_class/data_class.dart';
-import 'package:example/built_collection_example.dart';
 
 part 'generic_example.g.dart';
 

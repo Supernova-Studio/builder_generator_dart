@@ -14,7 +14,7 @@ BuiltList<FieldElement> collectFieldsForType(InterfaceType type) {
   fields.addAll(_fieldElementsForType(type));
 
   var superclass = type.superclass;
-  while (superclass != null && superclass.name != 'Object') {
+  while (superclass != null && superclass.element.name != 'Object') {
     fields.addAll(_fieldElementsForType(superclass));
 
     superclass = superclass.superclass;
