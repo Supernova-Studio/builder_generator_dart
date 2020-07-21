@@ -71,9 +71,11 @@ abstract class ModelD extends ModelC {
 
 class ModelE extends ModelD {
   final String propE;
+  final ModelA modelA;
 
   ModelE({
     this.propE,
+    this.modelA,
     ModelB modelB,
     String propC,
     String propB1,

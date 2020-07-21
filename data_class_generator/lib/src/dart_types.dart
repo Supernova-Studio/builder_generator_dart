@@ -16,7 +16,13 @@ BuiltSet<String> _builtCollectionNames = BuiltSet<String>([
 
 class DartTypes {
   static bool needsNestedBuilder(DartType type) {
-    return isDataClass(type) || isBuiltCollection(type);
+    return isDataClass(type) && !isAbstract(type) || isBuiltCollection(type);
+  }
+
+  static bool isAbstract(DartType type) {
+    if (type.element is! ClassElement) return false;
+
+    return (type.element as ClassElement).isAbstract;
   }
 
   static bool isDataClass(DartType type) {

@@ -1,5 +1,5 @@
-import 'package:test/test.dart';
 import 'package:example/builder_inheritance_example.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('Parent abstract data class has builder with model properties', () {
@@ -35,7 +35,6 @@ void main() {
     expect(newModelD.propB2, 'propB2');
     expect(newModelD.propC, 'propC');
   });
-
 
   test('Nested parent builders are supported', () {
     ModelD modelD = ModelE();

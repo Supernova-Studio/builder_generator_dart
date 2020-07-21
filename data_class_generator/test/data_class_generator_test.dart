@@ -704,8 +704,10 @@ class Value implements DataClass<Value, ValueBuilder> {
   
   @DataClassField(ignoreForBuilder: true)
   final String ignoredStr;
+  
+  final String anotherStr;
 
-  const Value({this.str, this.ignoredStr});
+  const Value({this.str, this.ignoredStr, this.anotherStr});
 
   @override
   Value rebuild(void Function(ValueBuilder builder) updates) => 
@@ -717,6 +719,41 @@ class Value implements DataClass<Value, ValueBuilder> {
         allOf(
           contains(r'_str'),
           isNot(contains(r'_ignoredStr')),
+          contains(r'_anotherStr'),
+          isNot(contains(r'1.')),
+        ),
+      );
+    });
+
+    test('Abstract nested data class does not produce a nested builder',
+        () async {
+      expect(
+        await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+abstract class NestedValue implements DataClass<NestedValue, NestedValueBuilder> {
+  const NestedValue();
+}
+
+class Value implements DataClass<Value, ValueBuilder> {
+  final NestedValue nested;
+
+  const Value({this.nested});
+
+  @override
+  Value rebuild(void Function(ValueBuilder builder) updates) => 
+      _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
+}'''),
+        allOf(
+          contains(r'NestedValue _nested;'),
+          contains(r'NestedValue get nested => _$this._nested;'),
+          contains(
+              r'set nested(NestedValue nested) => _$this._nested = nested;'),
           isNot(contains(r'1.')),
         ),
       );

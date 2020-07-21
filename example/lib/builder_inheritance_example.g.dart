@@ -213,6 +213,7 @@ extension ModelEDataClassExtension on ModelE {
     if (identical(other, this)) return true;
     return other is ModelE &&
         propE == other.propE &&
+        modelA == other.modelA &&
         modelB == other.modelB &&
         propC == other.propC &&
         propB1 == other.propB1 &&
@@ -226,7 +227,9 @@ extension ModelEDataClassExtension on ModelE {
         $jc(
             $jc(
                 $jc(
-                    $jc($jc($jc(0, propE.hashCode), modelB.hashCode),
+                    $jc(
+                        $jc($jc($jc(0, propE.hashCode), modelA.hashCode),
+                            modelB.hashCode),
                         propC.hashCode),
                     propB1.hashCode),
                 propB2.hashCode),
@@ -237,6 +240,7 @@ extension ModelEDataClassExtension on ModelE {
   String get _string {
     return (newDataClassToStringHelper('ModelE')
           ..add('propE', propE)
+          ..add('modelA', modelA)
           ..add('modelB', modelB)
           ..add('propC', propC)
           ..add('propB1', propB1)
@@ -253,6 +257,9 @@ class ModelEBuilder extends ModelDBuilder {
   String _propE;
   String get propE => _$this._propE;
   set propE(String propE) => _$this._propE = propE;
+  ModelA _modelA;
+  ModelA get modelA => _$this._modelA;
+  set modelA(ModelA modelA) => _$this._modelA = modelA;
   ModelBBuilder _modelB;
   ModelBBuilder get modelB => _$this._modelB ??= new ModelBBuilder();
   set modelB(ModelBBuilder modelB) => _$this._modelB = modelB;
@@ -274,6 +281,7 @@ class ModelEBuilder extends ModelDBuilder {
   ModelEBuilder get _$this {
     if (_$ModelE$ != null) {
       _propE = _$ModelE$.propE;
+      _modelA = _$ModelE$.modelA;
       _modelB = _$ModelE$.modelB?.toBuilder();
       _propC = _$ModelE$.propC;
       _propB1 = _$ModelE$.propB1;
@@ -301,6 +309,7 @@ class ModelEBuilder extends ModelDBuilder {
     final _$result = _$ModelE$ ??
         ModelE(
             propE: propE,
+            modelA: modelA,
             modelB: _modelB?.build(),
             propC: propC,
             propB1: propB1,
