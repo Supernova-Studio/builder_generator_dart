@@ -34,7 +34,7 @@ extension ModelDataClassExtension on Model {
 }
 
 class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
-  Model _$Model;
+  Model _$Model$;
 
   ListBuilder<String> _list;
   ListBuilder<String> get list => _$this._list ??= new ListBuilder<String>();
@@ -49,11 +49,11 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
   ModelBuilder();
 
   ModelBuilder get _$this {
-    if (_$Model != null) {
-      _list = _$Model.list?.toBuilder();
-      _list2 = _$Model.list2;
-      _set = _$Model.set?.toBuilder();
-      _$Model = null;
+    if (_$Model$ != null) {
+      _list = _$Model$.list?.toBuilder();
+      _list2 = _$Model$.list2;
+      _set = _$Model$.set?.toBuilder();
+      _$Model$ = null;
     }
     return this;
   }
@@ -62,7 +62,7 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$Model = other;
+    _$Model$ = other;
   }
 
   @override
@@ -72,7 +72,7 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
 
   @override
   Model build() {
-    final _$result = _$Model ??
+    final _$result = _$Model$ ??
         Model(list: _list?.build(), list2: list2, set: _set?.build());
     _replace(_$result);
     return _$result;

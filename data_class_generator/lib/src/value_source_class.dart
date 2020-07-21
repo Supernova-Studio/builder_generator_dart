@@ -146,7 +146,8 @@ abstract class ValueSourceClass
   @memoized
   String get builderPropName =>
       (name.startsWith('_') ? '_\$${name.substring(1)}' : '_\$$name') +
-      genericParameters.join();
+      '\$' +
+      genericParameters.join('\$');
 
   static bool needDataClass(ClassElement classElement) {
     return classElement.allSupertypes
@@ -330,7 +331,7 @@ abstract class ValueSourceClass
     } else {
       result.write('implements ${builderImplements.join(", ")}');
     }
-    result.write('{');
+    result.writeln('{');
 
     // Builder holds a reference to a data class, copies from it lazily.
     if (!dataClassIsAbstract) {

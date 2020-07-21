@@ -36,7 +36,7 @@ extension ModelDataClassExtension<T, S> on Model<T, S> {
 
 class ModelBuilder<T, S>
     implements DataClassBuilder<Model<T, S>, ModelBuilder<T, S>> {
-  Model<T, S> _$ModelTS;
+  Model<T, S> _$Model$T$S;
 
   T _prop1;
   T get prop1 => _$this._prop1;
@@ -51,11 +51,11 @@ class ModelBuilder<T, S>
   ModelBuilder();
 
   ModelBuilder<T, S> get _$this {
-    if (_$ModelTS != null) {
-      _prop1 = _$ModelTS.prop1;
-      _prop2 = _$ModelTS.prop2?.toBuilder();
-      _prop3 = _$ModelTS.prop3;
-      _$ModelTS = null;
+    if (_$Model$T$S != null) {
+      _prop1 = _$Model$T$S.prop1;
+      _prop2 = _$Model$T$S.prop2?.toBuilder();
+      _prop3 = _$Model$T$S.prop3;
+      _$Model$T$S = null;
     }
     return this;
   }
@@ -64,7 +64,7 @@ class ModelBuilder<T, S>
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$ModelTS = other;
+    _$Model$T$S = other;
   }
 
   @override
@@ -74,7 +74,7 @@ class ModelBuilder<T, S>
 
   @override
   Model<T, S> build() {
-    final _$result = _$ModelTS ??
+    final _$result = _$Model$T$S ??
         Model<T, S>(prop1: prop1, prop2: _prop2?.build(), prop3: prop3);
     _replace(_$result);
     return _$result;

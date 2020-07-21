@@ -46,7 +46,7 @@ extension ModelBDataClassExtension on ModelB {
 }
 
 class ModelBBuilder extends ModelABuilder {
-  ModelB _$ModelB;
+  ModelB _$ModelB$;
 
   String _propB1;
   String get propB1 => _$this._propB1;
@@ -61,11 +61,11 @@ class ModelBBuilder extends ModelABuilder {
   ModelBBuilder();
 
   ModelBBuilder get _$this {
-    if (_$ModelB != null) {
-      _propB1 = _$ModelB.propB1;
-      _propB2 = _$ModelB.propB2;
-      _propA = _$ModelB.propA;
-      _$ModelB = null;
+    if (_$ModelB$ != null) {
+      _propB1 = _$ModelB$.propB1;
+      _propB2 = _$ModelB$.propB2;
+      _propA = _$ModelB$.propA;
+      _$ModelB$ = null;
     }
     return this;
   }
@@ -74,7 +74,7 @@ class ModelBBuilder extends ModelABuilder {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$ModelB = other;
+    _$ModelB$ = other;
   }
 
   @override
@@ -85,7 +85,7 @@ class ModelBBuilder extends ModelABuilder {
   @override
   ModelB build() {
     final _$result =
-        _$ModelB ?? ModelB(propB1: propB1, propB2: propB2, propA: propA);
+        _$ModelB$ ?? ModelB(propB1: propB1, propB2: propB2, propA: propA);
     _replace(_$result);
     return _$result;
   }
@@ -123,7 +123,7 @@ extension ModelCDataClassExtension on ModelC {
 }
 
 class ModelCBuilder extends ModelBBuilder {
-  ModelC _$ModelC;
+  ModelC _$ModelC$;
 
   int _propC;
   int get propC => _$this._propC;
@@ -138,11 +138,11 @@ class ModelCBuilder extends ModelBBuilder {
   ModelCBuilder();
 
   ModelCBuilder get _$this {
-    if (_$ModelC != null) {
-      _propC = _$ModelC.propC;
-      _propB1 = _$ModelC.propB1;
-      _propA = _$ModelC.propA;
-      _$ModelC = null;
+    if (_$ModelC$ != null) {
+      _propC = _$ModelC$.propC;
+      _propB1 = _$ModelC$.propB1;
+      _propA = _$ModelC$.propA;
+      _$ModelC$ = null;
     }
     return this;
   }
@@ -151,7 +151,7 @@ class ModelCBuilder extends ModelBBuilder {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$ModelC = other;
+    _$ModelC$ = other;
   }
 
   @override
@@ -162,7 +162,7 @@ class ModelCBuilder extends ModelBBuilder {
   @override
   ModelC build() {
     final _$result =
-        _$ModelC ?? ModelC(propC: propC, propB1: propB1, propA: propA);
+        _$ModelC$ ?? ModelC(propC: propC, propB1: propB1, propA: propA);
     _replace(_$result);
     return _$result;
   }

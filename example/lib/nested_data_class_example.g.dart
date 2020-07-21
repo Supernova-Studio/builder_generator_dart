@@ -34,7 +34,7 @@ extension NodeDataClassExtension on Node {
 }
 
 class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
-  Node _$Node;
+  Node _$Node$;
 
   String _label;
   String get label => _$this._label;
@@ -49,11 +49,11 @@ class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
   NodeBuilder();
 
   NodeBuilder get _$this {
-    if (_$Node != null) {
-      _label = _$Node.label;
-      _left = _$Node.left?.toBuilder();
-      _right = _$Node.right?.toBuilder();
-      _$Node = null;
+    if (_$Node$ != null) {
+      _label = _$Node$.label;
+      _left = _$Node$.left?.toBuilder();
+      _right = _$Node$.right?.toBuilder();
+      _$Node$ = null;
     }
     return this;
   }
@@ -62,7 +62,7 @@ class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$Node = other;
+    _$Node$ = other;
   }
 
   @override
@@ -72,7 +72,7 @@ class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
 
   @override
   Node build() {
-    final _$result = _$Node ??
+    final _$result = _$Node$ ??
         Node(label: label, left: _left?.build(), right: _right?.build());
     _replace(_$result);
     return _$result;
@@ -109,7 +109,7 @@ extension InnerModelDataClassExtension on InnerModel {
 
 class InnerModelBuilder
     implements DataClassBuilder<InnerModel, InnerModelBuilder> {
-  InnerModel _$InnerModel;
+  InnerModel _$InnerModel$;
 
   String _prop1;
   String get prop1 => _$this._prop1;
@@ -124,11 +124,11 @@ class InnerModelBuilder
   InnerModelBuilder();
 
   InnerModelBuilder get _$this {
-    if (_$InnerModel != null) {
-      _prop1 = _$InnerModel.prop1;
-      _prop2 = _$InnerModel.prop2;
-      _prop3 = _$InnerModel.prop3;
-      _$InnerModel = null;
+    if (_$InnerModel$ != null) {
+      _prop1 = _$InnerModel$.prop1;
+      _prop2 = _$InnerModel$.prop2;
+      _prop3 = _$InnerModel$.prop3;
+      _$InnerModel$ = null;
     }
     return this;
   }
@@ -137,7 +137,7 @@ class InnerModelBuilder
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$InnerModel = other;
+    _$InnerModel$ = other;
   }
 
   @override
@@ -148,7 +148,7 @@ class InnerModelBuilder
   @override
   InnerModel build() {
     final _$result =
-        _$InnerModel ?? InnerModel(prop1: prop1, prop2: prop2, prop3: prop3);
+        _$InnerModel$ ?? InnerModel(prop1: prop1, prop2: prop2, prop3: prop3);
     _replace(_$result);
     return _$result;
   }
@@ -181,7 +181,7 @@ extension OuterModelDataClassExtension on OuterModel {
 
 class OuterModelBuilder
     implements DataClassBuilder<OuterModel, OuterModelBuilder> {
-  OuterModel _$OuterModel;
+  OuterModel _$OuterModel$;
 
   String _prop;
   String get prop => _$this._prop;
@@ -195,10 +195,10 @@ class OuterModelBuilder
   OuterModelBuilder();
 
   OuterModelBuilder get _$this {
-    if (_$OuterModel != null) {
-      _prop = _$OuterModel.prop;
-      _innerModel = _$OuterModel.innerModel?.toBuilder();
-      _$OuterModel = null;
+    if (_$OuterModel$ != null) {
+      _prop = _$OuterModel$.prop;
+      _innerModel = _$OuterModel$.innerModel?.toBuilder();
+      _$OuterModel$ = null;
     }
     return this;
   }
@@ -207,7 +207,7 @@ class OuterModelBuilder
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$OuterModel = other;
+    _$OuterModel$ = other;
   }
 
   @override
@@ -217,7 +217,7 @@ class OuterModelBuilder
 
   @override
   OuterModel build() {
-    final _$result = _$OuterModel ??
+    final _$result = _$OuterModel$ ??
         OuterModel(prop: prop, innerModel: _innerModel?.build());
     _replace(_$result);
     return _$result;

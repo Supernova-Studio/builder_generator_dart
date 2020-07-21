@@ -51,7 +51,7 @@ extension ModelBDataClassExtension on ModelB {
 }
 
 class ModelBBuilder extends ModelABuilder {
-  ModelB _$ModelB;
+  ModelB _$ModelB$;
 
   String _propB1;
   String get propB1 => _$this._propB1;
@@ -69,12 +69,12 @@ class ModelBBuilder extends ModelABuilder {
   ModelBBuilder();
 
   ModelBBuilder get _$this {
-    if (_$ModelB != null) {
-      _propB1 = _$ModelB.propB1;
-      _propB2 = _$ModelB.propB2;
-      _propA = _$ModelB.propA;
-      _list = _$ModelB.list?.toBuilder();
-      _$ModelB = null;
+    if (_$ModelB$ != null) {
+      _propB1 = _$ModelB$.propB1;
+      _propB2 = _$ModelB$.propB2;
+      _propA = _$ModelB$.propA;
+      _list = _$ModelB$.list?.toBuilder();
+      _$ModelB$ = null;
     }
     return this;
   }
@@ -83,7 +83,7 @@ class ModelBBuilder extends ModelABuilder {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$ModelB = other;
+    _$ModelB$ = other;
   }
 
   @override
@@ -93,7 +93,7 @@ class ModelBBuilder extends ModelABuilder {
 
   @override
   ModelB build() {
-    final _$result = _$ModelB ??
+    final _$result = _$ModelB$ ??
         ModelB(
             propB1: propB1, propB2: propB2, propA: propA, list: _list?.build());
     _replace(_$result);
@@ -136,7 +136,7 @@ extension ModelCDataClassExtension on ModelC {
 }
 
 class ModelCBuilder extends ModelBBuilder {
-  ModelC _$ModelC;
+  ModelC _$ModelC$;
 
   String _propC;
   String get propC => _$this._propC;
@@ -154,12 +154,12 @@ class ModelCBuilder extends ModelBBuilder {
   ModelCBuilder();
 
   ModelCBuilder get _$this {
-    if (_$ModelC != null) {
-      _propC = _$ModelC.propC;
-      _propB1 = _$ModelC.propB1;
-      _propB2 = _$ModelC.propB2;
-      _propA = _$ModelC.propA;
-      _$ModelC = null;
+    if (_$ModelC$ != null) {
+      _propC = _$ModelC$.propC;
+      _propB1 = _$ModelC$.propB1;
+      _propB2 = _$ModelC$.propB2;
+      _propA = _$ModelC$.propA;
+      _$ModelC$ = null;
     }
     return this;
   }
@@ -168,7 +168,7 @@ class ModelCBuilder extends ModelBBuilder {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$ModelC = other;
+    _$ModelC$ = other;
   }
 
   @override
@@ -178,7 +178,7 @@ class ModelCBuilder extends ModelBBuilder {
 
   @override
   ModelC build() {
-    final _$result = _$ModelC ??
+    final _$result = _$ModelC$ ??
         ModelC(propC: propC, propB1: propB1, propB2: propB2, propA: propA);
     _replace(_$result);
     return _$result;
@@ -248,7 +248,7 @@ extension ModelEDataClassExtension on ModelE {
 }
 
 class ModelEBuilder extends ModelDBuilder {
-  ModelE _$ModelE;
+  ModelE _$ModelE$;
 
   String _propE;
   String get propE => _$this._propE;
@@ -272,14 +272,14 @@ class ModelEBuilder extends ModelDBuilder {
   ModelEBuilder();
 
   ModelEBuilder get _$this {
-    if (_$ModelE != null) {
-      _propE = _$ModelE.propE;
-      _modelB = _$ModelE.modelB?.toBuilder();
-      _propC = _$ModelE.propC;
-      _propB1 = _$ModelE.propB1;
-      _propB2 = _$ModelE.propB2;
-      _propA = _$ModelE.propA;
-      _$ModelE = null;
+    if (_$ModelE$ != null) {
+      _propE = _$ModelE$.propE;
+      _modelB = _$ModelE$.modelB?.toBuilder();
+      _propC = _$ModelE$.propC;
+      _propB1 = _$ModelE$.propB1;
+      _propB2 = _$ModelE$.propB2;
+      _propA = _$ModelE$.propA;
+      _$ModelE$ = null;
     }
     return this;
   }
@@ -288,7 +288,7 @@ class ModelEBuilder extends ModelDBuilder {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$ModelE = other;
+    _$ModelE$ = other;
   }
 
   @override
@@ -298,7 +298,7 @@ class ModelEBuilder extends ModelDBuilder {
 
   @override
   ModelE build() {
-    final _$result = _$ModelE ??
+    final _$result = _$ModelE$ ??
         ModelE(
             propE: propE,
             modelB: _modelB?.build(),

@@ -7,9 +7,9 @@ import 'dart:async';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:data_class_generator/data_class_generator.dart';
-import 'package:test/test.dart';
 import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Output tests', () {
@@ -88,7 +88,7 @@ extension InnerTestModelDataClassExtension on InnerTestModel {
 
 class InnerTestModelBuilder
     implements DataClassBuilder<InnerTestModel, InnerTestModelBuilder> {
-  InnerTestModel _\$InnerTestModel;
+  InnerTestModel _\$InnerTestModel\$;
 
   String _someProperty;
   String get someProperty => _\$this._someProperty;
@@ -97,9 +97,9 @@ class InnerTestModelBuilder
   InnerTestModelBuilder();
 
   InnerTestModelBuilder get _\$this {
-    if (_\$InnerTestModel != null) {
-      _someProperty = _\$InnerTestModel.someProperty;
-      _\$InnerTestModel = null;
+    if (_\$InnerTestModel\$ != null) {
+      _someProperty = _\$InnerTestModel\$.someProperty;
+      _\$InnerTestModel\$ = null;
     }
     return this;
   }
@@ -108,7 +108,7 @@ class InnerTestModelBuilder
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$InnerTestModel = other;
+    _\$InnerTestModel\$ = other;
   }
 
   @override
@@ -119,7 +119,7 @@ class InnerTestModelBuilder
   @override
   InnerTestModel build() {
     final _\$result =
-        _\$InnerTestModel ?? InnerTestModel(someProperty: someProperty);
+        _\$InnerTestModel\$ ?? InnerTestModel(someProperty: someProperty);
     _replace(_\$result);
     return _\$result;
   }
@@ -155,7 +155,7 @@ extension TestModelDataClassExtension on TestModel {
 
 class TestModelBuilder
     implements DataClassBuilder<TestModel, TestModelBuilder> {
-  TestModel _\$TestModel;
+  TestModel _\$TestModel\$;
 
   String _name;
   String get name => _\$this._name;
@@ -172,11 +172,11 @@ class TestModelBuilder
   TestModelBuilder();
 
   TestModelBuilder get _\$this {
-    if (_\$TestModel != null) {
-      _name = _\$TestModel.name;
-      _age = _\$TestModel.age;
-      _innerTestModel = _\$TestModel.innerTestModel?.toBuilder();
-      _\$TestModel = null;
+    if (_\$TestModel\$ != null) {
+      _name = _\$TestModel\$.name;
+      _age = _\$TestModel\$.age;
+      _innerTestModel = _\$TestModel\$.innerTestModel?.toBuilder();
+      _\$TestModel\$ = null;
     }
     return this;
   }
@@ -185,7 +185,7 @@ class TestModelBuilder
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$TestModel = other;
+    _\$TestModel\$ = other;
   }
 
   @override
@@ -195,7 +195,7 @@ class TestModelBuilder
 
   @override
   TestModel build() {
-    final _\$result = _\$TestModel ??
+    final _\$result = _\$TestModel\$ ??
         TestModel(
             name: name, age: age, innerTestModel: _innerTestModel?.build());
     _replace(_\$result);
@@ -309,7 +309,7 @@ extension BModelDataClassExtension on BModel {
 }
 
 class BModelBuilder extends AModelBuilder {
-  BModel _\$BModel;
+  BModel _\$BModel\$;
 
   String _propB1;
   String get propB1 => _\$this._propB1;
@@ -324,11 +324,11 @@ class BModelBuilder extends AModelBuilder {
   BModelBuilder();
 
   BModelBuilder get _\$this {
-    if (_\$BModel != null) {
-      _propB1 = _\$BModel.propB1;
-      _propB2 = _\$BModel.propB2;
-      _propA = _\$BModel.propA;
-      _\$BModel = null;
+    if (_\$BModel\$ != null) {
+      _propB1 = _\$BModel\$.propB1;
+      _propB2 = _\$BModel\$.propB2;
+      _propA = _\$BModel\$.propA;
+      _\$BModel\$ = null;
     }
     return this;
   }
@@ -337,7 +337,7 @@ class BModelBuilder extends AModelBuilder {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$BModel = other;
+    _\$BModel\$ = other;
   }
 
   @override
@@ -348,7 +348,7 @@ class BModelBuilder extends AModelBuilder {
   @override
   BModel build() {
     final _\$result =
-        _\$BModel ?? BModel(propB1: propB1, propB2: propB2, propA: propA);
+        _\$BModel\$ ?? BModel(propB1: propB1, propB2: propB2, propA: propA);
     _replace(_\$result);
     return _\$result;
   }
@@ -387,7 +387,7 @@ extension CModelDataClassExtension<T> on CModel<T> {
 }
 
 class CModelBuilder<T> extends BModelBuilder {
-  CModel<T> _\$CModelT;
+  CModel<T> _\$CModel\$T;
 
   T _genericProp;
   T get genericProp => _\$this._genericProp;
@@ -402,11 +402,11 @@ class CModelBuilder<T> extends BModelBuilder {
   CModelBuilder();
 
   CModelBuilder<T> get _\$this {
-    if (_\$CModelT != null) {
-      _genericProp = _\$CModelT.genericProp;
-      _propB1 = _\$CModelT.propB1;
-      _propA = _\$CModelT.propA;
-      _\$CModelT = null;
+    if (_\$CModel\$T != null) {
+      _genericProp = _\$CModel\$T.genericProp;
+      _propB1 = _\$CModel\$T.propB1;
+      _propA = _\$CModel\$T.propA;
+      _\$CModel\$T = null;
     }
     return this;
   }
@@ -415,7 +415,7 @@ class CModelBuilder<T> extends BModelBuilder {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$CModelT = other;
+    _\$CModel\$T = other;
   }
 
   @override
@@ -425,7 +425,7 @@ class CModelBuilder<T> extends BModelBuilder {
 
   @override
   CModel<T> build() {
-    final _\$result = _\$CModelT ??
+    final _\$result = _\$CModel\$T ??
         CModel<T>(genericProp: genericProp, propB1: propB1, propA: propA);
     _replace(_\$result);
     return _\$result;
@@ -482,7 +482,7 @@ extension NodeDataClassDataClassExtension on NodeDataClass {
 
 class NodeDataClassBuilder
     implements DataClassBuilder<NodeDataClass, NodeDataClassBuilder> {
-  NodeDataClass _\$NodeDataClass;
+  NodeDataClass _\$NodeDataClass\$;
 
   String _label;
   String get label => _\$this._label;
@@ -498,11 +498,11 @@ class NodeDataClassBuilder
   NodeDataClassBuilder();
 
   NodeDataClassBuilder get _\$this {
-    if (_\$NodeDataClass != null) {
-      _label = _\$NodeDataClass.label;
-      _left = _\$NodeDataClass.left?.toBuilder();
-      _right = _\$NodeDataClass.right?.toBuilder();
-      _\$NodeDataClass = null;
+    if (_\$NodeDataClass\$ != null) {
+      _label = _\$NodeDataClass\$.label;
+      _left = _\$NodeDataClass\$.left?.toBuilder();
+      _right = _\$NodeDataClass\$.right?.toBuilder();
+      _\$NodeDataClass\$ = null;
     }
     return this;
   }
@@ -511,7 +511,7 @@ class NodeDataClassBuilder
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _\$NodeDataClass = other;
+    _\$NodeDataClass\$ = other;
   }
 
   @override
@@ -521,7 +521,7 @@ class NodeDataClassBuilder
 
   @override
   NodeDataClass build() {
-    final _\$result = _\$NodeDataClass ??
+    final _\$result = _\$NodeDataClass\$ ??
         NodeDataClass(
             label: label, left: _left?.build(), right: _right?.build());
     _replace(_\$result);
@@ -668,6 +668,28 @@ class _Value implements DataClass<_Value, _ValueBuilder> {
             isNot(contains(r'_$_')),
             isNot(contains(r'1.')),
           ));
+    });
+
+    test('Private generic data classes are supported', () async {
+      expect(
+        await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+class _Value<T, S> implements DataClass<_Value<T, S>, _ValueBuilder<T, S>> {
+  final String prop;
+
+  _Value({this.prop});
+
+  @override
+  _Value<T, S> rebuild(void Function(_ValueBuilder<T, S>) updates) => _rebuild(updates);
+
+  @override
+  _ValueBuilder<T, S> toBuilder() => _toBuilder();  
+}'''),
+        isNot(containsErrors),
+      );
     });
   });
 
@@ -990,7 +1012,8 @@ class Value extends DataClass<Value, ValueBuilder> {
   @override
   ValueBuilder toBuilder() => _toBuilder();
 }'''),
-        contains('1. Class must either implement DataClass or extend another class which implements DataClass.'),
+        contains(
+            '1. Class must either implement DataClass or extend another class which implements DataClass.'),
       );
     });
   });
