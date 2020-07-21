@@ -56,15 +56,37 @@ class ModelC extends ModelB {
 }
 
 abstract class ModelD extends ModelC {
-  ModelD({String propC, String propB1, String propB2, String propA})
+  final ModelB modelB;
+
+  ModelD(
+      {this.modelB, String propC, String propB1, String propB2, String propA})
       : super(propC: propC, propB1: propB1, propB2: propB2, propA: propA);
+
+
+  @override
+  ModelD rebuild(void Function(ModelCBuilder) updates);
+
+  @override
+  ModelDBuilder toBuilder();
 }
 
 class ModelE extends ModelD {
   final String propE;
 
-  ModelE({this.propE, String propC, String propB1, String propB2, String propA})
-      : super(propC: propC, propB1: propB1, propB2: propB2, propA: propA);
+  ModelE({
+    this.propE,
+    ModelB modelB,
+    String propC,
+    String propB1,
+    String propB2,
+    String propA,
+  }) : super(
+          modelB: modelB,
+          propC: propC,
+          propB1: propB1,
+          propB2: propB2,
+          propA: propA,
+        );
 
   @override
   bool operator ==(dynamic other) => _equals(other);

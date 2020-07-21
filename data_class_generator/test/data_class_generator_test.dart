@@ -275,6 +275,9 @@ abstract class AModelBuilder
   set propA(String propA);
 
   AModelBuilder();
+
+  @override
+  AModel build();
 }
 
 extension BModelDataClassExtension on BModel {

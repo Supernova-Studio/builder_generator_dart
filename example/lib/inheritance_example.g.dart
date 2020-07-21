@@ -12,6 +12,9 @@ abstract class ModelABuilder
   set propA(String propA);
 
   ModelABuilder();
+
+  @override
+  ModelA build();
 }
 
 extension ModelBDataClassExtension on ModelB {

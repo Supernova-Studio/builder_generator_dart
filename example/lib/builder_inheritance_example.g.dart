@@ -14,6 +14,9 @@ abstract class ModelABuilder
   set list(ListBuilder<int> list);
 
   ModelABuilder();
+
+  @override
+  ModelA build();
 }
 
 extension ModelBDataClassExtension on ModelB {
@@ -183,6 +186,8 @@ class ModelCBuilder extends ModelBBuilder {
 }
 
 abstract class ModelDBuilder extends ModelCBuilder {
+  ModelBBuilder get modelB;
+  set modelB(ModelBBuilder modelB);
   String get propC;
   set propC(String propC);
   String get propB1;
@@ -193,6 +198,9 @@ abstract class ModelDBuilder extends ModelCBuilder {
   set propA(String propA);
 
   ModelDBuilder();
+
+  @override
+  ModelD build();
 }
 
 extension ModelEDataClassExtension on ModelE {
@@ -205,6 +213,7 @@ extension ModelEDataClassExtension on ModelE {
     if (identical(other, this)) return true;
     return other is ModelE &&
         propE == other.propE &&
+        modelB == other.modelB &&
         propC == other.propC &&
         propB1 == other.propB1 &&
         propB2 == other.propB2 &&
@@ -216,7 +225,9 @@ extension ModelEDataClassExtension on ModelE {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, propE.hashCode), propC.hashCode),
+                $jc(
+                    $jc($jc($jc(0, propE.hashCode), modelB.hashCode),
+                        propC.hashCode),
                     propB1.hashCode),
                 propB2.hashCode),
             propA.hashCode),
@@ -226,6 +237,7 @@ extension ModelEDataClassExtension on ModelE {
   String get _string {
     return (newDataClassToStringHelper('ModelE')
           ..add('propE', propE)
+          ..add('modelB', modelB)
           ..add('propC', propC)
           ..add('propB1', propB1)
           ..add('propB2', propB2)
@@ -241,6 +253,9 @@ class ModelEBuilder extends ModelDBuilder {
   String _propE;
   String get propE => _$this._propE;
   set propE(String propE) => _$this._propE = propE;
+  ModelBBuilder _modelB;
+  ModelBBuilder get modelB => _$this._modelB ??= new ModelBBuilder();
+  set modelB(ModelBBuilder modelB) => _$this._modelB = modelB;
   String _propC;
   String get propC => _$this._propC;
   set propC(String propC) => _$this._propC = propC;
@@ -259,6 +274,7 @@ class ModelEBuilder extends ModelDBuilder {
   ModelEBuilder get _$this {
     if (_$ModelE != null) {
       _propE = _$ModelE.propE;
+      _modelB = _$ModelE.modelB?.toBuilder();
       _propC = _$ModelE.propC;
       _propB1 = _$ModelE.propB1;
       _propB2 = _$ModelE.propB2;
@@ -285,6 +301,7 @@ class ModelEBuilder extends ModelDBuilder {
     final _$result = _$ModelE ??
         ModelE(
             propE: propE,
+            modelB: _modelB?.build(),
             propC: propC,
             propB1: propB1,
             propB2: propB2,

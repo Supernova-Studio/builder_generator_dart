@@ -35,4 +35,15 @@ void main() {
     expect(newModelD.propB2, 'propB2');
     expect(newModelD.propC, 'propC');
   });
+
+
+  test('Nested parent builders are supported', () {
+    ModelD modelD = ModelE();
+    var modelDBuilder = modelD.toBuilder();
+    modelDBuilder.modelB.propA = 'propA';
+
+    var newModelD = modelDBuilder.build();
+
+    expect(newModelD.modelB.propA, 'propA');
+  });
 }

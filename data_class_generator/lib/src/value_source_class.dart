@@ -380,8 +380,8 @@ abstract class ValueSourceClass
       result.writeln(_generateBuilderThisProp());
       result.writeln(_generateBuilderReplace());
       result.writeln(_generateBuilderUpdate());
-      result.writeln(_generateBuilderBuild());
     }
+    result.writeln(_generateBuilderBuild());
 
     result.writeln('}');
 
@@ -392,33 +392,38 @@ abstract class ValueSourceClass
     var result = StringBuffer();
 
     result.writeln('@override');
-    result.writeln('$name$_generics build() {');
+    result.write('$name$_generics build()');
+    if (dataClassIsAbstract) {
+      result.writeln(';');
+    } else {
+      result.writeln(' {');
 
-    // Construct a map from field to how it's built. If it's a normal field,
-    // this is just the field name; if it's a nested builder, this is an
-    // invocation of the nested builder taking into account nullability.
-    var fieldBuilders = <String, String>{};
-    ctorFields.forEach((field) {
-      final name = field.name;
-      if (!field.isNestedBuilder) {
-        fieldBuilders[name] = name;
-      } else {
-        fieldBuilders[name] = '_$name?.build()';
-      }
-    });
+      // Construct a map from field to how it's built. If it's a normal field,
+      // this is just the field name; if it's a nested builder, this is an
+      // invocation of the nested builder taking into account nullability.
+      var fieldBuilders = <String, String>{};
+      ctorFields.forEach((field) {
+        final name = field.name;
+        if (!field.isNestedBuilder) {
+          fieldBuilders[name] = name;
+        } else {
+          fieldBuilders[name] = '_$name?.build()';
+        }
+      });
 
-    result.write('final ');
-    result.writeln('_\$result = $builderPropName ?? ');
-    result.writeln('$name$_generics(');
-    result.write(fieldBuilders.keys
-        .map((field) => '$field: ${fieldBuilders[field]}')
-        .join(','));
-    result.writeln(');');
+      result.write('final ');
+      result.writeln('_\$result = $builderPropName ?? ');
+      result.writeln('$name$_generics(');
+      result.write(fieldBuilders.keys
+          .map((field) => '$field: ${fieldBuilders[field]}')
+          .join(','));
+      result.writeln(');');
 
-    // Set _$v to the data class, so it will be lazily copied if needed.
-    result.writeln('_replace(_\$result);');
-    result.writeln('return _\$result;');
-    result.writeln('}');
+      // Set inner prop to the data class, so it will be lazily copied if needed.
+      result.writeln('_replace(_\$result);');
+      result.writeln('return _\$result;');
+      result.writeln('}');
+    }
 
     return result.toString();
   }
