@@ -13,7 +13,10 @@ dependencies:
   quiver: '>=0.21.0 <3.0.0'
 
   data_class:
-    path: ../data_class
+    git:
+      url: git://github.com/Supernova-Studio/builder_generator_dart.git
+      ref: feature/builder_inheritance
+      path: data_class/
 
 dev_dependencies:
   test: ^1.0.0

@@ -172,9 +172,11 @@ packages:
   data_class:
     dependency: "direct main"
     description:
-      path: "../data_class"
-      relative: true
-    source: path
+      path: "data_class/"
+      ref: "feature/builder_inheritance"
+      resolved-ref: "1687487b36f0096fd1b3229cf65532db0aee8781"
+      url: "git://github.com/Supernova-Studio/builder_generator_dart.git"
+    source: git
     version: "1.0.0"
   fixnum:
     dependency: transitive
