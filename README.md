@@ -84,8 +84,7 @@ IDE File template (Supernova guidelines) for creating a new file with a single d
     #set( $className = "SM$CamelCaseName" )
     #parse("File Header.java")
     @JsonSerializable()
-    @DataClass()
-    class $className {
+    class $className implements DataClass<${className}, ${className}Builder> {
       //
       /// Properties
       // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -110,6 +109,12 @@ IDE File template (Supernova guidelines) for creating a new file with a single d
     
       @override
       int get hashCode => this._hashCode;
+      
+      @override
+      ${className} rebuild(void Function(${className}Builder builder) updates) => _rebuild(updates);
+    
+      @override
+      ${className}Builder toBuilder() => _toBuilder();
     
       //
       /// Mapping
@@ -124,8 +129,7 @@ IDE File template (Supernova guidelines) for creating a new file with a single d
 IDE Live template (Supernova guidelines) for creating a data class in an existing file:
 ```
 @JsonSerializable()
-@DataClass()
-class $CLASS_NAME$ {
+class $CLASS_NAME$ implements DataClass<$CLASS_NAME$, $CLASS_NAME$Builder> {
   //
   /// Properties
   // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -150,6 +154,12 @@ class $CLASS_NAME$ {
 
   @override
   int get hashCode => this._hashCode;
+  
+  @override
+  $CLASS_NAME$ rebuild(void Function($CLASS_NAME$Builder builder) updates) => _rebuild(updates);
+
+  @override
+  $CLASS_NAME$Builder toBuilder() => _toBuilder();
 
   //
   /// Mapping

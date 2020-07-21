@@ -62,7 +62,6 @@ abstract class ModelD extends ModelC {
       {this.modelB, String propC, String propB1, String propB2, String propA})
       : super(propC: propC, propB1: propB1, propB2: propB2, propA: propA);
 
-
   @override
   ModelD rebuild(void Function(ModelCBuilder) updates);
 
