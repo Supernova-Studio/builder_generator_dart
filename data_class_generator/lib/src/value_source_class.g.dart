@@ -18,7 +18,7 @@ class _$ValueSourceClass extends ValueSourceClass {
   ClassDeclaration __classDeclaration;
   BuiltList<ValueSourceField> __fields;
   ConstructorElement __constructor;
-  BuiltList<ValueSourceField> __ctorFields;
+  BuiltList<ValueSourceField> __builderFields;
   String __source;
   String __partStatement;
   bool __hasPartStatement;
@@ -71,8 +71,8 @@ class _$ValueSourceClass extends ValueSourceClass {
   ConstructorElement get constructor => __constructor ??= super.constructor;
 
   @override
-  BuiltList<ValueSourceField> get ctorFields =>
-      __ctorFields ??= super.ctorFields;
+  BuiltList<ValueSourceField> get builderFields =>
+      __builderFields ??= super.builderFields;
 
   @override
   String get source => __source ??= super.source;

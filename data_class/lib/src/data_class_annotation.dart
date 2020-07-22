@@ -30,7 +30,8 @@ class DataClassField {
   /// comparison, calculating hash code and string.
   final bool ignoreForBuilder;
 
-  const DataClassField({this.ignoreForBuilder = false});
+  const DataClassField({this.ignoreForBuilder = false})
+      : assert(ignoreForBuilder != null);
 }
 
 /// Every [DataClass] class has a corresponding [DataClassBuilder] class.

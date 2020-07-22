@@ -74,12 +74,13 @@ abstract class ValueSourceClass
   ConstructorElement get constructor => element.constructors
       .firstWhere((element) => element.displayName == '', orElse: () => null);
 
-  /// Fields which can be set using default constructor.
+  /// Fields which are exposed by builder.
   @memoized
-  BuiltList<ValueSourceField> get ctorFields {
+  BuiltList<ValueSourceField> get builderFields {
     var paramNames = constructor.parameters.map((e) => e.name);
-    return BuiltList<ValueSourceField>.from(
-        fields.where((field) => paramNames.contains(field.name)));
+
+    return BuiltList<ValueSourceField>.from(fields.where((field) =>
+        paramNames.contains(field.name) && !field.settings.ignoreForBuilder));
   }
 
   @memoized
@@ -244,15 +245,18 @@ abstract class ValueSourceClass
       ];
     }
 
-    var nonNamedParams =
-        constructor.parameters.where((param) => !param.isNamed);
+    // Abstract classes can have non-named params since we won't rebuild them and their builders are abstract as well
+    if (!dataClassIsAbstract) {
+      var nonNamedParams =
+          constructor.parameters.where((param) => !param.isNamed);
 
-    if (nonNamedParams.isNotEmpty) {
-      return [
-        GeneratorError((b) => b
-          ..message = 'Default constructor can have named parameters only. '
-              'Please, make the following fields named: ${nonNamedParams.map((e) => e.name).join(', ')}.')
-      ];
+      if (nonNamedParams.isNotEmpty) {
+        return [
+          GeneratorError((b) => b
+            ..message = 'Default constructor can have named parameters only. '
+                'Please, make the following fields named: ${nonNamedParams.map((e) => e.name).join(', ')}.')
+        ];
+      }
     }
 
     return <GeneratorError>[];
@@ -339,9 +343,7 @@ abstract class ValueSourceClass
       result.writeln('');
     }
 
-    for (var field in ctorFields) {
-      if (field.settings.ignoreForBuilder) continue;
-
+    for (var field in builderFields) {
       var type = field.typeInCompilationUnit(compilationUnit);
       var typeInBuilder = field.typeInBuilder(compilationUnit);
       var fieldType = field.isNestedBuilder ? typeInBuilder : type;
@@ -406,9 +408,7 @@ abstract class ValueSourceClass
       // invocation of the nested builder taking into account nullability.
       var fieldBuilders = <String, String>{};
 
-      for (var field in ctorFields) {
-        if (field.settings.ignoreForBuilder) continue;
-
+      for (var field in builderFields) {
         final name = field.name;
         if (!field.isNestedBuilder) {
           fieldBuilders[name] = name;
@@ -463,12 +463,10 @@ abstract class ValueSourceClass
   String _generateBuilderThisProp() {
     var result = StringBuffer();
 
-    if (ctorFields.isNotEmpty) {
+    if (builderFields.isNotEmpty) {
       result.writeln('$builderName get _\$this {');
       result.writeln('if ($builderPropName != null) {');
-      for (var field in ctorFields) {
-        if (field.settings.ignoreForBuilder) continue;
-
+      for (var field in builderFields) {
         final name = field.name;
         final nameInBuilder = '_$name';
         if (field.isNestedBuilder) {
