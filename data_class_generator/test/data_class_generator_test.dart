@@ -782,6 +782,30 @@ abstract class Value implements DataClass<Value, ValueBuilder> {
         isNot(containsErrors),
       );
     });
+
+
+    test('Abstract data class can have named constructor', () async {
+      expect(
+        await generate('''library data_class;
+import 'package:data_class/data_class.dart';
+
+part 'value.g.dart';
+
+abstract class Value implements DataClass<Value, ValueBuilder> {
+  final String named;
+
+  const Value.named({this.named});
+
+  @override
+  Value rebuild(void Function(ValueBuilder builder) updates) => 
+      _rebuild(updates);
+
+  @override
+  ValueBuilder toBuilder() => _toBuilder();
+}'''),
+        isNot(containsErrors),
+      );
+    });
   });
 
   group('Invalid input', () {

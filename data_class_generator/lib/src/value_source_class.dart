@@ -237,16 +237,17 @@ abstract class ValueSourceClass
   }
 
   Iterable<GeneratorError> _checkConstructor() {
-    if (constructor == null) {
-      return [
-        GeneratorError((b) => b
-          ..message = 'Default constructor is not found. '
-              'Please, add ${name}() with all required parameters.')
-      ];
-    }
-
-    // Abstract classes can have non-named params since we won't rebuild them and their builders are abstract as well
+    // Abstract classes can have named constructors and non-named params
+    // since we won't rebuild them and their builders are abstract as well.
     if (!dataClassIsAbstract) {
+      if (constructor == null) {
+        return [
+          GeneratorError((b) => b
+            ..message = 'Default constructor is not found. '
+                'Please, add ${name}() with all required parameters.')
+        ];
+      }
+
       var nonNamedParams =
           constructor.parameters.where((param) => !param.isNamed);
 
