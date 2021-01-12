@@ -134,8 +134,6 @@ void main() {
       var outerModel = OuterModel();
 
       var newOuterModel = outerModel.rebuild((builder) {
-        expect(builder.innerModel, isNull);
-
         builder.innerModel = InnerModelBuilder();
 
         return builder
@@ -160,6 +158,15 @@ void main() {
       });
 
       expect(newNode.left.right.left.left.label, 'Leaf1');
+    });
+
+    test('Nested builder is nullable', () {
+      var node = Node();
+
+      var nodeBuilder = node.toBuilder();
+
+      expect(nodeBuilder.right, isNull);
+      expect(nodeBuilder.left, isNull);
     });
   });
 }
