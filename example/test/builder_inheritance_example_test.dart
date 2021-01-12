@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:example/builder_inheritance_example.dart';
 import 'package:test/test.dart';
 
@@ -7,6 +8,8 @@ void main() {
 
     var modelABuilder = modelA.toBuilder();
     modelABuilder.propA = '123';
+
+    modelABuilder.list = ListBuilder<int>();
     modelABuilder.list.addAll([1, 2, 3]);
 
     expect(modelABuilder.propA, '123');
@@ -39,6 +42,7 @@ void main() {
   test('Nested parent builders are supported', () {
     ModelD modelD = ModelE();
     var modelDBuilder = modelD.toBuilder();
+    modelDBuilder.modelB = ModelBBuilder();
     modelDBuilder.modelB.propA = 'propA';
 
     var newModelD = modelDBuilder.build();

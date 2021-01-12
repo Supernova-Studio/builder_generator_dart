@@ -37,13 +37,13 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
   Model _$Model$;
 
   ListBuilder<String> _list;
-  ListBuilder<String> get list => _$this._list ??= new ListBuilder<String>();
+  ListBuilder<String> get list => _$this._list;
   set list(ListBuilder<String> list) => _$this._list = list;
   BuiltList _list2;
   BuiltList get list2 => _$this._list2;
   set list2(BuiltList list2) => _$this._list2 = list2;
   SetBuilder<String> _set;
-  SetBuilder<String> get set => _$this._set ??= new SetBuilder<String>();
+  SetBuilder<String> get set => _$this._set;
   set set(SetBuilder<String> set) => _$this._set = set;
 
   ModelBuilder();

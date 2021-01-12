@@ -42,7 +42,7 @@ class ModelBuilder<T, S>
   T get prop1 => _$this._prop1;
   set prop1(T prop1) => _$this._prop1 = prop1;
   ListBuilder<S> _prop2;
-  ListBuilder<S> get prop2 => _$this._prop2 ??= new ListBuilder<S>();
+  ListBuilder<S> get prop2 => _$this._prop2;
   set prop2(ListBuilder<S> prop2) => _$this._prop2 = prop2;
   String _prop3;
   String get prop3 => _$this._prop3;

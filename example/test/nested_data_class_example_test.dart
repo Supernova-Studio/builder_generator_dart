@@ -1,5 +1,5 @@
-import 'package:test/test.dart';
 import 'package:example/nested_data_class_example.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Equation tests', () {
@@ -133,9 +133,15 @@ void main() {
     test('Null inner data class can be rebuilt', () {
       var outerModel = OuterModel();
 
-      var newOuterModel = outerModel.rebuild((builder) => builder
-        ..prop = 'prop'
-        ..innerModel.prop1 = 'prop1');
+      var newOuterModel = outerModel.rebuild((builder) {
+        expect(builder.innerModel, isNull);
+
+        builder.innerModel = InnerModelBuilder();
+
+        return builder
+          ..prop = 'prop'
+          ..innerModel.prop1 = 'prop1';
+      });
 
       expect(newOuterModel.prop, 'prop');
       expect(newOuterModel.innerModel, InnerModel(prop1: 'prop1'));
@@ -144,12 +150,16 @@ void main() {
     test('Chain of inner data classes can be rebuilt', () {
       var node = Node();
 
-      var newNode = node
-          .rebuild((builder) => builder..left.right.left.left.label = 'Leaf1'
-        ..right.right.left.label = 'Leaf2');
+      var newNode = node.rebuild((builder) {
+        builder.left = NodeBuilder();
+        builder.left.right = NodeBuilder();
+        builder.left.right.left = NodeBuilder();
+        builder.left.right.left.left = NodeBuilder();
+
+        builder.left.right.left.left.label = 'Leaf1';
+      });
 
       expect(newNode.left.right.left.left.label, 'Leaf1');
-      expect(newNode.right.right.left.label, 'Leaf2');
     });
   });
 }

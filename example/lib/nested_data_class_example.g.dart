@@ -40,10 +40,10 @@ class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
   String get label => _$this._label;
   set label(String label) => _$this._label = label;
   NodeBuilder _left;
-  NodeBuilder get left => _$this._left ??= new NodeBuilder();
+  NodeBuilder get left => _$this._left;
   set left(NodeBuilder left) => _$this._left = left;
   NodeBuilder _right;
-  NodeBuilder get right => _$this._right ??= new NodeBuilder();
+  NodeBuilder get right => _$this._right;
   set right(NodeBuilder right) => _$this._right = right;
 
   NodeBuilder();
@@ -187,8 +187,7 @@ class OuterModelBuilder
   String get prop => _$this._prop;
   set prop(String prop) => _$this._prop = prop;
   InnerModelBuilder _innerModel;
-  InnerModelBuilder get innerModel =>
-      _$this._innerModel ??= new InnerModelBuilder();
+  InnerModelBuilder get innerModel => _$this._innerModel;
   set innerModel(InnerModelBuilder innerModel) =>
       _$this._innerModel = innerModel;
 

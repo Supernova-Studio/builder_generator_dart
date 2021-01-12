@@ -10,9 +10,15 @@ void main() {
     );
 
     var rebuiltDataClass = dataClass.rebuild(
-      (ModelBuilder builder) => builder
+      (ModelBuilder builder) {
+        expect(builder.set, isNull);
+
+        builder.set = SetBuilder<String>();
+
+        builder
         ..set.addAll(['set_item1', 'set_item2'])
-        ..list.add('list_item_new'),
+        ..list.add('list_item_new');
+      },
     );
 
     expect(dataClass.set, isNull);

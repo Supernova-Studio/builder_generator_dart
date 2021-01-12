@@ -358,12 +358,7 @@ abstract class ValueSourceClass
       if (dataClassIsAbstract) {
         result.write(';');
       } else {
-        result.write(' => ');
-        if (field.isNestedBuilder) {
-          result.write('_\$this._$name ??= new $typeInBuilder();');
-        } else {
-          result.write('_\$this._$name;');
-        }
+        result.write(' => _\$this._$name;');
       }
       result.writeln();
 

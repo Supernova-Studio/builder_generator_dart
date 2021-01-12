@@ -47,7 +47,7 @@ class ModelBuilder<S> implements DataClassBuilder<Model<S>, ModelBuilder<S>> {
   int get prop2 => _$this._prop2;
   set prop2(int prop2) => _$this._prop2 = prop2;
   ListBuilder<int> _list;
-  ListBuilder<int> get list => _$this._list ??= new ListBuilder<int>();
+  ListBuilder<int> get list => _$this._list;
   set list(ListBuilder<int> list) => _$this._list = list;
   S _genericProp;
   S get genericProp => _$this._genericProp;

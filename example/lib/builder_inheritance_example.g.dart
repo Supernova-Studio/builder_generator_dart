@@ -63,7 +63,7 @@ class ModelBBuilder extends ModelABuilder {
   String get propA => _$this._propA;
   set propA(String propA) => _$this._propA = propA;
   ListBuilder<int> _list;
-  ListBuilder<int> get list => _$this._list ??= new ListBuilder<int>();
+  ListBuilder<int> get list => _$this._list;
   set list(ListBuilder<int> list) => _$this._list = list;
 
   ModelBBuilder();
@@ -261,7 +261,7 @@ class ModelEBuilder extends ModelDBuilder {
   ModelA get modelA => _$this._modelA;
   set modelA(ModelA modelA) => _$this._modelA = modelA;
   ModelBBuilder _modelB;
-  ModelBBuilder get modelB => _$this._modelB ??= new ModelBBuilder();
+  ModelBBuilder get modelB => _$this._modelB;
   set modelB(ModelBBuilder modelB) => _$this._modelB = modelB;
   String _propC;
   String get propC => _$this._propC;
