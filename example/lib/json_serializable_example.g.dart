@@ -101,9 +101,7 @@ Model<S> _$ModelFromJson<S>(Map<String, dynamic> json) {
   return Model<S>(
     prop1: json['prop1'] as String,
     prop2: json['prop2'] as int,
-    list: json['list'] != null
-        ? (json['list'] as List).map((e) => e as int).toBuiltList()
-        : null,
+    list: (json['list'] as List)?.map((e) => e as int),
     genericProp: _SimpleConverter<S>()
         .fromJson(json['genericProp'] as Map<String, dynamic>),
   );

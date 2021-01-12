@@ -13,7 +13,8 @@ class Model<S> implements DataClass<Model<S>, ModelBuilder<S>> {
   @_SimpleConverter()
   final S genericProp;
 
-  const Model({this.prop1, this.prop2, this.list, this.genericProp});
+  Model({this.prop1, this.prop2, Iterable<int> list, this.genericProp})
+      : list = BuiltList.of(list);
 
   @override
   bool operator ==(dynamic other) => _equals(other);

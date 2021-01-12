@@ -42,7 +42,8 @@ class InnerModel implements DataClass<InnerModel, InnerModelBuilder> {
   int get hashCode => _hashCode;
 
   @override
-  InnerModel rebuild(void Function(InnerModelBuilder) updates) => _rebuild(updates);
+  InnerModel rebuild(void Function(InnerModelBuilder) updates) =>
+      _rebuild(updates);
 
   @override
   InnerModelBuilder toBuilder() => _toBuilder();
@@ -64,7 +65,8 @@ class OuterModel implements DataClass<OuterModel, OuterModelBuilder> {
   int get hashCode => _hashCode;
 
   @override
-  OuterModel rebuild(void Function(OuterModelBuilder) updates) => _rebuild(updates);
+  OuterModel rebuild(void Function(OuterModelBuilder) updates) =>
+      _rebuild(updates);
 
   @override
   OuterModelBuilder toBuilder() => _toBuilder();
