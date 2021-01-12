@@ -160,7 +160,7 @@ packages:
     description:
       path: "data_class/"
       ref: HEAD
-      resolved-ref: b7704e92adc066b71f438139d9b0535984ea03d9
+      resolved-ref: "66ce0af418ffed022800d1a2f4d456ba5af6b332"
       url: "git://github.com/Supernova-Studio/builder_generator_dart.git"
     source: git
     version: "1.0.0"
@@ -169,7 +169,7 @@ packages:
     description:
       path: "data_class_generator/"
       ref: HEAD
-      resolved-ref: b7704e92adc066b71f438139d9b0535984ea03d9
+      resolved-ref: "66ce0af418ffed022800d1a2f4d456ba5af6b332"
       url: "git://github.com/Supernova-Studio/builder_generator_dart.git"
     source: git
     version: "1.0.0"
