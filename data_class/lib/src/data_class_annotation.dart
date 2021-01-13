@@ -28,7 +28,7 @@ class DataClassField {
   ///
   /// This field will still be used in data class operations:
   /// comparison, calculating hash code and string.
-  final bool ignoreForBuilder;
+  final bool ignoreForBuilder; //todo remove
 
   const DataClassField({this.ignoreForBuilder = false})
       : assert(ignoreForBuilder != null);

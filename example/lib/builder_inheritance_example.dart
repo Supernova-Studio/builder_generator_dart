@@ -10,49 +10,19 @@ abstract class ModelA implements DataClass<ModelA, ModelABuilder> {
   ModelA({this.propA, this.list});
 }
 
-class ModelB extends ModelA {
+abstract class ModelB extends ModelA {
   final String propB1;
   final String propB2;
 
   ModelB({this.propB1, this.propB2, String propA, BuiltList<int> list})
       : super(propA: propA, list: list);
-
-  @override
-  bool operator ==(dynamic other) => _equals(other);
-
-  @override
-  String toString() => _string;
-
-  @override
-  int get hashCode => _hashCode;
-
-  @override
-  ModelB rebuild(void Function(ModelBBuilder) updates) => _rebuild(updates);
-
-  @override
-  ModelBBuilder toBuilder() => _toBuilder();
 }
 
-class ModelC extends ModelB {
+abstract class ModelC extends ModelB {
   final String propC;
 
   ModelC({this.propC, String propB1, String propB2, String propA})
       : super(propB1: propB1, propB2: propB2, propA: propA);
-
-  @override
-  bool operator ==(dynamic other) => _equals(other);
-
-  @override
-  String toString() => _string;
-
-  @override
-  int get hashCode => _hashCode;
-
-  @override
-  ModelC rebuild(void Function(ModelCBuilder) updates) => _rebuild(updates);
-
-  @override
-  ModelCBuilder toBuilder() => _toBuilder();
 }
 
 abstract class ModelD extends ModelC {
@@ -61,12 +31,6 @@ abstract class ModelD extends ModelC {
   ModelD(
       {this.modelB, String propC, String propB1, String propB2, String propA})
       : super(propC: propC, propB1: propB1, propB2: propB2, propA: propA);
-
-  @override
-  ModelD rebuild(void Function(ModelCBuilder) updates);
-
-  @override
-  ModelDBuilder toBuilder();
 }
 
 class ModelE extends ModelD {

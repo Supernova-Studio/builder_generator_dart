@@ -51,14 +51,9 @@ abstract class ValueSourceField
     var annotation = annotations.single;
 
     return DataClassField(
-      ignoreForBuilder:
-          annotation.getField('ignoreForBuilder')?.toBoolValue() ?? false,
+      ignoreForBuilder: false, //todo remove
     );
   }
-
-//  firstWhere(
-//      (element) => element.element.name == 'DataClassField',
-//      orElse: () => null);
 
   @memoized
   String get type => DartTypes.getName(element.getter.returnType);
