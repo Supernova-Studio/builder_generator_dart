@@ -10,8 +10,6 @@ abstract class ModelABuilder
     implements DataClassBuilder<ModelA, ModelABuilder> {
   String get propA;
 
-  ModelABuilder._();
-
   @override
   ModelA build();
 }
@@ -20,8 +18,6 @@ abstract class ModelBBuilder implements ModelABuilder {
   String get propB1;
   String get propB2;
   String get propA;
-
-  ModelBBuilder._();
 
   @override
   ModelB build();

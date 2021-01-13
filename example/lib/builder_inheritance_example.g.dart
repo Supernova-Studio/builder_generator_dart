@@ -11,8 +11,6 @@ abstract class ModelABuilder
   String get propA;
   ListBuilder<int> get list;
 
-  ModelABuilder._();
-
   @override
   ModelA build();
 }
@@ -22,8 +20,6 @@ abstract class ModelBBuilder implements ModelABuilder {
   String get propB2;
   String get propA;
   ListBuilder<int> get list;
-
-  ModelBBuilder._();
 
   @override
   ModelB build();
@@ -35,8 +31,6 @@ abstract class ModelCBuilder implements ModelBBuilder {
   String get propB2;
   String get propA;
 
-  ModelCBuilder._();
-
   @override
   ModelC build();
 }
@@ -47,8 +41,6 @@ abstract class ModelDBuilder implements ModelCBuilder {
   String get propB1;
   String get propB2;
   String get propA;
-
-  ModelDBuilder._();
 
   @override
   ModelD build();

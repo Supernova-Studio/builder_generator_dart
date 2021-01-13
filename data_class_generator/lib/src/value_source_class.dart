@@ -412,8 +412,11 @@ abstract class ValueSourceClass
       result.writeln();
     }
 
-    result.writeln('${name}Builder._();');
-    result.writeln('');
+    // Constructor
+    if (!dataClassIsAbstract) {
+      result.writeln('${name}Builder._();');
+      result.writeln('');
+    }
 
     if (!dataClassIsAbstract) {
       result.writeln(_generateBuilderThisProp());
