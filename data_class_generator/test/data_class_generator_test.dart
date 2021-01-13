@@ -164,8 +164,7 @@ class TestModelBuilder
   int get age => _\$this._age;
   set age(int age) => _\$this._age = age;
   InnerTestModelBuilder _innerTestModel;
-  InnerTestModelBuilder get innerTestModel =>
-      _\$this._innerTestModel ??= new InnerTestModelBuilder();
+  InnerTestModelBuilder get innerTestModel => _\$this._innerTestModel;
   set innerTestModel(InnerTestModelBuilder innerTestModel) =>
       _\$this._innerTestModel = innerTestModel;
 
@@ -488,11 +487,10 @@ class NodeDataClassBuilder
   String get label => _\$this._label;
   set label(String label) => _\$this._label = label;
   NodeDataClassBuilder _left;
-  NodeDataClassBuilder get left => _\$this._left ??= new NodeDataClassBuilder();
+  NodeDataClassBuilder get left => _\$this._left;
   set left(NodeDataClassBuilder left) => _\$this._left = left;
   NodeDataClassBuilder _right;
-  NodeDataClassBuilder get right =>
-      _\$this._right ??= new NodeDataClassBuilder();
+  NodeDataClassBuilder get right => _\$this._right;
   set right(NodeDataClassBuilder right) => _\$this._right = right;
 
   NodeDataClassBuilder();
@@ -642,7 +640,6 @@ class Value implements DataClass<Value, ValueBuilder> {
 
   @override
   ValueBuilder toBuilder() => _toBuilder();  
-}
 }'''),
         isNot(containsErrors),
       );
@@ -1031,7 +1028,7 @@ part 'value.g.dart';
 class Value implements DataClass<Value, ValueBuilder> {
   final String foo;
 
-  Value([this.foo = "123"]]);
+  Value([this.foo = "123"]);
   
   @override
   Value rebuild(void Function(ValueBuilder) updates) => _rebuild(updates);
