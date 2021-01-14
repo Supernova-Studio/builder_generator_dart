@@ -68,7 +68,6 @@ class ModelCBuilder implements ModelBBuilder {
   set propA(String propA) => _$this._propA = propA;
 
   String _propB2;
-  @override
   String get propB2 => _$this._propB2;
 
   ModelCBuilder._();

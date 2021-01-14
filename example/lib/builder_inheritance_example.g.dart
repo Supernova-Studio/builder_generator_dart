@@ -120,7 +120,6 @@ class ModelEBuilder implements ModelDBuilder {
   set propA(String propA) => _$this._propA = propA;
 
   ListBuilder<int> _list;
-  @override
   ListBuilder<int> get list => _$this._list;
 
   ModelEBuilder._();

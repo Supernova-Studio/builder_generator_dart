@@ -69,28 +69,54 @@ abstract class ValueSourceClass
   BuiltList<ValueSourceField> get fields =>
       ValueSourceField.fromClassElements(parsedLibrary, element);
 
+  @memoized
+  BuiltList<ValueSourceField> get parentDataClassFields {
+    if (!isParentDataClass) return BuiltList.of(const <ValueSourceField>[]);
+
+    final parentElement = element.supertype.element;
+    final parsedLibrary = parentElement.library.session
+        .getParsedLibraryByElement(parentElement.library);
+
+    return ValueSourceField.fromClassElements(parsedLibrary, parentElement);
+  }
+
   /// Default constructor to be used to rebuild the data class.
   @memoized
   ConstructorElement get constructor => element.constructors
       .firstWhere((element) => element.displayName == '', orElse: () => null);
 
-  //todo rename
-  /// Fields which are exposed by builder.
+  /// Fields which are accepted by data class's constructor.
   @memoized
-  BuiltList<ValueSourceField> get builderFields {
+  BuiltList<ValueSourceField> get constructorFields {
     var paramNames = constructor.parameters.map((e) => e.name);
 
     return BuiltList.of(
         fields.where((field) => paramNames.contains(field.name)));
   }
 
-  // @memoized todo
-  BuiltSet<ValueSourceField> get parentBuilderFields {
-    //todo rename? not parent
-    final fieldsSet = fields.toBuiltSet();
-    final builderFieldsSet = builderFields.toBuiltSet();
+  //todo comment
+  @memoized
+  BuiltList<ValueSourceField> get builderFields {
+    //todo fix abstract classes
+    // if (dataClassIsAbstract) return fields;
+    return constructorFields;
+  }
 
-    return fieldsSet.difference(builderFieldsSet);
+  /// Fields which are exposed by parent data class, but not accepted by current class's constructor.
+  @memoized //todo
+  BuiltList<ValueSourceField> get missingParentDataClassFields {
+    if (!isParentDataClass) return BuiltList.of(const <ValueSourceField>[]);
+
+    final parentBuilderFieldNamesSet =
+        parentDataClassFields.map((field) => field.name).toSet();
+    final fieldNamesSet = constructorFields.map((field) => field.name).toSet();
+
+    final missingFieldNames =
+        parentBuilderFieldNamesSet.difference(fieldNamesSet);
+
+    return parentDataClassFields
+        .where((field) => missingFieldNames.contains(field.name))
+        .toBuiltList();
   }
 
   @memoized
@@ -388,7 +414,7 @@ abstract class ValueSourceClass
     // Fields from parent classes which are not accepted by current data class's constructor.
     // These fields can be only read.
     if (!dataClassIsAbstract) {
-      for (var field in parentBuilderFields) {
+      for (var field in missingParentDataClassFields) {
         var type = field.typeInCompilationUnit(compilationUnit);
         var typeInBuilder = field.typeInBuilder(compilationUnit);
         var fieldType = field.isNestedBuilder ? typeInBuilder : type;
@@ -398,15 +424,7 @@ abstract class ValueSourceClass
         result.writeln('$fieldType _$name;');
 
         // Getter
-        result.write('@override');
-        result.writeln();
-        result.write('$fieldType get $name');
-        if (dataClassIsAbstract) {
-          result.write(';');
-        } else {
-          result.write(' => _\$this._$name;');
-        }
-        result.writeln();
+        result.writeln('$fieldType get $name => _\$this._$name;');
       }
 
       result.writeln();
@@ -445,7 +463,7 @@ abstract class ValueSourceClass
       // invocation of the nested builder taking into account nullability.
       var fieldBuilders = <String, String>{};
 
-      for (var field in builderFields) {
+      for (var field in constructorFields) {
         final name = field.name;
         if (!field.isNestedBuilder) {
           fieldBuilders[name] = name;
@@ -500,10 +518,12 @@ abstract class ValueSourceClass
   String _generateBuilderThisProp() {
     var result = StringBuffer();
 
-    if (builderFields.isNotEmpty) {
+    //todo use single list, fix redundant if
+    if (constructorFields.isNotEmpty) {
       result.writeln('$builderName get _\$this {');
       result.writeln('if ($builderPropName != null) {');
-      for (var field in builderFields.followedBy(parentBuilderFields)) {
+      for (var field
+          in constructorFields.followedBy(missingParentDataClassFields)) {
         final name = field.name;
         final nameInBuilder = '_$name';
         if (field.isNestedBuilder) {
