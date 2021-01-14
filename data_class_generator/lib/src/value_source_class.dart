@@ -94,16 +94,8 @@ abstract class ValueSourceClass
         fields.where((field) => paramNames.contains(field.name)));
   }
 
-  //todo comment
-  @memoized
-  BuiltList<ValueSourceField> get builderFields {
-    //todo fix abstract classes
-    // if (dataClassIsAbstract) return fields;
-    return constructorFields;
-  }
-
   /// Fields which are exposed by parent data class, but not accepted by current class's constructor.
-  @memoized //todo
+  @memoized
   BuiltList<ValueSourceField> get missingParentDataClassFields {
     if (!isParentDataClass) return BuiltList.of(const <ValueSourceField>[]);
 
@@ -248,34 +240,32 @@ abstract class ValueSourceClass
         ..message =
             'Class must either implement DataClass or extend another class which implements DataClass.'));
     }
-    //todo remove?
-    if (isParentDataClass && !element.supertype.element.isAbstract) {
-      // Parent concrete data classes add additional level of complexity which we try to avoid.
-      //
-      // For example, parent data class exposes some propertyA and accepts it in constructor.
-      // Child data class doesn't accept it anymore and sets some default value.
-      // That means we need to provide a getter and a setter for propertyA in parent builder.
-      // Child builder implements parent builder, so it has to provider same getters and setters.
-      // However, setter for propertyA in child builder is not valid,
-      // because child data class doesn't have this property in constructor.
-      result.add(GeneratorError((b) => b
-        ..message =
-            'Parent class is data class and non-abstract. Inheritance of abstract data classes only is allowed.'));
-    }
 
     return result;
   }
 
   Iterable<GeneratorError> _checkFieldList() {
-    var nonFinalFields = fields.where((field) => !field.element.isFinal);
-    return nonFinalFields.isNotEmpty
-        ? [
-            GeneratorError((b) => b
-              ..message =
-                  'Data class fields must be final. However, these fields are not final: ' +
-                      nonFinalFields.map((field) => field.name).join(', '))
-          ]
-        : [];
+    final result = <GeneratorError>[];
+
+    final nonFinalFields = fields.where((field) => !field.element.isFinal);
+    if (nonFinalFields.isNotEmpty) {
+      result.add(GeneratorError((b) => b
+        ..message =
+            'Data class fields must be final. However, these fields are not final: ' +
+                nonFinalFields.map((field) => field.name).join(', ')));
+    }
+
+    //todo fix
+    // final missingFieldsWithSetters = missingParentDataClassFields.where((field) => field.settings.createBuilderSetter);
+    // if (missingFieldsWithSetters.isNotEmpty){
+    //   result.add(GeneratorError((b) => b
+    //     ..message =
+    //         'All fields from parent data classes must be either accepted by constructor or marked with [createBuilderSetter = false]. '
+    //             'However, these fields do not satisfy these conditions: ' +
+    //             missingFieldsWithSetters.map((field) => field.name).join(', ')));
+    // }
+
+    return result;
   }
 
   Iterable<GeneratorError> _checkConstructor() {
@@ -386,7 +376,7 @@ abstract class ValueSourceClass
       result.writeln('');
     }
 
-    for (var field in builderFields) {
+    for (var field in constructorFields) {
       var type = field.typeInCompilationUnit(compilationUnit);
       var typeInBuilder = field.typeInBuilder(compilationUnit);
       var fieldType = field.isNestedBuilder ? typeInBuilder : type;
@@ -418,9 +408,6 @@ abstract class ValueSourceClass
     }
     result.writeln();
 
-    //todo add checks to avoid setters without ctor params
-
-    //todo remove and join with the for cycle above
     // Fields from parent classes which are not accepted by current data class's constructor.
     // These fields can be only read.
     if (!dataClassIsAbstract) {
@@ -528,12 +515,12 @@ abstract class ValueSourceClass
   String _generateBuilderThisProp() {
     var result = StringBuffer();
 
-    //todo use single list, fix redundant if
-    if (constructorFields.isNotEmpty) {
+    final fields = constructorFields.followedBy(missingParentDataClassFields);
+
+    if (fields.isNotEmpty) {
       result.writeln('$builderName get _\$this {');
       result.writeln('if ($builderPropName != null) {');
-      for (var field
-          in constructorFields.followedBy(missingParentDataClassFields)) {
+      for (var field in fields) {
         final name = field.name;
         final nameInBuilder = '_$name';
         if (field.isNestedBuilder) {

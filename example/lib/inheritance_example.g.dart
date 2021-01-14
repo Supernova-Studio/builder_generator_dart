@@ -8,8 +8,9 @@ part of 'inheritance_example.dart';
 
 abstract class ModelABuilder
     implements DataClassBuilder<ModelA, ModelABuilder> {
-  String get propA;
-  set propA(String propA);
+  String get propA1;
+  set propA1(String propA1);
+  String get propA2;
 
   @override
   ModelA build();
@@ -20,8 +21,8 @@ abstract class ModelBBuilder implements ModelABuilder {
   set propB1(String propB1);
   String get propB2;
 
-  String get propA;
-  set propA(String propA);
+  String get propA1;
+  set propA1(String propA1);
 
   @override
   ModelB build();
@@ -39,13 +40,15 @@ extension ModelCDataClassExtension on ModelC {
         propC == other.propC &&
         propB1 == other.propB1 &&
         propB2 == other.propB2 &&
-        propA == other.propA;
+        propA2 == other.propA2 &&
+        propA1 == other.propA1;
   }
 
   int get _hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, propC.hashCode), propB1.hashCode), propB2.hashCode),
-        propA.hashCode));
+        $jc($jc($jc($jc(0, propC.hashCode), propB1.hashCode), propB2.hashCode),
+            propA2.hashCode),
+        propA1.hashCode));
   }
 
   String get _string {
@@ -53,7 +56,8 @@ extension ModelCDataClassExtension on ModelC {
           ..add('propC', propC)
           ..add('propB1', propB1)
           ..add('propB2', propB2)
-          ..add('propA', propA))
+          ..add('propA2', propA2)
+          ..add('propA1', propA1))
         .toString();
   }
 }
@@ -67,12 +71,14 @@ class ModelCBuilder implements ModelBBuilder {
   String _propB1;
   String get propB1 => _$this._propB1;
   set propB1(String propB1) => _$this._propB1 = propB1;
-  String _propA;
-  String get propA => _$this._propA;
-  set propA(String propA) => _$this._propA = propA;
+  String _propA1;
+  String get propA1 => _$this._propA1;
+  set propA1(String propA1) => _$this._propA1 = propA1;
 
   String _propB2;
   String get propB2 => _$this._propB2;
+  String _propA2;
+  String get propA2 => _$this._propA2;
 
   ModelCBuilder._();
 
@@ -80,8 +86,9 @@ class ModelCBuilder implements ModelBBuilder {
     if (_$ModelC$ != null) {
       _propC = _$ModelC$.propC;
       _propB1 = _$ModelC$.propB1;
-      _propA = _$ModelC$.propA;
+      _propA1 = _$ModelC$.propA1;
       _propB2 = _$ModelC$.propB2;
+      _propA2 = _$ModelC$.propA2;
       _$ModelC$ = null;
     }
     return this;
@@ -102,7 +109,7 @@ class ModelCBuilder implements ModelBBuilder {
   @override
   ModelC build() {
     final _$result =
-        _$ModelC$ ?? ModelC(propC: propC, propB1: propB1, propA: propA);
+        _$ModelC$ ?? ModelC(propC: propC, propB1: propB1, propA1: propA1);
     _replace(_$result);
     return _$result;
   }

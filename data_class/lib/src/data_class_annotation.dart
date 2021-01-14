@@ -24,7 +24,7 @@ abstract class DataClass<V extends DataClass<V, B>,
 }
 
 class DataClassField {
-  /// This field won't have a setter in builder.
+  /// This field won't have a setter in a builder and its descendants.
   ///
   /// This field will still be used in data class operations:
   /// comparison, calculating hash code and string.
