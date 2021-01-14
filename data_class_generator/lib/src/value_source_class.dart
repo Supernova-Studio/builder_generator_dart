@@ -248,6 +248,7 @@ abstract class ValueSourceClass
         ..message =
             'Class must either implement DataClass or extend another class which implements DataClass.'));
     }
+    //todo remove?
     if (isParentDataClass && !element.supertype.element.isAbstract) {
       // Parent concrete data classes add additional level of complexity which we try to avoid.
       //
@@ -404,13 +405,22 @@ abstract class ValueSourceClass
       result.writeln();
 
       // Setter
-      if (!dataClassIsAbstract) {
-        result.write('set $name($fieldType $name) => _\$this._$name = $name;');
-        result.writeln();
+      if (field.settings.createBuilderSetter) {
+        result.write('set $name($fieldType $name)');
+        if (dataClassIsAbstract) {
+          result.write(';');
+        } else {
+          result.write(' => _\$this._$name = $name;');
+        }
       }
+
+      result.writeln();
     }
     result.writeln();
 
+    //todo add checks to avoid setters without ctor params
+
+    //todo remove and join with the for cycle above
     // Fields from parent classes which are not accepted by current data class's constructor.
     // These fields can be only read.
     if (!dataClassIsAbstract) {

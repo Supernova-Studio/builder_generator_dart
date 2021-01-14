@@ -5,9 +5,14 @@ part 'builder_inheritance_example.g.dart';
 
 abstract class ModelA implements DataClass<ModelA, ModelABuilder> {
   final String propA;
+
+  @DataClassField(createBuilderSetter: false)
   final BuiltList<int> list;
 
   ModelA({this.propA, this.list});
+
+  @override
+  ModelABuilder toBuilder();
 }
 
 abstract class ModelB extends ModelA {
@@ -16,6 +21,9 @@ abstract class ModelB extends ModelA {
 
   ModelB({this.propB1, this.propB2, String propA, BuiltList<int> list})
       : super(propA: propA, list: list);
+
+  @override
+  ModelBBuilder toBuilder();
 }
 
 abstract class ModelC extends ModelB {
@@ -23,6 +31,9 @@ abstract class ModelC extends ModelB {
 
   ModelC({this.propC, String propB1, String propB2, String propA})
       : super(propB1: propB1, propB2: propB2, propA: propA);
+
+  @override
+  ModelCBuilder toBuilder();
 }
 
 abstract class ModelD extends ModelC {
@@ -31,6 +42,9 @@ abstract class ModelD extends ModelC {
   ModelD(
       {this.modelB, String propC, String propB1, String propB2, String propA})
       : super(propC: propC, propB1: propB1, propB2: propB2, propA: propA);
+
+  @override
+  ModelDBuilder toBuilder();
 }
 
 class ModelE extends ModelD {

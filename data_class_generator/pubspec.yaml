@@ -14,8 +14,10 @@ dependencies:
   quiver: '>=0.21.0 <3.0.0'
 
   data_class:
+#    path: ../data_class
     git:
       url: git://github.com/Supernova-Studio/builder_generator_dart.git
+      ref: feature/hierarchy-changes
       path: data_class/
 
 dev_dependencies:

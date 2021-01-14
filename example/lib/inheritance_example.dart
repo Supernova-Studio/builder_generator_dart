@@ -10,6 +10,8 @@ abstract class ModelA implements DataClass<ModelA, ModelABuilder> {
 
 abstract class ModelB extends ModelA {
   final String propB1;
+
+  @DataClassField(createBuilderSetter: false) //todo show errors when skipped
   final String propB2;
 
   ModelB({this.propB1, this.propB2, String propA}) : super(propA: propA);

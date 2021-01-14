@@ -9,6 +9,7 @@ part of 'inheritance_example.dart';
 abstract class ModelABuilder
     implements DataClassBuilder<ModelA, ModelABuilder> {
   String get propA;
+  set propA(String propA);
 
   @override
   ModelA build();
@@ -16,8 +17,11 @@ abstract class ModelABuilder
 
 abstract class ModelBBuilder implements ModelABuilder {
   String get propB1;
+  set propB1(String propB1);
   String get propB2;
+
   String get propA;
+  set propA(String propA);
 
   @override
   ModelB build();
