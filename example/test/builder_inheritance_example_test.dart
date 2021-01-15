@@ -54,7 +54,7 @@ void main() {
     //todo fix
     // ModelD modelD = ModelE();
     // var modelDBuilder = modelD.toBuilder();
-    // modelDBuilder.modelB = ModelB().toBuilder();
+    // modelDBuilder.modelB = ModelE().toBuilder();
     // modelDBuilder.modelB.propA = 'propA';
     //
     // var newModelD = modelDBuilder.build();

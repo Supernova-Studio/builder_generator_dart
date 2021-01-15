@@ -174,7 +174,7 @@ packages:
     description:
       path: "data_class/"
       ref: HEAD
-      resolved-ref: "31c569909af0418d58eb36782ccae49f27f84887"
+      resolved-ref: b2c8f4ad8ff02db8585716cdff7383405cd2e2e3
       url: "git://github.com/Supernova-Studio/builder_generator_dart.git"
     source: git
     version: "1.0.0"
