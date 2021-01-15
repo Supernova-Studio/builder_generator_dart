@@ -14,10 +14,8 @@ dependencies:
   quiver: '>=0.21.0 <3.0.0'
 
   data_class:
-    #    path: ../data_class
     git:
       url: git://github.com/Supernova-Studio/builder_generator_dart.git
-      ref: feature/hierarchy-changes
       path: data_class/
 
 dev_dependencies:
@@ -27,4 +25,8 @@ dev_dependencies:
   logging: ^0.11.0
   pedantic: ^1.4.0
 
+# TODO
+# Disabled until InconsistentAnalysisException is resolved:
+# https://github.com/google/built_value.dart/issues/941
+# https://github.com/dart-lang/build/issues/2634
 #  built_value_generator: ^7.1.0

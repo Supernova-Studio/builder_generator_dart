@@ -65,8 +65,6 @@ abstract class ValueSourceField
   /// The [type] plus any import prefix.
   @memoized
   String get typeWithPrefix {
-    // print("###: ${parsedLibrary.getElementDeclaration(element.declaration)}");
-    // print("###: ${element.declaration}");
     var typeFromAst =
         (parsedLibrary.getElementDeclaration(element.declaration).node)
                 ?.thisOrAncestorOfType()

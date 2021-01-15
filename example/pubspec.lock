@@ -159,8 +159,8 @@ packages:
     dependency: "direct main"
     description:
       path: "data_class/"
-      ref: "feature/hierarchy-changes"
-      resolved-ref: "0214a68b58aff38eeaa3424e6f32a9f48a7a2432"
+      ref: HEAD
+      resolved-ref: "31c569909af0418d58eb36782ccae49f27f84887"
       url: "git://github.com/Supernova-Studio/builder_generator_dart.git"
     source: git
     version: "1.0.0"
