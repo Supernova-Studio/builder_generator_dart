@@ -29,4 +29,3 @@ dev_dependencies:
   test: ^1.15.1
 
   json_serializable: ^3.5.1
-

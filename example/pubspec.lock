@@ -160,7 +160,7 @@ packages:
     description:
       path: "data_class/"
       ref: "feature/hierarchy-changes"
-      resolved-ref: bbb8d6e1d1653057cfdfc91a3562fa0be234ce35
+      resolved-ref: "0214a68b58aff38eeaa3424e6f32a9f48a7a2432"
       url: "git://github.com/Supernova-Studio/builder_generator_dart.git"
     source: git
     version: "1.0.0"
