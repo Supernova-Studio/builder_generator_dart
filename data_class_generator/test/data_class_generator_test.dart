@@ -94,7 +94,7 @@ class InnerTestModelBuilder
   String get someProperty => _\$this._someProperty;
   set someProperty(String someProperty) => _\$this._someProperty = someProperty;
 
-  InnerTestModelBuilder();
+  InnerTestModelBuilder._();
 
   InnerTestModelBuilder get _\$this {
     if (_\$InnerTestModel\$ != null) {
@@ -168,7 +168,7 @@ class TestModelBuilder
   set innerTestModel(InnerTestModelBuilder innerTestModel) =>
       _\$this._innerTestModel = innerTestModel;
 
-  TestModelBuilder();
+  TestModelBuilder._();
 
   TestModelBuilder get _\$this {
     if (_\$TestModel\$ != null) {
@@ -273,7 +273,7 @@ abstract class AModelBuilder
   String get propA;
   set propA(String propA);
 
-  AModelBuilder();
+  AModelBuilder._();
 
   @override
   AModel build();
@@ -320,7 +320,7 @@ class BModelBuilder extends AModelBuilder {
   String get propA => _\$this._propA;
   set propA(String propA) => _\$this._propA = propA;
 
-  BModelBuilder();
+  BModelBuilder._() : super._();
 
   BModelBuilder get _\$this {
     if (_\$BModel\$ != null) {
@@ -527,7 +527,7 @@ class NodeDataClassBuilder
   }
 }'''));
     });
-  });
+  }, skip: 'Complex cases are checked in example package');
 
   group('Valid input', () {
     test('Generator works correctly with with a single property model',
@@ -689,7 +689,7 @@ class _Value<T, S> implements DataClass<_Value<T, S>, _ValueBuilder<T, S>> {
       );
     });
 
-    test('Data class field: ignoreForBuilder is supported', () async {
+    test('Data class field: createBuilderSetter is supported', () async {
       expect(
         await generate('''library data_class;
 import 'package:data_class/data_class.dart';
@@ -699,7 +699,7 @@ part 'value.g.dart';
 class Value implements DataClass<Value, ValueBuilder> {
   final String str;
   
-  @DataClassField(ignoreForBuilder: true)
+  @DataClassField(createBuilderSetter: false)
   final String ignoredStr;
   
   final String anotherStr;
@@ -715,7 +715,10 @@ class Value implements DataClass<Value, ValueBuilder> {
 }'''),
         allOf(
           contains(r'_str'),
-          isNot(contains(r'_ignoredStr')),
+          isNot(contains(r'set ignoredStr')),
+          contains(r'get ignoredStr'),
+          contains(r'String _ignoredStr'),
+          contains(r'_ignoredStr = _$Value$.ignoredStr'),
           contains(r'_anotherStr'),
           isNot(contains(r'1.')),
         ),
@@ -1179,9 +1182,9 @@ abstract class DataClass<V extends DataClass<V, B>, B extends DataClassBuilder<V
 }
 
 class DataClassField {
-  final bool ignoreForBuilder;
+  final bool createBuilderSetter;
 
-  const DataClassField({this.ignoreForBuilder = false});
+  const DataClassField({this.createBuilderSetter = true});
 }
 
 abstract class DataClassBuilder<V, B extends DataClassBuilder<V, B>> {
