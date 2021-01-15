@@ -5,12 +5,17 @@ part 'builder_inheritance_example.g.dart';
 
 abstract class ModelA implements DataClass<ModelA, ModelABuilder> {
   final String propA;
+
+  @DataClassField(createBuilderSetter: false)
   final BuiltList<int> list;
 
   ModelA({this.propA, this.list});
+
+  @override
+  ModelABuilder toBuilder();
 }
 
-class ModelB extends ModelA {
+abstract class ModelB extends ModelA {
   final String propB1;
   final String propB2;
 
@@ -18,41 +23,17 @@ class ModelB extends ModelA {
       : super(propA: propA, list: list);
 
   @override
-  bool operator ==(dynamic other) => _equals(other);
-
-  @override
-  String toString() => _string;
-
-  @override
-  int get hashCode => _hashCode;
-
-  @override
-  ModelB rebuild(void Function(ModelBBuilder) updates) => _rebuild(updates);
-
-  @override
-  ModelBBuilder toBuilder() => _toBuilder();
+  ModelBBuilder toBuilder();
 }
 
-class ModelC extends ModelB {
+abstract class ModelC extends ModelB {
   final String propC;
 
   ModelC({this.propC, String propB1, String propB2, String propA})
       : super(propB1: propB1, propB2: propB2, propA: propA);
 
   @override
-  bool operator ==(dynamic other) => _equals(other);
-
-  @override
-  String toString() => _string;
-
-  @override
-  int get hashCode => _hashCode;
-
-  @override
-  ModelC rebuild(void Function(ModelCBuilder) updates) => _rebuild(updates);
-
-  @override
-  ModelCBuilder toBuilder() => _toBuilder();
+  ModelCBuilder toBuilder();
 }
 
 abstract class ModelD extends ModelC {
@@ -61,9 +42,6 @@ abstract class ModelD extends ModelC {
   ModelD(
       {this.modelB, String propC, String propB1, String propB2, String propA})
       : super(propC: propC, propB1: propB1, propB2: propB2, propA: propA);
-
-  @override
-  ModelD rebuild(void Function(ModelCBuilder) updates);
 
   @override
   ModelDBuilder toBuilder();

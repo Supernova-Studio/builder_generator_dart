@@ -71,8 +71,8 @@ class _$ValueSourceClass extends ValueSourceClass {
   ConstructorElement get constructor => __constructor ??= super.constructor;
 
   @override
-  BuiltList<ValueSourceField> get builderFields =>
-      __builderFields ??= super.builderFields;
+  BuiltList<ValueSourceField> get constructorFields =>
+      __builderFields ??= super.constructorFields;
 
   @override
   String get source => __source ??= super.source;

@@ -10,7 +10,7 @@ extension NodeDataClassExtension on Node {
   Node _rebuild(void Function(NodeBuilder builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  NodeBuilder _toBuilder() => NodeBuilder().._replace(this);
+  NodeBuilder _toBuilder() => NodeBuilder._().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -46,7 +46,7 @@ class NodeBuilder implements DataClassBuilder<Node, NodeBuilder> {
   NodeBuilder get right => _$this._right;
   set right(NodeBuilder right) => _$this._right = right;
 
-  NodeBuilder();
+  NodeBuilder._();
 
   NodeBuilder get _$this {
     if (_$Node$ != null) {
@@ -83,7 +83,7 @@ extension InnerModelDataClassExtension on InnerModel {
   InnerModel _rebuild(void Function(InnerModelBuilder builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  InnerModelBuilder _toBuilder() => InnerModelBuilder().._replace(this);
+  InnerModelBuilder _toBuilder() => InnerModelBuilder._().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -121,7 +121,7 @@ class InnerModelBuilder
   String get prop3 => _$this._prop3;
   set prop3(String prop3) => _$this._prop3 = prop3;
 
-  InnerModelBuilder();
+  InnerModelBuilder._();
 
   InnerModelBuilder get _$this {
     if (_$InnerModel$ != null) {
@@ -158,7 +158,7 @@ extension OuterModelDataClassExtension on OuterModel {
   OuterModel _rebuild(void Function(OuterModelBuilder builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  OuterModelBuilder _toBuilder() => OuterModelBuilder().._replace(this);
+  OuterModelBuilder _toBuilder() => OuterModelBuilder._().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -191,7 +191,7 @@ class OuterModelBuilder
   set innerModel(InnerModelBuilder innerModel) =>
       _$this._innerModel = innerModel;
 
-  OuterModelBuilder();
+  OuterModelBuilder._();
 
   OuterModelBuilder get _$this {
     if (_$OuterModel$ != null) {

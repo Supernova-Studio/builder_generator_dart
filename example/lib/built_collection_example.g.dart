@@ -10,7 +10,7 @@ extension ModelDataClassExtension on Model {
   Model _rebuild(void Function(ModelBuilder builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ModelBuilder _toBuilder() => ModelBuilder().._replace(this);
+  ModelBuilder _toBuilder() => ModelBuilder._().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -46,7 +46,7 @@ class ModelBuilder implements DataClassBuilder<Model, ModelBuilder> {
   SetBuilder<String> get set => _$this._set;
   set set(SetBuilder<String> set) => _$this._set = set;
 
-  ModelBuilder();
+  ModelBuilder._();
 
   ModelBuilder get _$this {
     if (_$Model$ != null) {

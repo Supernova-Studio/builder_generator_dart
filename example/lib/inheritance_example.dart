@@ -3,38 +3,31 @@ import 'package:data_class/data_class.dart';
 part 'inheritance_example.g.dart';
 
 abstract class ModelA implements DataClass<ModelA, ModelABuilder> {
-  final String propA;
+  final String propA1;
 
-  ModelA({this.propA});
+  @DataClassField(createBuilderSetter: false)
+  final String propA2;
+
+  ModelA({this.propA1, this.propA2});
 }
 
-class ModelB extends ModelA {
+abstract class ModelB extends ModelA {
   final String propB1;
+
+  @DataClassField(createBuilderSetter: false)
   final String propB2;
 
-  ModelB({this.propB1, this.propB2, String propA}) : super(propA: propA);
-
   @override
-  bool operator ==(dynamic other) => _equals(other);
+  final String propA2;
 
-  @override
-  String toString() => _string;
-
-  @override
-  int get hashCode => _hashCode;
-
-  @override
-  ModelB rebuild(void Function(ModelBBuilder) updates) => _rebuild(updates);
-
-  @override
-  ModelBBuilder toBuilder() => _toBuilder();
+  ModelB({this.propB1, this.propB2, String propA1}) : this.propA2 = 'propA2', super(propA1: propA1);
 }
 
 class ModelC extends ModelB {
   final int propC;
 
-  ModelC({String propA, String propB1, this.propC})
-      : super(propA: propA, propB1: propB1, propB2: 'fixedValue');
+  ModelC({String propA1, String propB1, this.propC})
+      : super(propA1: propA1, propB1: propB1, propB2: 'fixedValue');
 
   @override
   bool operator ==(dynamic other) => _equals(other);

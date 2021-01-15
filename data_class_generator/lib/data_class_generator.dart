@@ -17,16 +17,33 @@ class DataClassGenerator extends Generator {
 
   @override
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
+    // Workaround for https://github.com/google/built_value.dart/issues/941.
+    LibraryElement libraryElement;
+    var attempts = 0;
+    while (true) {
+      try {
+        libraryElement = await buildStep.resolver.libraryFor(
+            await buildStep.resolver.assetIdForElement(library.element));
+        libraryElement.session.getParsedLibraryByElement(libraryElement);
+        break;
+      } catch (_) {
+        ++attempts;
+        if (attempts == 10) {
+          log.severe('Analysis session did not stabilize after ten tries!');
+          return null;
+        }
+      }
+    }
+
     var result = StringBuffer();
 
-    for (var element in library.allElements) {
-      if (element is ClassElement &&
-          ValueSourceClass.needDataClass(element)) {
+    for (var element in libraryElement.units.expand((unit) => unit.types)) {
+      if (ValueSourceClass.needDataClass(element)) {
         try {
           result.writeln(ValueSourceClass(element).generateCode() ?? '');
         } catch (e, st) {
           result.writeln(_error(e));
-          log.severe('Error in DataClassGenerator for ${element.name}.', e, st);
+          log.severe('Error in DataClassGenerator for $element.', e, st);
         }
       }
     }

@@ -134,7 +134,7 @@ void main() {
       var outerModel = OuterModel();
 
       var newOuterModel = outerModel.rebuild((builder) {
-        builder.innerModel = InnerModelBuilder();
+        builder.innerModel = InnerModel().toBuilder();
 
         return builder
           ..prop = 'prop'
@@ -149,10 +149,10 @@ void main() {
       var node = Node();
 
       var newNode = node.rebuild((builder) {
-        builder.left = NodeBuilder();
-        builder.left.right = NodeBuilder();
-        builder.left.right.left = NodeBuilder();
-        builder.left.right.left.left = NodeBuilder();
+        builder.left = Node().toBuilder();
+        builder.left.right = Node().toBuilder();
+        builder.left.right.left = Node().toBuilder();
+        builder.left.right.left.left = Node().toBuilder();
 
         builder.left.right.left.left.label = 'Leaf1';
       });

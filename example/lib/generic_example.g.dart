@@ -10,7 +10,7 @@ extension ModelDataClassExtension<T, S> on Model<T, S> {
   Model<T, S> _rebuild(void Function(ModelBuilder<T, S> builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ModelBuilder<T, S> _toBuilder() => ModelBuilder<T, S>().._replace(this);
+  ModelBuilder<T, S> _toBuilder() => ModelBuilder<T, S>._().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -48,7 +48,7 @@ class ModelBuilder<T, S>
   String get prop3 => _$this._prop3;
   set prop3(String prop3) => _$this._prop3 = prop3;
 
-  ModelBuilder();
+  ModelBuilder._();
 
   ModelBuilder<T, S> get _$this {
     if (_$Model$T$S != null) {

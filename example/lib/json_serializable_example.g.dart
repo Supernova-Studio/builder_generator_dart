@@ -10,7 +10,7 @@ extension ModelDataClassExtension<S> on Model<S> {
   Model<S> _rebuild(void Function(ModelBuilder<S> builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ModelBuilder<S> _toBuilder() => ModelBuilder<S>().._replace(this);
+  ModelBuilder<S> _toBuilder() => ModelBuilder<S>._().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -53,7 +53,7 @@ class ModelBuilder<S> implements DataClassBuilder<Model<S>, ModelBuilder<S>> {
   S get genericProp => _$this._genericProp;
   set genericProp(S genericProp) => _$this._genericProp = genericProp;
 
-  ModelBuilder();
+  ModelBuilder._();
 
   ModelBuilder<S> get _$this {
     if (_$Model$S != null) {

@@ -20,7 +20,8 @@ class Model<T, S> implements DataClass<Model<T, S>, ModelBuilder<T, S>> {
   int get hashCode => _hashCode;
 
   @override
-  Model<T, S> rebuild(void Function(ModelBuilder<T, S>) updates) => _rebuild(updates);
+  Model<T, S> rebuild(void Function(ModelBuilder<T, S>) updates) =>
+      _rebuild(updates);
 
   @override
   ModelBuilder<T, S> toBuilder() => _toBuilder();

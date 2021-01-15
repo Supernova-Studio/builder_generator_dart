@@ -10,7 +10,7 @@ extension ValueDataClassExtension on Value {
   Value _rebuild(void Function(ValueBuilder builder) updates) =>
       (_toBuilder()..update(updates)).build();
 
-  ValueBuilder _toBuilder() => ValueBuilder().._replace(this);
+  ValueBuilder _toBuilder() => ValueBuilder._().._replace(this);
 
   bool _equals(Object other) {
     if (identical(other, this)) return true;
@@ -40,15 +40,19 @@ class ValueBuilder implements DataClassBuilder<Value, ValueBuilder> {
   String _prop1;
   String get prop1 => _$this._prop1;
   set prop1(String prop1) => _$this._prop1 = prop1;
+  String _prop2;
+  String get prop2 => _$this._prop2;
+  set prop2(String prop2) => _$this._prop2 = prop2;
   String _prop3;
   String get prop3 => _$this._prop3;
   set prop3(String prop3) => _$this._prop3 = prop3;
 
-  ValueBuilder();
+  ValueBuilder._();
 
   ValueBuilder get _$this {
     if (_$Value$ != null) {
       _prop1 = _$Value$.prop1;
+      _prop2 = _$Value$.prop2;
       _prop3 = _$Value$.prop3;
       _$Value$ = null;
     }
@@ -69,7 +73,8 @@ class ValueBuilder implements DataClassBuilder<Value, ValueBuilder> {
 
   @override
   Value build() {
-    final _$result = _$Value$ ?? Value(prop1: prop1, prop3: prop3);
+    final _$result =
+        _$Value$ ?? Value(prop1: prop1, prop2: prop2, prop3: prop3);
     _replace(_$result);
     return _$result;
   }

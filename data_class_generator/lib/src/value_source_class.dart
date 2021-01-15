@@ -69,18 +69,46 @@ abstract class ValueSourceClass
   BuiltList<ValueSourceField> get fields =>
       ValueSourceField.fromClassElements(parsedLibrary, element);
 
+  @memoized
+  BuiltList<ValueSourceField> get parentDataClassFields {
+    if (!isParentDataClass) return BuiltList.of(const <ValueSourceField>[]);
+
+    final parentElement = element.supertype.element;
+    final parsedLibrary = parentElement.library.session
+        .getParsedLibraryByElement(parentElement.library);
+
+    return ValueSourceField.fromClassElements(parsedLibrary, parentElement);
+  }
+
   /// Default constructor to be used to rebuild the data class.
   @memoized
   ConstructorElement get constructor => element.constructors
       .firstWhere((element) => element.displayName == '', orElse: () => null);
 
-  /// Fields which are exposed by builder.
+  /// Fields which are accepted by data class's constructor.
   @memoized
-  BuiltList<ValueSourceField> get builderFields {
+  BuiltList<ValueSourceField> get constructorFields {
     var paramNames = constructor.parameters.map((e) => e.name);
 
-    return BuiltList<ValueSourceField>.from(fields.where((field) =>
-        paramNames.contains(field.name) && !field.settings.ignoreForBuilder));
+    return BuiltList.of(
+        fields.where((field) => paramNames.contains(field.name)));
+  }
+
+  /// Fields which are exposed by parent data class, but not accepted by current class's constructor.
+  @memoized
+  BuiltList<ValueSourceField> get missingParentDataClassFields {
+    if (!isParentDataClass) return BuiltList.of(const <ValueSourceField>[]);
+
+    final parentBuilderFieldNamesSet =
+        parentDataClassFields.map((field) => field.name).toSet();
+    final fieldNamesSet = constructorFields.map((field) => field.name).toSet();
+
+    final missingFieldNames =
+        parentBuilderFieldNamesSet.difference(fieldNamesSet);
+
+    return parentDataClassFields
+        .where((field) => missingFieldNames.contains(field.name))
+        .toBuiltList();
   }
 
   @memoized
@@ -191,14 +219,6 @@ abstract class ValueSourceClass
   Iterable<GeneratorError> _checkClass() {
     var result = <GeneratorError>[];
 
-//    if (dataClassIsAbstract) {
-//      result.add(GeneratorError((b) => b
-//        ..message = 'Class is abstract. Make it instantiable.'
-//        ..offset = classDeclaration.offset
-//        ..length = 0
-//        ..fix = 'abstract '));
-//    }
-
     if (hasDataClassImportWithShow) {
       result.add(GeneratorError((b) => b
         ..message = 'Stop using "show" when importing '
@@ -225,15 +245,27 @@ abstract class ValueSourceClass
   }
 
   Iterable<GeneratorError> _checkFieldList() {
-    var nonFinalFields = fields.where((field) => !field.element.isFinal);
-    return nonFinalFields.isNotEmpty
-        ? [
-            GeneratorError((b) => b
-              ..message =
-                  'Data class fields must be final. However, these fields are not final: ' +
-                      nonFinalFields.map((field) => field.name).join(', '))
-          ]
-        : [];
+    final result = <GeneratorError>[];
+
+    final nonFinalFields = fields.where((field) => !field.element.isFinal);
+    if (nonFinalFields.isNotEmpty) {
+      result.add(GeneratorError((b) => b
+        ..message =
+            'Data class fields must be final. However, these fields are not final: ' +
+                nonFinalFields.map((field) => field.name).join(', ')));
+    }
+
+    //todo fix
+    // final missingFieldsWithSetters = missingParentDataClassFields.where((field) => field.settings.createBuilderSetter);
+    // if (missingFieldsWithSetters.isNotEmpty){
+    //   result.add(GeneratorError((b) => b
+    //     ..message =
+    //         'All fields from parent data classes must be either accepted by constructor or marked with [createBuilderSetter = false]. '
+    //             'However, these fields do not satisfy these conditions: ' +
+    //             missingFieldsWithSetters.map((field) => field.name).join(', ')));
+    // }
+
+    return result;
   }
 
   Iterable<GeneratorError> _checkConstructor() {
@@ -302,7 +334,7 @@ abstract class ValueSourceClass
     result.writeln();
 
     result.writeln('$builderName _toBuilder() '
-        '=> ${builderName}().._replace(this);');
+        '=> ${builderName}._().._replace(this);');
     result.writeln();
 
     result.write(_generateEqualsAndHashcode());
@@ -332,7 +364,7 @@ abstract class ValueSourceClass
     result.write('class ${name}Builder$_boundedGenerics ');
 
     if (isParentDataClass) {
-      result.write('extends ${element.supertype.element.name}Builder');
+      result.write('implements ${element.supertype.element.name}Builder');
     } else {
       result.write('implements ${builderImplements.join(", ")}');
     }
@@ -344,7 +376,7 @@ abstract class ValueSourceClass
       result.writeln('');
     }
 
-    for (var field in builderFields) {
+    for (var field in constructorFields) {
       var type = field.typeInCompilationUnit(compilationUnit);
       var typeInBuilder = field.typeInBuilder(compilationUnit);
       var fieldType = field.isNestedBuilder ? typeInBuilder : type;
@@ -363,19 +395,43 @@ abstract class ValueSourceClass
       result.writeln();
 
       // Setter
-      result.write('set $name($fieldType $name)');
-      if (dataClassIsAbstract) {
-        result.write(';');
-      } else {
-        result.write(' => _\$this._$name = $name;');
+      if (field.settings.createBuilderSetter) {
+        result.write('set $name($fieldType $name)');
+        if (dataClassIsAbstract) {
+          result.write(';');
+        } else {
+          result.write(' => _\$this._$name = $name;');
+        }
       }
 
       result.writeln();
     }
     result.writeln();
 
-    result.writeln('${name}Builder();');
-    result.writeln('');
+    // Fields from parent classes which are not accepted by current data class's constructor.
+    // These fields can be only read.
+    if (!dataClassIsAbstract) {
+      for (var field in missingParentDataClassFields) {
+        var type = field.typeInCompilationUnit(compilationUnit);
+        var typeInBuilder = field.typeInBuilder(compilationUnit);
+        var fieldType = field.isNestedBuilder ? typeInBuilder : type;
+        var name = field.name;
+
+        // Field
+        result.writeln('$fieldType _$name;');
+
+        // Getter
+        result.writeln('$fieldType get $name => _\$this._$name;');
+      }
+
+      result.writeln();
+    }
+
+    // Constructor
+    if (!dataClassIsAbstract) {
+      result.writeln('${name}Builder._();');
+      result.writeln('');
+    }
 
     if (!dataClassIsAbstract) {
       result.writeln(_generateBuilderThisProp());
@@ -404,7 +460,7 @@ abstract class ValueSourceClass
       // invocation of the nested builder taking into account nullability.
       var fieldBuilders = <String, String>{};
 
-      for (var field in builderFields) {
+      for (var field in constructorFields) {
         final name = field.name;
         if (!field.isNestedBuilder) {
           fieldBuilders[name] = name;
@@ -459,10 +515,12 @@ abstract class ValueSourceClass
   String _generateBuilderThisProp() {
     var result = StringBuffer();
 
-    if (builderFields.isNotEmpty) {
+    final fields = constructorFields.followedBy(missingParentDataClassFields);
+
+    if (fields.isNotEmpty) {
       result.writeln('$builderName get _\$this {');
       result.writeln('if ($builderPropName != null) {');
-      for (var field in builderFields) {
+      for (var field in fields) {
         final name = field.name;
         final nameInBuilder = '_$name';
         if (field.isNestedBuilder) {
